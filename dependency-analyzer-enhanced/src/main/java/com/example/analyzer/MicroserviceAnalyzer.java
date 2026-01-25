@@ -77,7 +77,7 @@ public class MicroserviceAnalyzer {
         // Generate reports with Pure Java SVG generator
         System.out.println("📈 Generating reports...");
         
-        Path outputDir = projectPath.resolve("dependency-analysis");
+        Path outputDir = projectPath.resolve(AnalyzerConstants.DEPENDENCY_ANALYSIS_DIR);
         Files.createDirectories(outputDir);
 
         // Create GraphViz Java generator
@@ -86,12 +86,12 @@ public class MicroserviceAnalyzer {
         reportGenerator.generateReports(result, outputDir, config);
         
         System.out.println("📂 Reports generated:");
-        if (config.getOutputFormats().isHtml()) System.out.println("   ✅ dependency-report.html");
-        if (config.getOutputFormats().isJson()) System.out.println("   ✅ analysis-result.json");
-        if (config.getOutputFormats().isCsv()) System.out.println("   ✅ dependency-matrix.csv");
-        if (config.getOutputFormats().isMarkdown()) System.out.println("   ✅ impact-analysis.md");
+        if (config.getOutputFormats().isHtml()) System.out.println("   ✅ " + AnalyzerConstants.HTML_REPORT_FILE);
+        if (config.getOutputFormats().isJson()) System.out.println("   ✅ " + AnalyzerConstants.JSON_REPORT_FILE);
+        if (config.getOutputFormats().isCsv()) System.out.println("   ✅ " + AnalyzerConstants.CSV_MATRIX_FILE);
+        if (config.getOutputFormats().isMarkdown()) System.out.println("   ✅ " + AnalyzerConstants.IMPACT_ANALYSIS_FILE);
         if (config.getOutputFormats().isSvg()) {
-            System.out.println("   🏆 dependency-diagram-graphviz-java.svg (Original GraphViz + Pure Java)");
+            System.out.println("   🏆 " + AnalyzerConstants.SVG_DIAGRAM_FILE + " (Original GraphViz + Pure Java)");
         }
     }
     
@@ -112,12 +112,12 @@ public class MicroserviceAnalyzer {
         // Find any service that acts as a gateway (generic detection)
         List<ServiceInfo> gateways = services.stream()
             .filter(s -> s.getName().toLowerCase().contains("gateway") || 
-                        s.getType().equalsIgnoreCase("gateway"))
+                        s.getType().equalsIgnoreCase(AnalyzerConstants.GATEWAY_TYPE))
             .collect(Collectors.toList());
             
         // Find business services that gateways would route to (exclude parent project)
         List<ServiceInfo> businessServices = services.stream()
-            .filter(s -> s.getType().equalsIgnoreCase("business") && 
+            .filter(s -> s.getType().equalsIgnoreCase(AnalyzerConstants.BUSINESS_TYPE) && 
                         !s.getName().toLowerCase().contains("gateway") &&
                         !isParentProject(s.getName()))
             .collect(Collectors.toList());
@@ -128,7 +128,7 @@ public class MicroserviceAnalyzer {
                 dependencies.add(new ServiceDependency(
                     gateway.getName(), 
                     businessService.getName(), 
-                    "gateway"
+                    AnalyzerConstants.GATEWAY_DEPENDENCY_TYPE
                 ));
             }
         }
@@ -146,11 +146,11 @@ public class MicroserviceAnalyzer {
                 }
                 // Keep only business-critical dependency types
                 String type = dep.getDependencyType().toLowerCase();
-                return type.equals("gateway") || 
-                       type.equals("rest-template") || 
-                       type.equals("webclient") ||
-                       type.equals("async") ||
-                       type.equals("messaging");
+                return type.equals(AnalyzerConstants.GATEWAY_DEPENDENCY_TYPE) ||
+                       type.equals(AnalyzerConstants.REST_TEMPLATE_TYPE) ||
+                       type.equals(AnalyzerConstants.WEBCLIENT_TYPE) ||
+                       type.equals(AnalyzerConstants.ASYNC_TYPE) ||
+                       type.equals(AnalyzerConstants.MESSAGING_TYPE);
             })
             .collect(Collectors.toList());
     }

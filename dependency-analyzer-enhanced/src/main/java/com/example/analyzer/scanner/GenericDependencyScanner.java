@@ -1,5 +1,6 @@
 package com.example.analyzer.scanner;
 
+import com.example.analyzer.AnalyzerConstants;
 import com.example.analyzer.config.AnalyzerConfiguration;
 import com.example.analyzer.model.ServiceInfo;
 import com.example.analyzer.model.ServiceDependency;
@@ -55,8 +56,6 @@ public class GenericDependencyScanner {
     private List<ServiceDependency> scanJavaFiles(Path servicePath, List<ServiceInfo> allServices) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
-        System.out.println("URLTEST: *** Scanning Java files in service path: " + servicePath);
-        
         try {
             PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.java");
             
@@ -66,9 +65,7 @@ public class GenericDependencyScanner {
                     .filter(path -> !path.toString().contains("test"))
                     .collect(Collectors.toList());
                 
-                System.out.println("URLTEST: Found " + javaFiles.size() + " Java files in " + servicePath);
                 for (Path javaFile : javaFiles) {
-                    System.out.println("URLTEST: Processing Java file: " + javaFile);
                     dependencies.addAll(analyzeJavaFile(javaFile, servicePath, allServices));
                 }
             }
@@ -80,7 +77,6 @@ public class GenericDependencyScanner {
             e.printStackTrace();
         }
         
-        System.out.println("URLTEST: Found " + dependencies.size() + " dependencies from " + servicePath);
         return dependencies;
     }
     
@@ -88,26 +84,9 @@ public class GenericDependencyScanner {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
         try {
-            String fileName = javaFile.getFileName().toString();
-            String filePath = javaFile.toString();
-            
-            // Only debug OrderNotificationService for now
-            boolean isTargetFile = filePath.contains("OrderNotificationService") || filePath.contains("PaymentNotificationService") || filePath.contains("UserActivityService");
-            
-            if (isTargetFile) {
-                System.out.println("URLTEST: *** TARGET FILE - Analyzing Java file: " + fileName + " at " + filePath);
-            }
-            
             CompilationUnit cu = javaParser.parse(javaFile).getResult().orElse(null);
             if (cu == null) {
-                if (isTargetFile) {
-                    System.out.println("URLTEST: *** TARGET FILE - Failed to parse: " + fileName);
-                }
                 return dependencies;
-            }
-            
-            if (isTargetFile) {
-                System.out.println("URLTEST: *** TARGET FILE - Successfully parsed: " + fileName);
             }
             
             // Look for Feign clients
@@ -125,28 +104,11 @@ public class GenericDependencyScanner {
             });
             
             // Look for RestTemplate usage
-            if (isTargetFile) {
-                System.out.println("URLTEST: *** TARGET FILE - Looking for methods in: " + fileName);
-            }
-            var methods = cu.findAll(MethodDeclaration.class);
-            if (isTargetFile) {
-                System.out.println("URLTEST: *** TARGET FILE - Found " + methods.size() + " methods in: " + fileName);
-            }
-            
             cu.findAll(MethodDeclaration.class).forEach(method -> {
                 String methodBody = method.toString();
-                if (isTargetFile) {
-                    System.out.println("URLTEST: *** TARGET FILE - Found method: " + method.getNameAsString() + " in " + fileName);
-                }
                 
                 for (String restPattern : config.getDependencyPatterns().getRestTemplates()) {
-                    if (isTargetFile) {
-                        System.out.println("URLTEST: *** TARGET FILE - Checking RestTemplate pattern: " + restPattern + " in method " + method.getNameAsString());
-                    }
                     if (methodBody.contains(restPattern)) {
-                        if (isTargetFile) {
-                            System.out.println("URLTEST: *** TARGET FILE - PATTERN MATCH! " + restPattern + " found in method " + method.getNameAsString());
-                        }
                         ServiceDependency dependency = extractRestTemplateDependency(method, javaFile, servicePath, allServices);
                         if (dependency != null) {
                             dependencies.add(dependency);
@@ -158,7 +120,7 @@ public class GenericDependencyScanner {
             // Look for controller endpoints
             cu.findAll(ClassOrInterfaceDeclaration.class).forEach(classDecl -> {
                 classDecl.getAnnotations().forEach(annotation -> {
-                    if (annotation.getNameAsString().equals("RestController")) {
+                    if (annotation.getNameAsString().equals(AnalyzerConstants.REST_CONTROLLER)) {
                         extractControllerEndpoints(classDecl, javaFile, servicePath).forEach(endpoint -> {
                             // Add to service exposed endpoints
                             // This is for future reference
@@ -213,28 +175,22 @@ public class GenericDependencyScanner {
     private ServiceDependency extractRestTemplateDependency(MethodDeclaration method, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
         try {
             String methodBody = method.toString();
-            String fileName = javaFile.getFileName().toString();
             
             // Look for URL patterns in RestTemplate calls - using direct text search
             AtomicReference<String> foundUrl = new AtomicReference<>();
             
             // Simple approach: just search the method text directly for HTTP URLs
             String[] lines = methodBody.split("\n");
-            System.out.println("URLTEST: Analyzing method " + method.getNameAsString() + " in " + fileName + " with " + lines.length + " lines");
             
             for (String line : lines) {
                 String trimmed = line.trim();
                 
                 // Look for any HTTP URLs in the line
-                if (trimmed.contains("http://") || trimmed.contains("https://")) {
-                    System.out.println("URLTEST: Found HTTP line: " + trimmed);
+                if (trimmed.contains(AnalyzerConstants.HTTP_PREFIX) || trimmed.contains(AnalyzerConstants.HTTPS_PREFIX)) {
                     String url = extractUrlFromLine(trimmed);
                     if (url != null) {
-                        System.out.println("URLTEST: Extracted URL: " + url);
                         foundUrl.set(url);
                         break;
-                    } else {
-                        System.out.println("URLTEST: Failed to extract URL from: " + trimmed);
                     }
                 }
             }
@@ -261,21 +217,14 @@ public class GenericDependencyScanner {
                         ServiceDependency dependency = new ServiceDependency(
                             sourceServiceName,        // fromService
                             targetServiceName,        // targetService 
-                            "rest-template"          // dependencyType
+                            AnalyzerConstants.REST_TEMPLATE_TYPE          // dependencyType
                         );
                         dependency.setDescription("REST call to " + targetServiceName);
                         dependency.setSourceFile(relativeFile);
                         dependency.setEndpoint(foundUrl.get());
-                        System.out.println("URLTEST: *** CREATED DEPENDENCY: " + sourceServiceName + " -> " + targetServiceName + " from " + foundUrl.get());
                         return dependency;
-                    } else {
-                        System.out.println("URLTEST: Could not extract target service name from URL: " + foundUrl.get());
                     }
-                } else {
-                    System.out.println("URLTEST: Method has URL but no RestTemplate/WebClient");
                 }
-            } else {
-                System.out.println("URLTEST: No URLs found in method " + method.getNameAsString());
             }
             
         } catch (Exception e) {
@@ -324,8 +273,7 @@ public class GenericDependencyScanner {
         String trimmed = line.trim();
         
         // Look for any HTTP URL in quotes regardless of context
-        if (trimmed.contains("http://") || trimmed.contains("https://")) {
-            System.out.println("URLTEST: Processing line: " + trimmed);
+        if (trimmed.contains(AnalyzerConstants.HTTP_PREFIX) || trimmed.contains(AnalyzerConstants.HTTPS_PREFIX)) {
             
             // Pattern 1: String variable assignment like 'String emailServiceUrl = "http://email-service:8087/api/email/send";'
             if (trimmed.contains("= \"http")) {
@@ -333,7 +281,6 @@ public class GenericDependencyScanner {
                 int endQuote = trimmed.indexOf("\"", startQuote + 1);
                 if (startQuote >= 0 && endQuote > startQuote) {
                     String url = trimmed.substring(startQuote + 1, endQuote);
-                    System.out.println("URLTEST: Extracted URL (pattern 1) from: " + trimmed + " -> " + url);
                     return url;
                 }
             }
@@ -344,15 +291,14 @@ public class GenericDependencyScanner {
                 int endQuote = trimmed.indexOf("\"", startQuote + 1);
                 if (startQuote >= 0 && endQuote > startQuote) {
                     String url = trimmed.substring(startQuote + 1, endQuote);
-                    System.out.println("URLTEST: Extracted URL (pattern 2) from: " + trimmed + " -> " + url);
                     return url;
                 }
             }
             
             // Pattern 3: General quote-based extraction (fallback)
-            int httpPos = trimmed.indexOf("http://");
+            int httpPos = trimmed.indexOf(AnalyzerConstants.HTTP_PREFIX);
             if (httpPos == -1) {
-                httpPos = trimmed.indexOf("https://");
+                httpPos = trimmed.indexOf(AnalyzerConstants.HTTPS_PREFIX);
             }
             
             // Look for quotes around the URL
@@ -363,7 +309,6 @@ public class GenericDependencyScanner {
                 String url = trimmed.substring(startQuote + 1, endQuote);
                 // Remove any trailing characters that might be after the closing quote
                 url = url.replaceAll("[;,)\"'\\s]*$", "");
-                System.out.println("URLTEST: Extracted URL (pattern 3) from: " + trimmed + " -> " + url);
                 return url;
             }
             
@@ -371,18 +316,15 @@ public class GenericDependencyScanner {
             // Look for URL patterns with common delimiters
             String[] words = trimmed.split("\\s+");
             for (String word : words) {
-                if (word.contains("http://") || word.contains("https://")) {
+                if (word.contains(AnalyzerConstants.HTTP_PREFIX) || word.contains(AnalyzerConstants.HTTPS_PREFIX)) {
                     // Clean up any trailing characters
                     word = word.replaceAll("[;,)\"']*$", "");
                     if (word.startsWith("\"")) {
                         word = word.substring(1);
                     }
-                    System.out.println("URLTEST: Extracted URL (no quotes) from: " + trimmed + " -> " + word);
                     return word;
                 }
             }
-            
-            System.out.println("URLTEST: Failed to extract URL from: " + trimmed);
         }
         
         return null;
@@ -526,7 +468,7 @@ public class GenericDependencyScanner {
         }
         
         // Handle http://service-name format
-        if (uri.startsWith("http://")) {
+        if (uri.startsWith(AnalyzerConstants.HTTP_PREFIX)) {
             String serviceName = uri.substring(7).split("/")[0].split(":")[0];
             return serviceName;
         }
