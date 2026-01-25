@@ -1,0 +1,159 @@
+# 🔧 Generic Microservices Dependency Analyzer Configuration
+# This file allows you to customize how the analyzer discovers services and dependencies
+# Save this as 'analyzer-config.yml' and pass it to the tool: java -jar analyzer.jar /project/path /path/to/analyzer-config.yml
+
+# 🔍 Service Detection Configuration
+service_detection:
+  # File patterns to identify services (supports glob patterns)
+  pom_files:
+    - "**/pom.xml"
+  
+  build_files:
+    - "**/build.gradle"
+    - "**/build.gradle.kts"
+    - "**/package.json"
+    - "**/Cargo.toml"        # Rust projects
+    - "**/go.mod"            # Go projects
+    - "**/requirements.txt"  # Python projects
+  
+  config_files:
+    - "**/application.yml"
+    - "**/application.yaml"
+    - "**/application.properties"
+    - "**/bootstrap.yml"
+    - "**/config.json"
+    - "**/.env"
+  
+  # Directories to exclude from scanning
+  exclude_directories:
+    - "target"
+    - "build"
+    - "node_modules"
+    - ".git"
+    - ".idea"
+    - ".vscode"
+    - "dist"
+    - "out"
+    - "__pycache__"
+  
+  # Directories to include (if empty, scans all non-excluded)
+  include_directories:
+    - "src/main"
+    - "src"
+    - "lib"
+    - "app"
+
+# 🔗 Dependency Pattern Configuration
+dependency_patterns:
+  # Patterns for detecting Feign clients (Java)
+  feign_clients:
+    - "@FeignClient"
+    - "@Service"
+    - "FeignClient"
+    - "@Component"
+  
+  # Patterns for detecting REST template usage
+  rest_templates:
+    - "RestTemplate"
+    - "WebClient"
+    - "HttpClient"
+    - "OkHttpClient"
+    - "axios"          # JavaScript
+    - "requests"       # Python
+    - "fetch"          # JavaScript
+  
+  # Patterns for detecting gateway routes
+  gateway_routes:
+    - "spring.cloud.gateway.routes"
+    - "zuul.routes"
+    - "nginx.conf"
+    - "traefik"
+    - "apiVersion: networking.k8s.io"  # Kubernetes Ingress
+  
+  # Patterns for detecting messaging/event systems
+  messaging_queues:
+    - "@RabbitListener"
+    - "@EventHandler"
+    - "@KafkaListener"
+    - "@JmsListener"
+    - "RabbitTemplate"
+    - "KafkaTemplate"
+    - "EventBridge"
+    - "SNS"
+    - "SQS"
+  
+  # Patterns for detecting database usage
+  databases:
+    - "@Repository"
+    - "JpaRepository"
+    - "MongoRepository"
+    - "RedisTemplate"
+    - "JdbcTemplate"
+    - "EntityManager"
+    - "DataSource"
+  
+  # Patterns for detecting HTTP endpoints
+  http_annotations:
+    - "@RestController"
+    - "@Controller"
+    - "@GetMapping"
+    - "@PostMapping"
+    - "@PutMapping"
+    - "@DeleteMapping"
+    - "@RequestMapping"
+    - "app.get"        # Express.js
+    - "app.post"       # Express.js
+    - "@app.route"     # Flask Python
+
+# 📊 Output Format Configuration
+output_formats:
+  html: true      # Interactive HTML report
+  json: true      # Machine-readable JSON
+  csv: true       # Spreadsheet-compatible CSV
+  markdown: true  # Documentation-friendly Markdown
+  dot: true       # Graphviz DOT format
+  svg: true       # SVG vector graphics (requires Graphviz)
+  png: false      # PNG raster graphics (requires Graphviz, disabled by default)
+
+# 📊 Output Configuration  
+output_formats:
+  json: true      # Generate JSON analysis data
+  csv: true       # Generate CSV dependency matrix  
+  markdown: true  # Generate impact analysis markdown
+  html: true      # Generate interactive HTML report
+  svg: true       # Generate SVG diagram (Pure Java - no external dependencies)
+
+# 🎨 Visualization Configuration
+visualization:
+  show_service_types: true        # Display service types in diagrams
+  show_dependency_types: true     # Display dependency types on edges
+  color_by_service_type: true     # Use colors to distinguish service types
+  include_config_services: true   # Include config servers in diagrams
+  include_gateway_services: true  # Include API gateways in diagrams
+
+# 🌟 Example Configurations for Different Architectures:
+
+# For Spring Boot Microservices:
+# - Enable all Java patterns
+# - Focus on @FeignClient, @RestController, Gateway routes
+# - Include Eureka discovery, Config server
+
+# For Node.js Microservices:
+# - Focus on package.json, express routes
+# - Look for axios, fetch calls
+# - Include Docker configurations
+
+# For Python Microservices:
+# - Focus on requirements.txt, Flask/FastAPI
+# - Look for requests library usage
+# - Include database ORM patterns
+
+# For Kubernetes-native:
+# - Include Kubernetes manifest scanning
+# - Focus on Service mesh patterns (Istio, Linkerd)
+# - Include Ingress controllers
+
+# For Event-driven Architecture:
+# - Emphasize messaging patterns
+# - Include Kafka, RabbitMQ, Cloud events
+# - Focus on async communication

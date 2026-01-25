@@ -1,0 +1,42 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: reporting-service
+    
+  # Database configuration
+  datasource:
+    url: jdbc:h2:mem:reporting-db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+# Feign client configuration
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000
+
+logging:
+  level:
+    com.example.reportingservice: DEBUG

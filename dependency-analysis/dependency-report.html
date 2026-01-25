@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Microservices Dependency Analysis Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; }
+        .summary { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .service { margin: 10px 0; padding: 10px; border-left: 4px solid #007bff; background: #f8f9fa; }
+        .dependency { margin: 5px 0; padding: 8px; border-left: 3px solid #28a745; background: #f1f8f4; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #dee2e6; padding: 8px; text-align: left; }
+        th { background-color: #e9ecef; }
+        .high-confidence { color: #28a745; font-weight: bold; }
+        .medium-confidence { color: #ffc107; font-weight: bold; }
+        .low-confidence { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class='header'>
+    <h1>🔄 Microservices Dependency Analysis</h1>
+    <p>Enterprise-grade dependency mapping and impact analysis</p>
+</div>
+<div class='summary'>
+    <h2>📊 Executive Summary</h2>
+    <p><strong>Analysis Date:</strong> 2026-01-25T09:03:43.833472</p>
+    <p><strong>Total Services:</strong> 13</p>
+    <p><strong>Total Dependencies:</strong> 22</p>
+    <p><strong>Average Dependencies per Service:</strong> 1.7</p>
+    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~25%</p>
+</div>
+<h2>🏢 Services Overview</h2>
+<table>
+<tr><th>Service</th><th>Port</th><th>Framework</th><th>Outbound Dependencies</th><th>Risk Level</th></tr>
+<tr><td>product-service</td><td>8082</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+<tr><td>config-service</td><td>8761</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+<tr><td>notification-service</td><td>8086</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+<tr><td>dependency-analyzer-enhanced</td><td>null</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+<tr><td>payment-service</td><td>8084</td><td>null</td><td>1</td><td class='high-confidence'>Low</td></tr>
+<tr><td>gateway-service</td><td>8080</td><td>null</td><td>11</td><td class='low-confidence'>High</td></tr>
+<tr><td>logging-service</td><td>8088</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+<tr><td>order-service</td><td>8083</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
+<tr><td>analytics-service</td><td>8090</td><td>null</td><td>4</td><td class='medium-confidence'>Medium</td></tr>
+<tr><td>email-service</td><td>8087</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+<tr><td>reporting-service</td><td>8089</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
+<tr><td>user-service</td><td>8081</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
+<tr><td>inventory-service</td><td>8085</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
+</table>
+<h2>🔗 Dependency Relationships</h2>
+<div class='service'><h3>📦 payment-service</h3>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+</div>
+<div class='service'><h3>📦 gateway-service</h3>
+<div class='dependency'>→ <strong>product-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>notification-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>dependency-analyzer-enhanced</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>payment-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>logging-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>order-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>analytics-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>email-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>reporting-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>user-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>inventory-service</strong> (<em>gateway</em>)</div>
+</div>
+<div class='service'><h3>📦 analytics-service</h3>
+<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service:8081/api/users/analytics)</div>
+<div class='dependency'>→ <strong>order-service</strong> (<em>rest-template</em> endpoint: http://order-service:8083/api/orders/analytics)</div>
+<div class='dependency'>→ <strong>payment-service</strong> (<em>rest-template</em> endpoint: http://payment-service:8084/api/payments/analytics)</div>
+<div class='dependency'>→ <strong>inventory-service</strong> (<em>rest-template</em> endpoint: http://inventory-service:8085/api/inventory/analytics)</div>
+</div>
+<div class='service'><h3>📦 reporting-service</h3>
+<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service/api/users/count)</div>
+<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service/api/users/count)</div>
+</div>
+<div class='service'><h3>📦 user-service</h3>
+<div class='dependency'>→ <strong>logging-service</strong> (<em>rest-template</em> endpoint: http://logging-service:8088/api/logs/user-activity)</div>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+</div>
+<div class='service'><h3>📦 order-service</h3>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+</div>
+<hr>
+<p><em>Generated by Generic Microservices Dependency Analyzer - Enterprise Edition</em></p>
+</body>
+</html>

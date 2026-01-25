@@ -1,0 +1,85 @@
+# 🎯 Alternative Diagram Configuration - No External Dependencies
+# Configure your analyzer to use pure Java diagram generators instead of Graphviz
+
+analysis:
+  # Disable Graphviz-dependent features
+  useGraphviz: false
+  
+  # Enable pure Java alternatives
+  pureDiagramGenerators:
+    # Pure Java SVG - Recommended for production
+    pureJavaSvg:
+      enabled: true
+      outputFile: "pure-java-diagram.svg"
+      dimensions:
+        width: 1200
+        height: 800
+      styling:
+        nodeWidth: 180
+        nodeHeight: 80
+        nodeSpacing: 200
+        layerHeight: 120
+        showGrid: true
+        useGradients: true
+        dropShadow: true
+    
+    # Mermaid.js - GitHub/Browser compatible
+    mermaidJs:
+      enabled: true
+      outputMarkdown: "mermaid-diagram.md"
+      outputHtml: "mermaid-interactive.html"
+      theme: "default"
+      styling:
+        primaryColor: "#4285f4"
+        primaryTextColor: "#fff"
+        primaryBorderColor: "#1a73e8"
+        lineColor: "#5f6368"
+    
+    # Interactive HTML Canvas
+    interactiveHtml:
+      enabled: true
+      outputFile: "interactive-diagram.html"
+      features:
+        draggable: true
+        zoomable: true
+        animations: true
+        exportPng: true
+        nodeHover: true
+      canvas:
+        width: 1200
+        height: 800
+        gridSize: 50
+
+# Output format configuration
+outputFormats:
+  json: true
+  csv: true
+  markdown: true
+  html: true
+  
+  # Legacy Graphviz formats (require external dependency)
+  svg: false  # Disabled - use pureJavaSvg instead
+  png: false  # Disabled - use interactive HTML export instead
+  dot: false  # Optional - keep for compatibility
+
+# Service detection patterns (unchanged)
+servicePatterns:
+  java:
+    fileExtensions: [".java"]
+    buildFiles: ["pom.xml", "build.gradle"]
+    configFiles: ["application.yml", "application.properties"]
+  
+  feignClients:
+    annotations: ["@FeignClient"]
+    interfaces: true
+    
+  springGateway:
+    configKeys: ["spring.cloud.gateway.routes"]
+    yamlPath: "spring.cloud.gateway.routes"
+
+# Business impact analysis
+businessAnalysis:
+  enabled: true
+  costPerTestHour: 150
+  averageTestingHours: 8
+  regressionTestingReduction: 0.75  # 75% reduction with targeted testing
