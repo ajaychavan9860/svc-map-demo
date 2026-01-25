@@ -61,34 +61,89 @@
 
 ### 📋 **Prerequisites**
 
-- **Java 17+** (for running the analyzer)
-- **Graphviz** (optional, for SVG/PNG generation)
+#### **Java 17+ (Required)**
 
-  ```bash
-  # macOS
-  brew install graphviz
+- **macOS**: `brew install openjdk@17`
+- **Ubuntu/Debian**: `sudo apt install openjdk-17-jdk`
+- **Windows**:
+  - Download from [Adoptium](https://adoptium.net/) or [Oracle JDK](https://www.oracle.com/java/)
+  - Or use Chocolatey: `choco install openjdk17`
+  - Verify: `java -version`
 
-  # Ubuntu/Debian
-  sudo apt-get install graphviz
+#### **Maven 3.6+ (Required for building)**
 
-  # Windows
-  choco install graphviz
-  ```
+- **macOS**: `brew install maven`
+- **Ubuntu/Debian**: `sudo apt install maven`
+- **Windows**:
+  - Download from [Apache Maven](https://maven.apache.org/download.cgi)
+  - Or use Chocolatey: `choco install maven`
+  - Add to PATH: `C:\ProgramData\chocolatey\lib\maven\apache-maven-3.x.x\bin`
+  - Verify: `mvn -version`
+
+#### **Graphviz (Optional, for enhanced diagrams)**
+
+- **macOS**: `brew install graphviz`
+- **Ubuntu/Debian**: `sudo apt-get install graphviz`
+- **Windows**:
+  - Use Chocolatey: `choco install graphviz`
+  - Or download from [Graphviz.org](https://graphviz.org/download/)
+  - Verify: `dot -V`
+
+### 🚀 **Windows Quick Start**
+
+If you're on Windows, here's the fastest way to get started:
+
+```batch
+# 1. Install prerequisites (run in PowerShell as Administrator)
+choco install openjdk17 maven graphviz
+
+# 2. Clone and build
+git clone <your-repo>
+cd dependency-analyzer-enhanced
+mvn clean package -DskipTests
+
+# 3. Run analysis
+java -jar target\generic-microservices-dependency-analyzer-2.0.0.jar C:\path\to\your\microservices
+
+# 4. View results in dependency-analysis\ folder
+```
+
+**Expected Output:**
+
+```
+🚀 Starting Generic Microservices Dependency Analysis...
+📂 Project Path: C:\path\to\your\microservices
+📋 Found X services...
+📊 Found X dependency relationships
+✅ Analysis completed successfully!
+```
 
 ### 🏗️ **Build the Tool**
 
+#### **Clone and Build**
+
 ```bash
+# Clone the repository
 git clone <your-repo>
 cd dependency-analyzer-enhanced
 
 # Build the analyzer
 mvn clean package -DskipTests
 
-# The JAR will be created as:
-# target/generic-microservices-dependency-analyzer-2.0.0.jar
+# Verify build success
+ls -la target/generic-microservices-dependency-analyzer-*.jar
+```
+
+#### **Windows Build Script**
+
+```batch
+# Use the provided Windows batch file
+demo-enhanced-analyzer.bat
 ```
 
 ### 🔧 **Basic Usage**
+
+#### **Command Line**
 
 ```bash
 # Analyze with default settings
@@ -98,7 +153,98 @@ java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/yo
 java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/your/microservices /path/to/analyzer-config.yml
 ```
 
+#### **Windows Command Prompt**
+
+```batch
+# Basic analysis
+java -jar target\generic-microservices-dependency-analyzer-2.0.0.jar C:\path\to\your\microservices
+
+# With custom config
+java -jar target\generic-microservices-dependency-analyzer-2.0.0.jar C:\path\to\your\microservices C:\path\to\analyzer-config.yml
+```
+
+#### **Windows PowerShell**
+
+```powershell
+# Basic analysis
+java -jar "target\generic-microservices-dependency-analyzer-2.0.0.jar" "C:\path\to\your\microservices"
+
+# With custom config
+java -jar "target\generic-microservices-dependency-analyzer-2.0.0.jar" "C:\path\to\your\microservices" "C:\path\to\analyzer-config.yml"
+```
+
+### 🪟 **Windows-Specific Setup**
+
+#### **1. Environment Variables**
+
+Ensure Java and Maven are in your PATH:
+
+```batch
+# Check current PATH
+echo %PATH%
+
+# Add Java to PATH (adjust path as needed)
+setx PATH "%PATH%;C:\Program Files\Java\jdk-17\bin"
+
+# Add Maven to PATH
+setx PATH "%PATH%;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.5\bin"
+
+# Restart command prompt or run: refreshenv
+```
+
+#### **2. Common Windows Issues**
+
+**Java Not Found:**
+
+```batch
+# Install Java via Chocolatey
+choco install openjdk17
+
+# Or download manually and set JAVA_HOME
+setx JAVA_HOME "C:\Program Files\Java\jdk-17"
+```
+
+**Maven Not Found:**
+
+```batch
+# Install Maven via Chocolatey
+choco install maven
+
+# Or download and extract to C:\maven, then add to PATH
+```
+
+**Permission Issues:**
+
+```batch
+# Run as Administrator or check folder permissions
+# Ensure write access to output directory
+```
+
+**Long Path Names:**
+
+```batch
+# Use short paths or enable long paths in Windows
+# Windows 10+: reg add HKLM\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1 /f
+```
+
+#### **3. Windows Demo Script**
+
+The repository includes `demo-enhanced-analyzer.bat` for easy testing:
+
+```batch
+# Run the demo
+demo-enhanced-analyzer.bat
+
+# This will:
+# - Check prerequisites
+# - Build the analyzer
+# - Run analysis on current directory
+# - Display results
+```
+
 ### 📊 **Example Output**
+
+#### **Linux/macOS Output:**
 
 ```bash
 🚀 Starting Generic Microservices Dependency Analysis...
@@ -122,6 +268,100 @@ java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/yo
    ✅ dependency-graph.dot
    ✅ dependency-graph.svg
 ✅ Analysis completed successfully!
+```
+
+#### **Windows Output:**
+
+```batch
+🚀 Starting Generic Microservices Dependency Analysis...
+📂 Project Path: C:\Users\you\my-microservices
+⚙️ Using default configuration
+🔍 Discovering services...
+📋 Found 8 services:
+   - gateway-service (gateway) at gateway-service
+   - user-service (business) at user-service
+   - product-service (business) at product-service
+   - order-service (business) at order-service
+   - payment-service (business) at payment-service
+🔗 Analyzing dependencies...
+📊 Found 14 dependency relationships
+📈 Generating reports...
+📂 Reports generated:
+   ✅ dependency-report.html
+   ✅ analysis-result.json
+   ✅ dependency-matrix.csv
+   ✅ impact-analysis.md
+   ✅ dependency-graph.dot
+   ✅ dependency-graph.svg
+✅ Analysis completed successfully!
+```
+
+### 🔧 **Troubleshooting**
+
+#### **Common Issues**
+
+**"Java not found" Error:**
+
+```bash
+# Check Java installation
+java -version
+
+# On Windows, ensure JAVA_HOME is set
+echo %JAVA_HOME%
+
+# On Windows, check PATH includes Java bin directory
+where java
+```
+
+**"Maven not found" Error:**
+
+```bash
+# Check Maven installation
+mvn -version
+
+# On Windows, ensure MAVEN_HOME is set
+echo %MAVEN_HOME%
+```
+
+**Build Failures:**
+
+```bash
+# Clean and rebuild
+mvn clean
+mvn package -DskipTests
+
+# Check Java version compatibility
+java -version  # Should be Java 17+
+```
+
+**Permission Errors (Windows):**
+
+```batch
+# Run Command Prompt as Administrator
+# Or check folder permissions on the project directory
+# Ensure write access to the output directory
+```
+
+**Long Path Issues (Windows):**
+
+```batch
+# Enable long paths in Windows 10+
+# Run PowerShell as Administrator:
+reg add HKLM\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1 /f
+```
+
+**Memory Issues:**
+
+```bash
+# Increase Java heap size if analyzing large projects
+java -Xmx2g -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/project
+```
+
+**Graphviz Missing (Optional):**
+
+```bash
+# SVG generation will be skipped, but analysis continues
+# Install Graphviz to enable diagram generation
 ```
 
 ---

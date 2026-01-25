@@ -16,6 +16,7 @@ public final class AnalyzerConstants {
     public static final String ASYNC_TYPE = "async";
     public static final String MESSAGING_TYPE = "messaging";
     public static final String GATEWAY_DEPENDENCY_TYPE = "gateway";
+    public static final String FEIGN_CLIENT_TYPE = "feign-client";
 
     // File Extensions and Patterns
     public static final String JAVA_EXTENSION = ".java";

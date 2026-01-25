@@ -13,6 +13,8 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.*;
 import java.util.*;
@@ -20,7 +22,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class GenericDependencyScanner {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(GenericDependencyScanner.class);
+
     private final AnalyzerConfiguration config;
     private final JavaParser javaParser = new JavaParser();
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
@@ -29,10 +33,10 @@ public class GenericDependencyScanner {
         this.config = config;
     }
     
-    public List<ServiceDependency> scanDependencies(ServiceInfo service, List<ServiceInfo> allServices) {
+    public List<ServiceDependency> scanDependencies(ServiceInfo service, List<ServiceInfo> allServices, Path projectRoot) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
-        Path servicePath = Paths.get(service.getPath());
+        Path servicePath = projectRoot.resolve(service.getPath());
         
         try {
             // Scan Java files for Feign clients, REST templates, etc.
@@ -47,7 +51,7 @@ public class GenericDependencyScanner {
             dependencies.addAll(scanMessagingDependencies(servicePath, allServices));
             
         } catch (Exception e) {
-            System.err.println("Error scanning dependencies for " + service.getName() + ": " + e.getMessage());
+            logger.error("Error scanning dependencies for {}: {}", service.getName(), e.getMessage(), e);
         }
         
         return dependencies;
@@ -71,10 +75,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error scanning Java files in path: " + servicePath);
-            System.err.println("Exception: " + e.getClass().getName());
-            System.err.println("Message: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error scanning Java files in path: {}", servicePath, e);
         }
         
         return dependencies;
@@ -130,7 +131,7 @@ public class GenericDependencyScanner {
             });
             
         } catch (Exception e) {
-            System.err.println("Error analyzing Java file " + javaFile + ": " + e.getMessage());
+            logger.error("Error analyzing Java file {}: {}", javaFile, e.getMessage(), e);
         }
         
         return dependencies;
@@ -166,7 +167,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error extracting Feign dependency: " + e.getMessage());
+            logger.error("Error extracting Feign dependency: {}", e.getMessage(), e);
         }
         
         return null;
@@ -228,7 +229,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error extracting RestTemplate dependency: " + e.getMessage());
+            logger.error("Error extracting RestTemplate dependency: {}", e.getMessage(), e);
         }
         
         return null;
@@ -369,7 +370,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error scanning configuration files: " + e.getMessage());
+            logger.error("Error scanning configuration files: {}", e.getMessage(), e);
         }
         
         return dependencies;
@@ -400,7 +401,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error analyzing config file: " + e.getMessage());
+            logger.error("Error analyzing config file: {}", e.getMessage(), e);
         }
         
         return dependencies;
@@ -439,7 +440,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error extracting gateway routes: " + e.getMessage());
+            logger.error("Error extracting gateway routes: {}", e.getMessage(), e);
         }
         
         return dependencies;
@@ -509,7 +510,7 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            System.err.println("Error scanning messaging dependencies: " + e.getMessage());
+            logger.error("Error scanning messaging dependencies: {}", e.getMessage(), e);
         }
         
         return dependencies;
