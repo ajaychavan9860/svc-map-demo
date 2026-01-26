@@ -177,6 +177,13 @@ public class GenericDependencyScanner {
                                     String fullPath = combinePaths(finalBasePath, methodPath);
                                     endpoints.add(fullPath);
                                     logger.info("Found endpoint: {} in method {}", fullPath, method.getNameAsString());
+                                    
+                                    // ALSO add the method-level path separately if there's a base path
+                                    // This handles Feign clients where base URL is in config and only method path is in @PostMapping
+                                    if (!finalBasePath.isEmpty() && !methodPath.equals(fullPath)) {
+                                        endpoints.add(methodPath);
+                                        logger.info("Found endpoint (method-level): {} in method {}", methodPath, method.getNameAsString());
+                                    }
                                 } else {
                                     logger.debug("Could not extract path from annotation: {}", ann.toString());
                                 }
