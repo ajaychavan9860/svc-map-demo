@@ -32,8 +32,13 @@ public class MicroserviceAnalyzer {
         // Discover services using generic patterns
         GenericServiceDiscovery serviceDiscovery = new GenericServiceDiscovery(config);
         List<ServiceInfo> services = serviceDiscovery.discoverServices(projectPath);
+        
+        // Filter out gateway services completely
+        services = services.stream()
+            .filter(s -> !s.getName().toLowerCase().contains("gateway"))
+            .collect(Collectors.toList());
 
-        logger.info("[LIST] Found {} services:", services.size());
+        logger.info("[LIST] Found {} services (excluding gateways):", services.size());
         services.forEach(service ->
             logger.info("   - {} ({}) at {}", service.getName(), service.getType(), service.getPath()));
 
@@ -62,9 +67,8 @@ public class MicroserviceAnalyzer {
             allDependencies.addAll(serviceDependencies);
         }
         
-        // NOTE: Only using actual detected dependencies - no hardcoded assumptions
-        // But add generic gateway routing since gateways legitimately route to services
-        allDependencies.addAll(createGatewayRoutingDependencies(services));
+        // Gateway routing disabled - dependencies detected via actual code analysis only
+        // allDependencies.addAll(createGatewayRoutingDependencies(services));
         
         // Filter out noise: configuration dependencies and parent project
         allDependencies = filterBusinessDependencies(allDependencies);
