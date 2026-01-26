@@ -469,6 +469,9 @@ public class GenericDependencyScanner {
     private ServiceDependency extractFeignDependency(AnnotationExpr annotation, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
         try {
             String annotationStr = annotation.toString();
+            String sourceServiceName = servicePath.getFileName().toString();
+            
+            logger.debug("🔍 Analyzing Feign client in {}: {}", sourceServiceName, annotationStr);
             
             // Extract service name from @FeignClient annotation
             // Supports patterns like:
@@ -485,6 +488,7 @@ public class GenericDependencyScanner {
                     if (parts[i].contains("name") || parts[i].contains("value") || parts[i].contains("FeignClient(")) {
                         // Get the next quoted string
                         targetServiceName = parts[i + 1];
+                        logger.debug("   📝 Extracted raw name: '{}'", targetServiceName);
                         break;
                     }
                 }
@@ -497,21 +501,32 @@ public class GenericDependencyScanner {
                 // Resolve property placeholders like ${feign.taskservice.name}
                 if (targetServiceName.startsWith("${") && targetServiceName.endsWith("}")) {
                     String propertyKey = targetServiceName.substring(2, targetServiceName.length() - 1);
+                    logger.debug("   🔑 Resolving property: {}", propertyKey);
+                    logger.debug("   📦 Available properties: {}", serviceProperties.keySet());
+                    
                     String resolvedValue = resolveProperty(propertyKey);
                     if (resolvedValue != null) {
+                        logger.info("   ✅ Resolved {} = '{}' -> '{}'", propertyKey, targetServiceName, resolvedValue);
                         targetServiceName = resolvedValue;
-                        logger.debug("Resolved property {} to {}", propertyKey, resolvedValue);
+                    } else {
+                        logger.warn("   ⚠️  Property '{}' not found in config files!", propertyKey);
+                        logger.warn("   💡 Available properties: {}", 
+                            serviceProperties.isEmpty() ? "NONE - config files not loaded?" : 
+                            String.join(", ", serviceProperties.keySet()));
+                        return null; // Can't resolve, skip this dependency
                     }
                 }
+                
+                logger.debug("   🎯 Target service name: '{}'", targetServiceName);
                 
                 // Try to match with actual service names using fuzzy matching
                 String matchedServiceName = findMatchingServiceName(targetServiceName, allServices);
                 if (matchedServiceName == null) {
+                    logger.warn("   ❌ No matching service found for '{}'", targetServiceName);
                     matchedServiceName = targetServiceName; // Keep original if no match found
+                } else {
+                    logger.debug("   ✓ Matched to: {}", matchedServiceName);
                 }
-                
-                // Extract source service name from the service path
-                String sourceServiceName = servicePath.getFileName().toString();
                 
                 String relativeFile = servicePath.relativize(javaFile).toString();
                 ServiceDependency dependency = new ServiceDependency(
@@ -523,7 +538,7 @@ public class GenericDependencyScanner {
                 dependency.setSourceFile(relativeFile);
                 dependency.setLineNumber(annotation.getBegin().map(pos -> pos.line).orElse(null));
                 
-                logger.debug("Found Feign dependency: {} -> {} (original: {})", 
+                logger.info("✅ Found Feign dependency: {} -> {} (original: {})", 
                     sourceServiceName, matchedServiceName, targetServiceName);
                 
                 return dependency;
@@ -663,7 +678,10 @@ public class GenericDependencyScanner {
     private void loadServiceProperties(Path servicePath) {
         serviceProperties.clear();
         
-        // Priority order: prd -> dev -> default
+        String serviceName = servicePath.getFileName().toString();
+        logger.debug("📂 Loading properties for service: {}", serviceName);
+        
+        // Priority order: prd -> prod -> dev -> default
         String[] configFiles = {
             "application-prd.yml",
             "application-prd.yaml",
@@ -679,6 +697,7 @@ public class GenericDependencyScanner {
             "application.properties"
         };
         
+        boolean foundAny = false;
         for (String configFile : configFiles) {
             Path configPath = servicePath.resolve("src/main/resources/" + configFile);
             if (Files.exists(configPath)) {
@@ -688,11 +707,17 @@ public class GenericDependencyScanner {
                     } else {
                         loadPropertiesFile(configPath);
                     }
-                    logger.debug("Loaded properties from {}", configFile);
+                    logger.info("   ✓ Loaded properties from: {}", configFile);
+                    logger.debug("   📋 Properties loaded: {}", serviceProperties.keySet());
+                    foundAny = true;
                 } catch (Exception e) {
-                    logger.debug("Error loading properties from {}: {}", configFile, e.getMessage());
+                    logger.debug("   ⚠️  Error loading properties from {}: {}", configFile, e.getMessage());
                 }
             }
+        }
+        
+        if (!foundAny) {
+            logger.warn("   ⚠️  No config files found in {}/src/main/resources/", serviceName);
         }
         
         // Also scan for any HTTP URLs directly in the config files (not as properties)
