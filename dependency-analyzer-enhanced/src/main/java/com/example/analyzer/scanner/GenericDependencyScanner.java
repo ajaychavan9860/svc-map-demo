@@ -104,10 +104,15 @@ public class GenericDependencyScanner {
         List<String> endpoints = new ArrayList<>();
         
         try {
+            logger.debug("Parsing controller file: {}", javaFile.getFileName());
             CompilationUnit cu = javaParser.parse(javaFile).getResult().orElse(null);
             if (cu == null) {
+                logger.warn("Failed to parse controller file: {}", javaFile);
                 return endpoints;
             }
+            
+            List<ClassOrInterfaceDeclaration> classes = cu.findAll(ClassOrInterfaceDeclaration.class);
+            logger.debug("Found {} classes in {}", classes.size(), javaFile.getFileName());
             
             cu.findAll(ClassOrInterfaceDeclaration.class).forEach(classDecl -> {
                 // Check if it's a controller
@@ -115,7 +120,11 @@ public class GenericDependencyScanner {
                     .anyMatch(ann -> ann.getNameAsString().contains("RestController") || 
                                    ann.getNameAsString().contains("Controller"));
                 
+                logger.debug("Class {} has @RestController/@Controller: {}", classDecl.getNameAsString(), isController);
+                
                 if (isController) {
+                    logger.info("Processing controller class: {} in {}", classDecl.getNameAsString(), javaFile.getFileName());
+                    
                     // Get base path from class-level @RequestMapping
                     final String[] basePathHolder = {""};
                     for (AnnotationExpr ann : classDecl.getAnnotations()) {
@@ -123,12 +132,16 @@ public class GenericDependencyScanner {
                             String path = extractPathFromAnnotation(ann.toString());
                             if (path != null) {
                                 basePathHolder[0] = path;
+                                logger.debug("Found base path: {}", path);
                             }
                         }
                     }
                     
                     // Get all method-level mappings
                     String finalBasePath = basePathHolder[0];
+                    int methodCount = classDecl.getMethods().size();
+                    logger.debug("Scanning {} methods in controller", methodCount);
+                    
                     classDecl.getMethods().forEach(method -> {
                         for (AnnotationExpr ann : method.getAnnotations()) {
                             String annName = ann.getNameAsString();
@@ -137,7 +150,9 @@ public class GenericDependencyScanner {
                                 if (methodPath != null) {
                                     String fullPath = combinePaths(finalBasePath, methodPath);
                                     endpoints.add(fullPath);
-                                    logger.debug("Found endpoint: {}", fullPath);
+                                    logger.info("Found endpoint: {} in method {}", fullPath, method.getNameAsString());
+                                } else {
+                                    logger.debug("Could not extract path from annotation: {}", ann.toString());
                                 }
                             }
                         }
@@ -146,7 +161,7 @@ public class GenericDependencyScanner {
             });
             
         } catch (Exception e) {
-            logger.debug("Error parsing controller file {}: {}", javaFile, e.getMessage());
+            logger.error("Error parsing controller file {}: {}", javaFile, e.getMessage(), e);
         }
         
         return endpoints;
