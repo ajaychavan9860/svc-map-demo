@@ -33,17 +33,12 @@ public class MicroserviceAnalyzer {
         GenericServiceDiscovery serviceDiscovery = new GenericServiceDiscovery(config);
         List<ServiceInfo> services = serviceDiscovery.discoverServices(projectPath);
         
-        // Filter out gateway services and libraries (unless --include-all is specified)
+        // Don't filter out gateway/lib services - just mark them and skip dependency analysis
+        // This way they show in diagrams as independent services (unless --include-all is used)
         if (!includeAll) {
-            services = services.stream()
-                .filter(s -> {
-                    String name = s.getName().toLowerCase();
-                    return !name.contains("gateway") && !name.contains("lib");
-                })
-                .collect(Collectors.toList());
-            logger.info("[LIST] Found {} services (excluding gateways and libraries):", services.size());
+            logger.info("[LIST] Found {} services (gateway and library services will appear as independent nodes):", services.size());
         } else {
-            logger.info("[LIST] Found {} services (including all):", services.size());
+            logger.info("[LIST] Found {} services (including all with full dependency analysis):", services.size());
         }
         services.forEach(service ->
             logger.info("   - {} ({}) at {}", service.getName(), service.getType(), service.getPath()));

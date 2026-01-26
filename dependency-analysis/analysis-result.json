@@ -1,6 +1,6 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 26, 15, 59, 44, 730175000 ],
-  "analysis_date" : [ 2026, 1, 26, 15, 59, 44, 730175000 ],
+  "analysisTimestamp" : [ 2026, 1, 26, 16, 44, 47, 431702000 ],
+  "analysis_date" : [ 2026, 1, 26, 16, 44, 47, 431702000 ],
   "project_path" : ".",
   "total_services" : 14,
   "total_dependencies" : 10,
@@ -14,7 +14,62 @@
     "language" : "java",
     "config_files" : [ "application.properties" ],
     "main_class" : null,
-    "dependencies" : [ ],
+    "dependencies" : [ {
+      "toService" : "notification-service",
+      "type" : "endpoint-call",
+      "from_service" : "product-service",
+      "target_service" : "notification-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on notification-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "payment-service",
+      "type" : "endpoint-call",
+      "from_service" : "product-service",
+      "target_service" : "payment-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on payment-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "order-service",
+      "type" : "endpoint-call",
+      "from_service" : "product-service",
+      "target_service" : "order-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on order-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "user-service",
+      "type" : "endpoint-call",
+      "from_service" : "product-service",
+      "target_service" : "user-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on user-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "inventory-service",
+      "type" : "endpoint-call",
+      "from_service" : "product-service",
+      "target_service" : "inventory-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on inventory-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   }, {
@@ -40,7 +95,62 @@
     "language" : "java",
     "config_files" : [ "application.properties" ],
     "main_class" : null,
-    "dependencies" : [ ],
+    "dependencies" : [ {
+      "toService" : "product-service",
+      "type" : "endpoint-call",
+      "from_service" : "notification-service",
+      "target_service" : "product-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on product-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "payment-service",
+      "type" : "endpoint-call",
+      "from_service" : "notification-service",
+      "target_service" : "payment-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on payment-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "order-service",
+      "type" : "endpoint-call",
+      "from_service" : "notification-service",
+      "target_service" : "order-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on order-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "user-service",
+      "type" : "endpoint-call",
+      "from_service" : "notification-service",
+      "target_service" : "user-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on user-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "inventory-service",
+      "type" : "endpoint-call",
+      "from_service" : "notification-service",
+      "target_service" : "inventory-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on inventory-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   }, {
@@ -71,6 +181,17 @@
       "target_service" : "product-service",
       "dependency_type" : "endpoint-call",
       "description" : "Calls endpoint /v1/rawMessage on product-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "analytics-service",
+      "type" : "endpoint-call",
+      "from_service" : "dependency-analyzer-enhanced",
+      "target_service" : "analytics-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /users on analytics-service",
       "source_file" : null,
       "line_number" : null,
       "endpoint" : null,
@@ -110,6 +231,50 @@
       "line_number" : null,
       "endpoint" : "http://email-service:8087/api/email/send",
       "http_method" : null
+    }, {
+      "toService" : "product-service",
+      "type" : "endpoint-call",
+      "from_service" : "payment-service",
+      "target_service" : "product-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on product-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "notification-service",
+      "type" : "endpoint-call",
+      "from_service" : "payment-service",
+      "target_service" : "notification-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on notification-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "user-service",
+      "type" : "endpoint-call",
+      "from_service" : "payment-service",
+      "target_service" : "user-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on user-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "inventory-service",
+      "type" : "endpoint-call",
+      "from_service" : "payment-service",
+      "target_service" : "inventory-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on inventory-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
     } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
@@ -123,73 +288,7 @@
     "language" : "java",
     "config_files" : [ "application.yml" ],
     "main_class" : null,
-    "dependencies" : [ {
-      "toService" : "configuration",
-      "type" : "Configuration reference to product-service",
-      "from_service" : "product-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to product-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to notification-service",
-      "from_service" : "notification-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to notification-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to payment-service",
-      "from_service" : "payment-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to payment-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to order-service",
-      "from_service" : "order-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to order-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to user-service",
-      "from_service" : "user-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to user-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to inventory-service",
-      "from_service" : "inventory-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to inventory-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    } ],
+    "dependencies" : [ ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   }, {
@@ -210,6 +309,28 @@
       "dependency_type" : "Uses messaging pattern: @KafkaListener",
       "description" : null,
       "source_file" : "src/main/java/com/example/loggingservice/consumer/LogEventConsumer.java",
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "email-service",
+      "type" : "endpoint-call",
+      "from_service" : "logging-service",
+      "target_service" : "email-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /health on email-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "reporting-service",
+      "type" : "endpoint-call",
+      "from_service" : "logging-service",
+      "target_service" : "reporting-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /health on reporting-service",
+      "source_file" : null,
       "line_number" : null,
       "endpoint" : null,
       "http_method" : null
@@ -270,6 +391,39 @@
       "line_number" : null,
       "endpoint" : null,
       "http_method" : null
+    }, {
+      "toService" : "notification-service",
+      "type" : "endpoint-call",
+      "from_service" : "order-service",
+      "target_service" : "notification-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on notification-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "payment-service",
+      "type" : "endpoint-call",
+      "from_service" : "order-service",
+      "target_service" : "payment-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on payment-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "inventory-service",
+      "type" : "endpoint-call",
+      "from_service" : "order-service",
+      "target_service" : "inventory-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on inventory-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
     } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
@@ -283,7 +437,18 @@
     "language" : "java",
     "config_files" : [ "application.properties" ],
     "main_class" : null,
-    "dependencies" : [ ],
+    "dependencies" : [ {
+      "toService" : "reporting-service",
+      "type" : "endpoint-call",
+      "from_service" : "analytics-service",
+      "target_service" : "reporting-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /dashboard on reporting-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   }, {
@@ -304,6 +469,28 @@
       "dependency_type" : "Uses messaging pattern: @RabbitListener",
       "description" : null,
       "source_file" : "src/main/java/com/example/emailservice/listener/EmailListener.java",
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "logging-service",
+      "type" : "endpoint-call",
+      "from_service" : "email-service",
+      "target_service" : "logging-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /health on logging-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "reporting-service",
+      "type" : "endpoint-call",
+      "from_service" : "email-service",
+      "target_service" : "reporting-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /health on reporting-service",
+      "source_file" : null,
       "line_number" : null,
       "endpoint" : null,
       "http_method" : null
@@ -340,6 +527,39 @@
       "description" : "Feign client call to order-service",
       "source_file" : "src/main/java/com/example/reportingservice/client/OrderServiceClient.java",
       "line_number" : 9,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "logging-service",
+      "type" : "endpoint-call",
+      "from_service" : "reporting-service",
+      "target_service" : "logging-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /health on logging-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "analytics-service",
+      "type" : "endpoint-call",
+      "from_service" : "reporting-service",
+      "target_service" : "analytics-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /dashboard on analytics-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "email-service",
+      "type" : "endpoint-call",
+      "from_service" : "reporting-service",
+      "target_service" : "email-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /health on email-service",
+      "source_file" : null,
+      "line_number" : null,
       "endpoint" : null,
       "http_method" : null
     } ],
@@ -399,6 +619,50 @@
       "line_number" : null,
       "endpoint" : null,
       "http_method" : null
+    }, {
+      "toService" : "product-service",
+      "type" : "endpoint-call",
+      "from_service" : "user-service",
+      "target_service" : "product-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on product-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "notification-service",
+      "type" : "endpoint-call",
+      "from_service" : "user-service",
+      "target_service" : "notification-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on notification-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "payment-service",
+      "type" : "endpoint-call",
+      "from_service" : "user-service",
+      "target_service" : "payment-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on payment-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "inventory-service",
+      "type" : "endpoint-call",
+      "from_service" : "user-service",
+      "target_service" : "inventory-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on inventory-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
     } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
@@ -425,7 +689,62 @@
     "language" : "java",
     "config_files" : [ "application.properties" ],
     "main_class" : null,
-    "dependencies" : [ ],
+    "dependencies" : [ {
+      "toService" : "product-service",
+      "type" : "endpoint-call",
+      "from_service" : "inventory-service",
+      "target_service" : "product-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on product-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "notification-service",
+      "type" : "endpoint-call",
+      "from_service" : "inventory-service",
+      "target_service" : "notification-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on notification-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "payment-service",
+      "type" : "endpoint-call",
+      "from_service" : "inventory-service",
+      "target_service" : "payment-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on payment-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "order-service",
+      "type" : "endpoint-call",
+      "from_service" : "inventory-service",
+      "target_service" : "order-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on order-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "user-service",
+      "type" : "endpoint-call",
+      "from_service" : "inventory-service",
+      "target_service" : "user-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /{id} on user-service",
+      "source_file" : null,
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    } ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   } ],

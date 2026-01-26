@@ -28,6 +28,20 @@ public class GraphVizJavaSvgGenerator {
                                    List<ServiceDependency> dependencies, 
                                    Path outputPath) throws IOException {
         
+        // Identify independent services (no incoming or outgoing dependencies)
+        Map<String, Boolean> hasIncoming = new HashMap<>();
+        Map<String, Boolean> hasOutgoing = new HashMap<>();
+        
+        for (ServiceInfo service : services) {
+            hasIncoming.put(service.getName(), false);
+            hasOutgoing.put(service.getName(), false);
+        }
+        
+        for (ServiceDependency dep : dependencies) {
+            hasOutgoing.put(dep.getFromService(), true);
+            hasIncoming.put(dep.getToService(), true);
+        }
+        
         // Create the main graph with professional styling
         MutableGraph graph = mutGraph("microservices")
             .setDirected(true)
@@ -38,6 +52,8 @@ public class GraphVizJavaSvgGenerator {
             .graphAttrs().add("labelloc", "t")
             .graphAttrs().add("label", "Microservices Dependency Graph\\n(Generated with GraphViz Java - Pure Maven)")
             .graphAttrs().add("compound", "true")  // Allow edges to/from clusters
+            .graphAttrs().add("ranksep", "0.8")    // Vertical spacing
+            .graphAttrs().add("nodesep", "0.5")    // Horizontal spacing
             .nodeAttrs().add("shape", "box")
             .nodeAttrs().add("style", "rounded,filled")
             .nodeAttrs().add("fontname", "Arial")
@@ -45,18 +61,37 @@ public class GraphVizJavaSvgGenerator {
         
         // Create nodes for each service with proper colors and grouping
         Map<String, MutableNode> nodeMap = new HashMap<>();
+        StringBuilder independentNodes = new StringBuilder();
+        StringBuilder connectedNodes = new StringBuilder();
         
         for (ServiceInfo service : services) {
-            String nodeColor = getServiceColor(service.getName());
-            String nodeLabel = String.format("%s\\nPort: %s", service.getName(), service.getPort());
+            String serviceName = service.getName();
+            boolean isIndependent = !hasIncoming.get(serviceName) && !hasOutgoing.get(serviceName);
             
-            MutableNode node = mutNode(service.getName())
+            String nodeColor = getServiceColor(serviceName);
+            String nodeLabel = String.format("%s\\nPort: %s", serviceName, service.getPort());
+            
+            MutableNode node = mutNode(serviceName)
                 .add("label", nodeLabel)
                 .add("fillcolor", nodeColor)
                 .add("color", "black");
                 
-            nodeMap.put(service.getName(), node);
+            nodeMap.put(serviceName, node);
             graph.add(node);
+            
+            // Track node names for ranking
+            if (isIndependent) {
+                if (independentNodes.length() > 0) independentNodes.append("; ");
+                independentNodes.append(serviceName);
+            } else {
+                if (connectedNodes.length() > 0) connectedNodes.append("; ");
+                connectedNodes.append(serviceName);
+            }
+        }
+        
+        // Force independent services to top rank
+        if (independentNodes.length() > 0) {
+            graph.graphAttrs().add("rank", "{same; " + independentNodes.toString() + "}");
         }
         
         
