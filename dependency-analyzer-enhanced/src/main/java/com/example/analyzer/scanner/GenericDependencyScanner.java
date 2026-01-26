@@ -212,6 +212,7 @@ public class GenericDependencyScanner {
         
         Path pomFile = servicePath.resolve("pom.xml");
         if (!Files.exists(pomFile)) {
+            logger.debug("No pom.xml found in {}", servicePath);
             return dependencies;
         }
         
@@ -221,11 +222,30 @@ public class GenericDependencyScanner {
             
             String sourceServiceName = servicePath.getFileName().toString();
             
+            // Get source service groupId for logging
+            String sourceGroupId = model.getGroupId() != null ? model.getGroupId() : 
+                                  (model.getParent() != null ? model.getParent().getGroupId() : null);
+            
+            logger.debug("📦 Scanning Maven dependencies for {} (groupId: {})", sourceServiceName, sourceGroupId);
+            
+            int dependencyCount = model.getDependencies().size();
+            logger.debug("   Found {} dependencies in pom.xml", dependencyCount);
+            
             // Get all dependencies from pom.xml
             for (org.apache.maven.model.Dependency dep : model.getDependencies()) {
                 String groupId = dep.getGroupId();
                 String artifactId = dep.getArtifactId();
+                String scope = dep.getScope();
                 
+                logger.debug("   Checking dependency: {}:{} (scope: {})", groupId, artifactId, scope);
+                
+                // Skip test and provided scope dependencies
+                if ("test".equals(scope) || "provided".equals(scope)) {
+                    logger.debug("   ⏭️  Skipping {} scope dependency: {}", scope, artifactId);
+                    continue;
+                }
+                
+                boolean matched = false;
                 // Check if this dependency matches any of our internal services
                 for (ServiceInfo targetService : allServices) {
                     if (isMatchingService(targetService, groupId, artifactId, projectRoot)) {
@@ -241,12 +261,20 @@ public class GenericDependencyScanner {
                             sourceServiceName, targetService.getName(), groupId, artifactId);
                         
                         dependencies.add(dependency);
+                        matched = true;
+                        break;
                     }
+                }
+                
+                if (!matched && groupId != null && groupId.equals(sourceGroupId)) {
+                    logger.debug("   ⚠️  Potential internal dependency not matched: {}:{}", groupId, artifactId);
+                    logger.debug("      Available services: {}", allServices.stream()
+                        .map(ServiceInfo::getName).collect(java.util.stream.Collectors.joining(", ")));
                 }
             }
             
         } catch (Exception e) {
-            logger.debug("Error scanning Maven dependencies in {}: {}", pomFile, e.getMessage());
+            logger.warn("Error scanning Maven dependencies in {}: {}", pomFile, e.getMessage());
         }
         
         return dependencies;
@@ -261,6 +289,7 @@ public class GenericDependencyScanner {
         
         // Direct match by artifactId
         if (artifactId != null && artifactId.equals(serviceName)) {
+            logger.debug("      ✓ Direct match: {} == {}", artifactId, serviceName);
             return true;
         }
         
@@ -269,6 +298,8 @@ public class GenericDependencyScanner {
             String normalizedArtifact = normalizeServiceName(artifactId);
             String normalizedService = normalizeServiceName(serviceName);
             if (normalizedArtifact.equals(normalizedService)) {
+                logger.debug("      ✓ Fuzzy match: {} == {} (normalized: {} == {})", 
+                    artifactId, serviceName, normalizedArtifact, normalizedService);
                 return true;
             }
         }
@@ -287,11 +318,13 @@ public class GenericDependencyScanner {
                 // Exact match by groupId:artifactId
                 if (groupId != null && groupId.equals(targetGroupId) && 
                     artifactId != null && artifactId.equals(targetArtifactId)) {
+                    logger.debug("      ✓ Exact match: {}:{} == {}:{}", 
+                        groupId, artifactId, targetGroupId, targetArtifactId);
                     return true;
                 }
                 
             } catch (Exception e) {
-                // Ignore parse errors
+                logger.debug("      Error reading target pom.xml for {}: {}", serviceName, e.getMessage());
             }
         }
         
