@@ -11,6 +11,7 @@ If bidirectional dependencies aren't showing in your project, follow these steps
 ```
 
 This will show you:
+
 - All services with pom.xml files
 - Internal dependencies found in each pom.xml
 - Dependency matrix
@@ -38,9 +39,11 @@ grep "⚠️  Potential internal" analysis.log
 ### Step 3: Check Common Issues
 
 #### Issue 1: Different GroupIds
+
 **Symptom**: Services have different `groupId` in their pom.xml
 
 **Check**:
+
 ```bash
 # Find all groupIds in your project
 find /path/to/360/backend -name "pom.xml" -not -path "*/target/*" | while read pom; do
@@ -53,15 +56,18 @@ done
 **Solution**: All services in the same project should use the same `groupId` (e.g., `com.company.360`). If they're different, the analyzer won't detect them as internal dependencies.
 
 #### Issue 2: ArtifactId Doesn't Match Folder Name
+
 **Symptom**: The `artifactId` in pom.xml doesn't match the service folder name
 
 **Example**:
+
 ```
 Folder: ccg-core-service
 ArtifactId in pom.xml: core-service
 ```
 
 **Check**:
+
 ```bash
 # Compare folder names with artifactIds
 find /path/to/360/backend -name "pom.xml" -not -path "*/target/*" | while read pom; do
@@ -76,9 +82,11 @@ done
 **Solution**: The analyzer uses fuzzy matching, so `ccg-core-service` should match `core-service`. If it still doesn't work, check the debug logs for the normalized values.
 
 #### Issue 3: Test/Provided Scope Dependencies
+
 **Symptom**: Dependencies are defined with `<scope>test</scope>` or `<scope>provided</scope>`
 
 **Check** in your pom.xml:
+
 ```xml
 <dependency>
     <groupId>com.company.360</groupId>
@@ -90,9 +98,11 @@ done
 **Solution**: Remove the scope or use `<scope>compile</scope>` for internal dependencies that should be detected.
 
 #### Issue 4: Dependencies Only in DependencyManagement
+
 **Symptom**: Dependencies are defined in `<dependencyManagement>` section only, not in `<dependencies>`
 
 **Check**:
+
 ```xml
 <dependencyManagement>
     <dependencies>
@@ -108,9 +118,11 @@ done
 **Solution**: Make sure dependencies are in the `<dependencies>` section, not just `<dependencyManagement>`.
 
 #### Issue 5: Services Not Discovered
+
 **Symptom**: The analyzer doesn't find some services at all
 
 **Check** the analyzer output:
+
 ```bash
 java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/360/backend 2>&1 | grep "Found .* services"
 ```
@@ -122,6 +134,7 @@ java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/36
 Look for these patterns in the logs:
 
 **Good - Dependency Found**:
+
 ```
 📦 Scanning Maven dependencies for order-service (groupId: com.demo.microservices)
    Found 5 dependencies in pom.xml
@@ -131,6 +144,7 @@ Look for these patterns in the logs:
 ```
 
 **Problem - Dependency Not Matched**:
+
 ```
 📦 Scanning Maven dependencies for ccg-core-service (groupId: com.company.360)
    Found 8 dependencies in pom.xml
@@ -154,6 +168,7 @@ grep -A 2 "<groupId>com.company.360</groupId>" pom.xml | grep "<artifactId>"
 ### Common Fixes
 
 1. **Update to latest version**:
+
    ```bash
    cd /path/to/svc-map-demo
    git pull origin main
@@ -162,20 +177,23 @@ grep -A 2 "<groupId>com.company.360</groupId>" pom.xml | grep "<artifactId>"
    ```
 
 2. **Verify groupId consistency**:
+
    ```bash
    # All services should have the same groupId
    # Edit pom.xml if needed
    ```
 
 3. **Check dependency scopes**:
+
    ```bash
    # Make sure internal dependencies don't have test/provided scope
    ```
 
 4. **Run with full logging**:
+
    ```bash
    java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/360/backend 2>&1 | tee full-analysis.log
-   
+
    # Search for specific patterns
    grep "⚠️" full-analysis.log  # Warnings about unmatched dependencies
    grep "📦" full-analysis.log  # Maven scanning details
@@ -194,6 +212,7 @@ If you've checked all the above and it's still not working:
 When working correctly, you should see:
 
 1. **In console output**:
+
    ```
    ✅ Found Maven dependency: service-a -> common-lib (com.company:common-lib)
    ✅ Found Maven dependency: service-b -> common-lib (com.company:common-lib)
@@ -201,8 +220,10 @@ When working correctly, you should see:
    ```
 
 2. **In impact-analysis.md**:
+
    ```markdown
    ### service-a → common-lib
+
    - **Type**: maven-dependency
    - **Source**: pom.xml
    ```

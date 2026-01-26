@@ -1,0 +1,12 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: test-core-service
+
+# Feign client configuration (simulating your ccg-core-service calling ccg-kafka-consumer-service)
+feign:
+  consumer:
+    name: test-kafka-consumer
+    url: http://localhost:8092/consumer

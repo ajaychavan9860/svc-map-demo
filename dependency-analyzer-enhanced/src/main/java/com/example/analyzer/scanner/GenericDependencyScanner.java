@@ -529,6 +529,7 @@ public class GenericDependencyScanner {
         // Direct match first
         for (ServiceInfo service : allServices) {
             if (service.getName().equals(feignClientName)) {
+                logger.debug("✓ Direct match: {} == {}", feignClientName, service.getName());
                 return service.getName();
             }
         }
@@ -540,16 +541,50 @@ public class GenericDependencyScanner {
         for (ServiceInfo service : allServices) {
             String normalizedServiceName = normalizeServiceName(service.getName());
             if (normalizedServiceName.equals(normalizedFeignName)) {
+                logger.debug("✓ Normalized match: {} ({}) == {} ({})", 
+                    feignClientName, normalizedFeignName, service.getName(), normalizedServiceName);
                 return service.getName();
             }
         }
         
-        // Try partial matching (contains)
+        // Try partial matching (contains) - handles ccg-service -> ccg-core-service
         for (ServiceInfo service : allServices) {
             String normalizedServiceName = normalizeServiceName(service.getName());
-            // Check if one contains the other
-            if (normalizedServiceName.contains(normalizedFeignName) || 
-                normalizedFeignName.contains(normalizedServiceName)) {
+            
+            // Check if service name contains feign name (ccg core contains ccg)
+            if (normalizedServiceName.contains(normalizedFeignName) && normalizedFeignName.length() > 2) {
+                logger.debug("✓ Partial match (service contains feign): {} ({}) contains {} ({})", 
+                    service.getName(), normalizedServiceName, feignClientName, normalizedFeignName);
+                return service.getName();
+            }
+            
+            // Check if feign name contains service name  
+            if (normalizedFeignName.contains(normalizedServiceName) && normalizedServiceName.length() > 2) {
+                logger.debug("✓ Partial match (feign contains service): {} ({}) contains {} ({})", 
+                    feignClientName, normalizedFeignName, service.getName(), normalizedServiceName);
+                return service.getName();
+            }
+        }
+        
+        // Try prefix/suffix matching - handles ccg-kafka-consumer -> ccg-kafka-consumer-service
+        for (ServiceInfo service : allServices) {
+            String serviceName = service.getName().toLowerCase();
+            String feignName = feignClientName.toLowerCase();
+            
+            // Remove common suffixes for comparison
+            String serviceBase = serviceName.replaceAll("[-_]service$", "");
+            String feignBase = feignName.replaceAll("[-_]service$", "");
+            
+            if (serviceBase.equals(feignBase)) {
+                logger.debug("✓ Base match: {} ({}) == {} ({})", 
+                    feignClientName, feignBase, service.getName(), serviceBase);
+                return service.getName();
+            }
+            
+            // Check if one is prefix of other after removing -service suffix
+            if (serviceBase.startsWith(feignBase) || feignBase.startsWith(serviceBase)) {
+                logger.debug("✓ Prefix match: {} ({}) ~ {} ({})", 
+                    feignClientName, feignBase, service.getName(), serviceBase);
                 return service.getName();
             }
         }
@@ -560,21 +595,31 @@ public class GenericDependencyScanner {
             String normalizedServiceName = normalizeServiceName(service.getName());
             String[] serviceWords = normalizedServiceName.split("\\s+");
             
-            // Check if any significant word matches
+            // Count matching words
+            int matchCount = 0;
             for (String feignWord : feignWords) {
-                if (feignWord.length() > 3) { // Only consider meaningful words
+                if (feignWord.length() > 2) { // Only consider meaningful words
                     for (String serviceWord : serviceWords) {
-                        if (serviceWord.contains(feignWord) || feignWord.contains(serviceWord)) {
-                            return service.getName();
+                        if (serviceWord.equals(feignWord)) {
+                            matchCount++;
+                            break;
                         }
                     }
                 }
             }
+            
+            // If majority of words match, consider it a match
+            if (matchCount > 0 && matchCount >= feignWords.length / 2) {
+                logger.debug("✓ Word-based match: {} ~ {} ({}/{} words matched)", 
+                    feignClientName, service.getName(), matchCount, feignWords.length);
+                return service.getName();
+            }
         }
         
         // No match found
-        logger.warn("Could not find matching service for Feign client: '{}'. Available services: {}", 
-            feignClientName, allServices.stream().map(ServiceInfo::getName).toArray());
+        logger.warn("❌ Could not find matching service for Feign client: '{}' (normalized: '{}'). Available services: {}", 
+            feignClientName, normalizedFeignName, 
+            allServices.stream().map(s -> s.getName() + " (" + normalizeServiceName(s.getName()) + ")").collect(java.util.stream.Collectors.joining(", ")));
         return null;
     }
     
