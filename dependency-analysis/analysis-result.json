@@ -1,7 +1,7 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 26, 13, 51, 0, 381334000 ],
-  "analysis_date" : [ 2026, 1, 26, 13, 51, 0, 381334000 ],
-  "project_path" : ".",
+  "analysisTimestamp" : [ 2026, 1, 26, 14, 53, 31, 222226000 ],
+  "analysis_date" : [ 2026, 1, 26, 14, 53, 31, 222226000 ],
+  "project_path" : "/Users/ajay/svc-map-demo",
   "total_services" : 14,
   "total_dependencies" : 24,
   "services" : [ {

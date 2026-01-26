@@ -18,16 +18,16 @@
 </head>
 <body>
 <div class='header'>
-    <h1>🔄 Microservices Dependency Analysis</h1>
+    <h1>[UPDATE] Microservices Dependency Analysis</h1>
     <p>Enterprise-grade dependency mapping and impact analysis</p>
 </div>
 <div class='summary'>
-    <h2>📊 Executive Summary</h2>
-    <p><strong>Analysis Date:</strong> 2026-01-26T13:51:00.381334</p>
+    <h2>[STATS] Executive Summary</h2>
+    <p><strong>Analysis Date:</strong> 2026-01-26T14:53:31.222226</p>
     <p><strong>Total Services:</strong> 14</p>
     <p><strong>Total Dependencies:</strong> 24</p>
     <p><strong>Average Dependencies per Service:</strong> 1.7</p>
-    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~26%</p>
+    <p><strong>[MATCH] Regression Testing Cost Reduction:</strong> ~26%</p>
 </div>
 <h2>🏢 Services Overview</h2>
 <table>
@@ -47,40 +47,40 @@
 <tr><td>common-lib</td><td>null</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>inventory-service</td><td>8085</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 </table>
-<h2>🔗 Dependency Relationships</h2>
-<div class='service'><h3>📦 payment-service</h3>
-<div class='dependency'>→ <strong>order-service</strong> (<em>feign-client</em>)</div>
-<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<h2>[LINK] Dependency Relationships</h2>
+<div class='service'><h3>[MAVEN] payment-service</h3>
+<div class='dependency'> ->  <strong>order-service</strong> (<em>feign-client</em>)</div>
+<div class='dependency'> ->  <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
 </div>
-<div class='service'><h3>📦 gateway-service</h3>
-<div class='dependency'>→ <strong>product-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>notification-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>dependency-analyzer-enhanced</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>payment-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>logging-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>order-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>analytics-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>email-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>reporting-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>user-service</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>common-lib</strong> (<em>gateway</em>)</div>
-<div class='dependency'>→ <strong>inventory-service</strong> (<em>gateway</em>)</div>
+<div class='service'><h3>[MAVEN] gateway-service</h3>
+<div class='dependency'> ->  <strong>product-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>notification-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>dependency-analyzer-enhanced</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>payment-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>logging-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>order-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>analytics-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>email-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>reporting-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>user-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>common-lib</strong> (<em>gateway</em>)</div>
+<div class='dependency'> ->  <strong>inventory-service</strong> (<em>gateway</em>)</div>
 </div>
-<div class='service'><h3>📦 reporting-service</h3>
-<div class='dependency'>→ <strong>payment-service</strong> (<em>feign-client</em>)</div>
-<div class='dependency'>→ <strong>order-service</strong> (<em>feign-client</em>)</div>
+<div class='service'><h3>[MAVEN] reporting-service</h3>
+<div class='dependency'> ->  <strong>payment-service</strong> (<em>feign-client</em>)</div>
+<div class='dependency'> ->  <strong>order-service</strong> (<em>feign-client</em>)</div>
 </div>
-<div class='service'><h3>📦 user-service</h3>
-<div class='dependency'>→ <strong>common-lib</strong> (<em>maven-dependency</em>)</div>
-<div class='dependency'>→ <strong>order-service</strong> (<em>feign-client</em>)</div>
-<div class='dependency'>→ <strong>logging-service</strong> (<em>rest-template</em> endpoint: http://logging-service:8088/api/logs/user-activity)</div>
-<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<div class='service'><h3>[MAVEN] user-service</h3>
+<div class='dependency'> ->  <strong>common-lib</strong> (<em>maven-dependency</em>)</div>
+<div class='dependency'> ->  <strong>order-service</strong> (<em>feign-client</em>)</div>
+<div class='dependency'> ->  <strong>logging-service</strong> (<em>rest-template</em> endpoint: http://logging-service:8088/api/logs/user-activity)</div>
+<div class='dependency'> ->  <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
 </div>
-<div class='service'><h3>📦 order-service</h3>
-<div class='dependency'>→ <strong>common-lib</strong> (<em>maven-dependency</em>)</div>
-<div class='dependency'>→ <strong>product-service</strong> (<em>feign-client</em>)</div>
-<div class='dependency'>→ <strong>user-service</strong> (<em>feign-client</em>)</div>
-<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<div class='service'><h3>[MAVEN] order-service</h3>
+<div class='dependency'> ->  <strong>common-lib</strong> (<em>maven-dependency</em>)</div>
+<div class='dependency'> ->  <strong>product-service</strong> (<em>feign-client</em>)</div>
+<div class='dependency'> ->  <strong>user-service</strong> (<em>feign-client</em>)</div>
+<div class='dependency'> ->  <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
 </div>
 <hr>
 <p><em>Generated by Generic Microservices Dependency Analyzer - Enterprise Edition</em></p>

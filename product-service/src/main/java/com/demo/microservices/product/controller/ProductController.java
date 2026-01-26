@@ -47,4 +47,10 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.ok().build();
     }
+    
+    // Special endpoint to test dependency detection
+    @PostMapping("/api/v1/specialProduct")
+    public ResponseEntity<Product> createSpecialProduct(@RequestBody Product product) {
+        return ResponseEntity.ok(productService.saveProduct(product));
+    }
 }

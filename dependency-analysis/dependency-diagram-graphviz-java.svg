@@ -276,7 +276,7 @@
 <title>legend_info</title>
 <path fill="lightgrey" stroke="none" d="M1067.38,-628.5C1067.38,-628.5 660.62,-628.5 660.62,-628.5 654.62,-628.5 648.62,-622.5 648.62,-616.5 648.62,-616.5 648.62,-604.5 648.62,-604.5 648.62,-598.5 654.62,-592.5 660.62,-592.5 660.62,-592.5 1067.38,-592.5 1067.38,-592.5 1073.38,-592.5 1079.38,-598.5 1079.38,-604.5 1079.38,-604.5 1079.38,-616.5 1079.38,-616.5 1079.38,-622.5 1073.38,-628.5 1067.38,-628.5"/>
 <text xml:space="preserve" text-anchor="middle" x="864" y="-613" font-family="Arial" font-size="10.00">Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray</text>
-<text xml:space="preserve" text-anchor="middle" x="864" y="-601" font-family="Arial" font-size="10.00">Connections: →Gateway(Green) →REST/Feign(Blue) →Messaging(Purple)</text>
+<text xml:space="preserve" text-anchor="middle" x="864" y="-601" font-family="Arial" font-size="10.00">Connections: &#160;&#45;&gt; Gateway(Green) &#160;&#45;&gt; REST/Feign(Blue) &#160;&#45;&gt; Messaging(Purple)</text>
 </g>
 </g>
 </svg>

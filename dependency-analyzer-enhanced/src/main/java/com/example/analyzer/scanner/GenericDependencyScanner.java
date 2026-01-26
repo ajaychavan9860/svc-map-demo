@@ -229,16 +229,22 @@ public class GenericDependencyScanner {
     public List<ServiceDependency> scanDependencies(ServiceInfo service, List<ServiceInfo> allServices, Path projectRoot) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
+        // Skip gateway services
+        if (service.getName().toLowerCase().contains("gateway")) {
+            logger.info("[SKIP] Ignoring gateway service: {}", service.getName());
+            return dependencies;
+        }
+        
         Path servicePath = projectRoot.resolve(service.getPath());
         
         try {
             // Load service properties first (for resolving ${...} placeholders)
             loadServiceProperties(servicePath);
             
-            // Scan pom.xml for Maven dependencies (catches library/module dependencies)
-            if ("java".equals(service.getLanguage())) {
-                dependencies.addAll(scanMavenDependencies(servicePath, allServices, projectRoot));
-            }
+            // Maven dependency scanning disabled
+            // if ("java".equals(service.getLanguage())) {
+            //     dependencies.addAll(scanMavenDependencies(servicePath, allServices, projectRoot));
+            // }
             
             // Scan Java files for Feign clients, REST templates, etc.
             if ("java".equals(service.getLanguage())) {

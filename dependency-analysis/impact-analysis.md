@@ -3,7 +3,7 @@
 ## Executive Summary
 - **Total Services**: 14
 - **Total Dependencies**: 24
-- **Analysis Date**: 2026-01-26T13:51:00.381334
+- **Analysis Date**: 2026-01-26T14:53:31.222226
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -24,91 +24,91 @@
 | inventory-service | 8085 | null | 0 |
 
 ## Dependency Details
-### payment-service → order-service
+### payment-service  ->  order-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java
 
-### payment-service → email-service
+### payment-service  ->  email-service
 - **Type**: rest-template
 - **Endpoint**: http://email-service:8087/api/email/send
 - **Source**: src/main/java/com/example/paymentservice/service/PaymentNotificationService.java
 
-### order-service → common-lib
+### order-service  ->  common-lib
 - **Type**: maven-dependency
 - **Source**: pom.xml
 
-### order-service → product-service
+### order-service  ->  product-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/demo/microservices/order/client/ProductServiceClient.java
 
-### order-service → user-service
+### order-service  ->  user-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/demo/microservices/order/client/UserServiceClient.java
 
-### order-service → email-service
+### order-service  ->  email-service
 - **Type**: rest-template
 - **Endpoint**: http://email-service:8087/api/email/send
 - **Source**: src/main/java/com/example/orderservice/service/OrderNotificationService.java
 
-### reporting-service → payment-service
+### reporting-service  ->  payment-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/example/reportingservice/client/PaymentServiceClient.java
 
-### reporting-service → order-service
+### reporting-service  ->  order-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/example/reportingservice/client/OrderServiceClient.java
 
-### user-service → common-lib
+### user-service  ->  common-lib
 - **Type**: maven-dependency
 - **Source**: pom.xml
 
-### user-service → order-service
+### user-service  ->  order-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/example/user/client/OrderServiceClient.java
 
-### user-service → logging-service
+### user-service  ->  logging-service
 - **Type**: rest-template
 - **Endpoint**: http://logging-service:8088/api/logs/user-activity
 - **Source**: src/main/java/com/example/userservice/service/UserActivityService.java
 
-### user-service → email-service
+### user-service  ->  email-service
 - **Type**: rest-template
 - **Endpoint**: http://email-service:8087/api/email/send
 - **Source**: src/main/java/com/example/userservice/service/UserActivityService.java
 
-### gateway-service → product-service
+### gateway-service  ->  product-service
 - **Type**: gateway
 
-### gateway-service → notification-service
+### gateway-service  ->  notification-service
 - **Type**: gateway
 
-### gateway-service → dependency-analyzer-enhanced
+### gateway-service  ->  dependency-analyzer-enhanced
 - **Type**: gateway
 
-### gateway-service → payment-service
+### gateway-service  ->  payment-service
 - **Type**: gateway
 
-### gateway-service → logging-service
+### gateway-service  ->  logging-service
 - **Type**: gateway
 
-### gateway-service → order-service
+### gateway-service  ->  order-service
 - **Type**: gateway
 
-### gateway-service → analytics-service
+### gateway-service  ->  analytics-service
 - **Type**: gateway
 
-### gateway-service → email-service
+### gateway-service  ->  email-service
 - **Type**: gateway
 
-### gateway-service → reporting-service
+### gateway-service  ->  reporting-service
 - **Type**: gateway
 
-### gateway-service → user-service
+### gateway-service  ->  user-service
 - **Type**: gateway
 
-### gateway-service → common-lib
+### gateway-service  ->  common-lib
 - **Type**: gateway
 
-### gateway-service → inventory-service
+### gateway-service  ->  inventory-service
 - **Type**: gateway
 
