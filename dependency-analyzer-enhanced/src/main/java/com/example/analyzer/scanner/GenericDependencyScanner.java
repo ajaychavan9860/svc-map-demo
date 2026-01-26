@@ -87,7 +87,7 @@ public class GenericDependencyScanner {
             try (var stream = Files.walk(servicePath)) {
                 List<Path> javaFiles = stream
                     .filter(javaMatcher::matches)
-                    .filter(path -> !path.toString().toLowerCase().contains("test"))  // Case-insensitive test filter
+                    .filter(path -> !path.toString().contains("/test/") && !path.toString().contains("\\test\\"))  // Exclude test directories only
                     .collect(Collectors.toList());
                 
                 logger.info("Found {} Java files to scan", javaFiles.size());
@@ -523,7 +523,7 @@ public class GenericDependencyScanner {
                 List<Path> javaFiles = stream
                     .filter(javaMatcher::matches)
                     .filter(Files::isRegularFile)
-                    .filter(path -> !path.toString().toLowerCase().contains("test"))
+                    .filter(path -> !path.toString().contains("/test/") && !path.toString().contains("\\test\\"))  // Exclude test directories only
                     .collect(Collectors.toList());
                 
                 logger.info("    [FILES] Searching {} Java files...", javaFiles.size());
@@ -556,7 +556,7 @@ public class GenericDependencyScanner {
             try (var stream = Files.walk(servicePath)) {
                 List<Path> javaFiles = stream
                     .filter(javaMatcher::matches)
-                    .filter(path -> !path.toString().contains("test"))
+                    .filter(path -> !path.toString().contains("/test/") && !path.toString().contains("\\test\\"))  // Exclude test directories only
                     .collect(Collectors.toList());
                 
                 for (Path javaFile : javaFiles) {

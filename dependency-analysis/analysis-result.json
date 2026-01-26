@@ -1,9 +1,9 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 26, 14, 53, 31, 222226000 ],
-  "analysis_date" : [ 2026, 1, 26, 14, 53, 31, 222226000 ],
-  "project_path" : "/Users/ajay/svc-map-demo",
-  "total_services" : 14,
-  "total_dependencies" : 24,
+  "analysisTimestamp" : [ 2026, 1, 26, 15, 44, 35, 941503000 ],
+  "analysis_date" : [ 2026, 1, 26, 15, 44, 35, 941503000 ],
+  "project_path" : ".",
+  "total_services" : 13,
+  "total_dependencies" : 10,
   "services" : [ {
     "name" : "product-service",
     "type" : "business",
@@ -54,13 +54,24 @@
     "config_files" : [ ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "messaging",
       "type" : "Uses messaging pattern: @RabbitListener",
+      "toService" : "messaging",
       "from_service" : "messaging-system",
       "target_service" : "messaging",
       "dependency_type" : "Uses messaging pattern: @RabbitListener",
       "description" : null,
       "source_file" : "src/main/java/com/example/analyzer/config/AnalyzerConfiguration.java",
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "type" : "endpoint-call",
+      "toService" : "product-service",
+      "from_service" : "dependency-analyzer-enhanced",
+      "target_service" : "product-service",
+      "dependency_type" : "endpoint-call",
+      "description" : "Calls endpoint /v1/rawMessage on product-service",
+      "source_file" : null,
       "line_number" : null,
       "endpoint" : null,
       "http_method" : null
@@ -78,8 +89,8 @@
     "config_files" : [ "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "order-service",
       "type" : "feign-client",
+      "toService" : "order-service",
       "from_service" : "payment-service",
       "target_service" : "order-service",
       "dependency_type" : "feign-client",
@@ -89,8 +100,8 @@
       "endpoint" : null,
       "http_method" : null
     }, {
-      "toService" : "email-service",
       "type" : "rest-template",
+      "toService" : "email-service",
       "from_service" : "payment-service",
       "target_service" : "email-service",
       "dependency_type" : "rest-template",
@@ -98,85 +109,6 @@
       "source_file" : "src/main/java/com/example/paymentservice/service/PaymentNotificationService.java",
       "line_number" : null,
       "endpoint" : "http://email-service:8087/api/email/send",
-      "http_method" : null
-    } ],
-    "exposes_endpoints" : [ ],
-    "database_connections" : [ ]
-  }, {
-    "name" : "gateway-service",
-    "type" : "business",
-    "path" : "gateway-service",
-    "port" : 8080,
-    "framework" : null,
-    "build_tool" : "maven",
-    "language" : "java",
-    "config_files" : [ "application.yml" ],
-    "main_class" : null,
-    "dependencies" : [ {
-      "toService" : "configuration",
-      "type" : "Configuration reference to product-service",
-      "from_service" : "product-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to product-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to notification-service",
-      "from_service" : "notification-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to notification-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to payment-service",
-      "from_service" : "payment-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to payment-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to order-service",
-      "from_service" : "order-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to order-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to user-service",
-      "from_service" : "user-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to user-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "configuration",
-      "type" : "Configuration reference to inventory-service",
-      "from_service" : "inventory-service",
-      "target_service" : "configuration",
-      "dependency_type" : "Configuration reference to inventory-service",
-      "description" : null,
-      "source_file" : "src/main/resources/application.yml",
-      "line_number" : null,
-      "endpoint" : null,
       "http_method" : null
     } ],
     "exposes_endpoints" : [ ],
@@ -192,8 +124,8 @@
     "config_files" : [ "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "messaging",
       "type" : "Uses messaging pattern: @KafkaListener",
+      "toService" : "messaging",
       "from_service" : "messaging-system",
       "target_service" : "messaging",
       "dependency_type" : "Uses messaging pattern: @KafkaListener",
@@ -216,19 +148,8 @@
     "config_files" : [ "application.yml", "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "common-lib",
-      "type" : "maven-dependency",
-      "from_service" : "order-service",
-      "target_service" : "common-lib",
-      "dependency_type" : "maven-dependency",
-      "description" : "Maven dependency on common-lib",
-      "source_file" : "pom.xml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "product-service",
       "type" : "feign-client",
+      "toService" : "product-service",
       "from_service" : "order-service",
       "target_service" : "product-service",
       "dependency_type" : "feign-client",
@@ -238,8 +159,8 @@
       "endpoint" : null,
       "http_method" : null
     }, {
-      "toService" : "user-service",
       "type" : "feign-client",
+      "toService" : "user-service",
       "from_service" : "order-service",
       "target_service" : "user-service",
       "dependency_type" : "feign-client",
@@ -249,8 +170,8 @@
       "endpoint" : null,
       "http_method" : null
     }, {
-      "toService" : "email-service",
       "type" : "rest-template",
+      "toService" : "email-service",
       "from_service" : "order-service",
       "target_service" : "email-service",
       "dependency_type" : "rest-template",
@@ -260,8 +181,8 @@
       "endpoint" : "http://email-service:8087/api/email/send",
       "http_method" : null
     }, {
-      "toService" : "configuration",
       "type" : "Configuration reference to user-service",
+      "toService" : "configuration",
       "from_service" : "user-service",
       "target_service" : "configuration",
       "dependency_type" : "Configuration reference to user-service",
@@ -297,8 +218,8 @@
     "config_files" : [ "application.yml" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "messaging",
       "type" : "Uses messaging pattern: @RabbitListener",
+      "toService" : "messaging",
       "from_service" : "messaging-system",
       "target_service" : "messaging",
       "dependency_type" : "Uses messaging pattern: @RabbitListener",
@@ -321,8 +242,8 @@
     "config_files" : [ "application.yml" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "payment-service",
       "type" : "feign-client",
+      "toService" : "payment-service",
       "from_service" : "reporting-service",
       "target_service" : "payment-service",
       "dependency_type" : "feign-client",
@@ -332,8 +253,8 @@
       "endpoint" : null,
       "http_method" : null
     }, {
-      "toService" : "order-service",
       "type" : "feign-client",
+      "toService" : "order-service",
       "from_service" : "reporting-service",
       "target_service" : "order-service",
       "dependency_type" : "feign-client",
@@ -356,19 +277,8 @@
     "config_files" : [ "application.yml", "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "common-lib",
-      "type" : "maven-dependency",
-      "from_service" : "user-service",
-      "target_service" : "common-lib",
-      "dependency_type" : "maven-dependency",
-      "description" : "Maven dependency on common-lib",
-      "source_file" : "pom.xml",
-      "line_number" : null,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "order-service",
       "type" : "feign-client",
+      "toService" : "order-service",
       "from_service" : "user-service",
       "target_service" : "order-service",
       "dependency_type" : "feign-client",
@@ -378,8 +288,8 @@
       "endpoint" : null,
       "http_method" : null
     }, {
-      "toService" : "logging-service",
       "type" : "rest-template",
+      "toService" : "logging-service",
       "from_service" : "user-service",
       "target_service" : "logging-service",
       "dependency_type" : "rest-template",
@@ -389,8 +299,8 @@
       "endpoint" : "http://logging-service:8088/api/logs/user-activity",
       "http_method" : null
     }, {
-      "toService" : "email-service",
       "type" : "rest-template",
+      "toService" : "email-service",
       "from_service" : "user-service",
       "target_service" : "email-service",
       "dependency_type" : "rest-template",
@@ -400,8 +310,8 @@
       "endpoint" : "http://email-service:8087/api/email/send",
       "http_method" : null
     }, {
-      "toService" : "configuration",
       "type" : "Configuration reference to order-service",
+      "toService" : "configuration",
       "from_service" : "order-service",
       "target_service" : "configuration",
       "dependency_type" : "Configuration reference to order-service",
@@ -441,8 +351,8 @@
     "database_connections" : [ ]
   } ],
   "dependencies" : [ {
-    "toService" : "order-service",
     "type" : "feign-client",
+    "toService" : "order-service",
     "from_service" : "payment-service",
     "target_service" : "order-service",
     "dependency_type" : "feign-client",
@@ -452,8 +362,8 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "email-service",
     "type" : "rest-template",
+    "toService" : "email-service",
     "from_service" : "payment-service",
     "target_service" : "email-service",
     "dependency_type" : "rest-template",
@@ -463,19 +373,8 @@
     "endpoint" : "http://email-service:8087/api/email/send",
     "http_method" : null
   }, {
-    "toService" : "common-lib",
-    "type" : "maven-dependency",
-    "from_service" : "order-service",
-    "target_service" : "common-lib",
-    "dependency_type" : "maven-dependency",
-    "description" : "Maven dependency on common-lib",
-    "source_file" : "pom.xml",
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "product-service",
     "type" : "feign-client",
+    "toService" : "product-service",
     "from_service" : "order-service",
     "target_service" : "product-service",
     "dependency_type" : "feign-client",
@@ -485,8 +384,8 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "user-service",
     "type" : "feign-client",
+    "toService" : "user-service",
     "from_service" : "order-service",
     "target_service" : "user-service",
     "dependency_type" : "feign-client",
@@ -496,8 +395,8 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "email-service",
     "type" : "rest-template",
+    "toService" : "email-service",
     "from_service" : "order-service",
     "target_service" : "email-service",
     "dependency_type" : "rest-template",
@@ -507,8 +406,8 @@
     "endpoint" : "http://email-service:8087/api/email/send",
     "http_method" : null
   }, {
-    "toService" : "payment-service",
     "type" : "feign-client",
+    "toService" : "payment-service",
     "from_service" : "reporting-service",
     "target_service" : "payment-service",
     "dependency_type" : "feign-client",
@@ -518,8 +417,8 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "order-service",
     "type" : "feign-client",
+    "toService" : "order-service",
     "from_service" : "reporting-service",
     "target_service" : "order-service",
     "dependency_type" : "feign-client",
@@ -529,19 +428,8 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "common-lib",
-    "type" : "maven-dependency",
-    "from_service" : "user-service",
-    "target_service" : "common-lib",
-    "dependency_type" : "maven-dependency",
-    "description" : "Maven dependency on common-lib",
-    "source_file" : "pom.xml",
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "order-service",
     "type" : "feign-client",
+    "toService" : "order-service",
     "from_service" : "user-service",
     "target_service" : "order-service",
     "dependency_type" : "feign-client",
@@ -551,8 +439,8 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "logging-service",
     "type" : "rest-template",
+    "toService" : "logging-service",
     "from_service" : "user-service",
     "target_service" : "logging-service",
     "dependency_type" : "rest-template",
@@ -562,8 +450,8 @@
     "endpoint" : "http://logging-service:8088/api/logs/user-activity",
     "http_method" : null
   }, {
-    "toService" : "email-service",
     "type" : "rest-template",
+    "toService" : "email-service",
     "from_service" : "user-service",
     "target_service" : "email-service",
     "dependency_type" : "rest-template",
@@ -571,138 +459,6 @@
     "source_file" : "src/main/java/com/example/userservice/service/UserActivityService.java",
     "line_number" : null,
     "endpoint" : "http://email-service:8087/api/email/send",
-    "http_method" : null
-  }, {
-    "toService" : "product-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "product-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "notification-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "notification-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "dependency-analyzer-enhanced",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "dependency-analyzer-enhanced",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "payment-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "payment-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "logging-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "logging-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "order-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "order-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "analytics-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "analytics-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "email-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "email-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "reporting-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "reporting-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "user-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "user-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "common-lib",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "common-lib",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "inventory-service",
-    "type" : "gateway",
-    "from_service" : "gateway-service",
-    "target_service" : "inventory-service",
-    "dependency_type" : "gateway",
-    "description" : null,
-    "source_file" : null,
-    "line_number" : null,
-    "endpoint" : null,
     "http_method" : null
   } ],
   "analysis_summary" : null
