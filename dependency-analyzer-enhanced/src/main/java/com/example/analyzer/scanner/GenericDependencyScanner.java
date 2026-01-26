@@ -430,7 +430,8 @@ public class GenericDependencyScanner {
         String sourceServiceName = sourceService.getName();
         Path sourceServicePath = projectRoot.resolve(sourceService.getPath());
         
-        logger.debug("[SCAN] Checking if {} calls endpoints from other services", sourceServiceName);
+        logger.info("========================================");
+        logger.info("[SCAN] Checking if {} calls endpoints from other services", sourceServiceName);
         
         // For each OTHER service, check if THIS service calls their endpoints
         for (ServiceInfo targetService : allServices) {
@@ -444,10 +445,15 @@ public class GenericDependencyScanner {
             List<String> targetEndpoints = serviceEndpointsMap.getOrDefault(targetServiceName, new ArrayList<>());
             
             if (targetEndpoints.isEmpty()) {
+                logger.info("  [SKIP] {} has no endpoints to check", targetServiceName);
                 continue; // No endpoints to check
             }
             
+            logger.info("  [CHECK] Does {} call any endpoints from {}? (endpoints: {})", 
+                sourceServiceName, targetServiceName, targetEndpoints);
+            
             // Search if THIS service's code contains any of the target's endpoints
+            boolean foundAny = false;
             for (String endpoint : targetEndpoints) {
                 if (searchForEndpointInService(endpoint, sourceServicePath, targetServiceName)) {
                     // Found! Create dependency: this -> target
@@ -459,12 +465,18 @@ public class GenericDependencyScanner {
                     dependency.setDescription("Calls endpoint " + endpoint + " on " + targetServiceName);
                     dependencies.add(dependency);
                     
-                    logger.info("[OK] Found endpoint usage: {} calls {} on {}", 
+                    logger.info("  [FOUND] YES! {} calls {} on {}", 
                         sourceServiceName, endpoint, targetServiceName);
+                    foundAny = true;
                     
                     // Don't need to check other endpoints for this service pair
                     break;
                 }
+            }
+            
+            if (!foundAny) {
+                logger.info("  [NOT-FOUND] No endpoint references found from {} to {}", 
+                    sourceServiceName, targetServiceName);
             }
         }
         
@@ -476,7 +488,7 @@ public class GenericDependencyScanner {
      * Simple text search - if the endpoint string appears in ANY Java file, it's a match.
      */
     private boolean searchForEndpointInService(String endpoint, Path servicePath, String targetServiceName) {
-        logger.debug("Searching for endpoint '{}' in {}", endpoint, servicePath.getFileName());
+        logger.info("    [SEARCHING] Looking for \"{}\" in {} ...", endpoint, servicePath.getFileName());
         
         try {
             PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.{java,JAVA,Java}");
@@ -488,7 +500,7 @@ public class GenericDependencyScanner {
                     .filter(path -> !path.toString().toLowerCase().contains("test"))
                     .collect(Collectors.toList());
                 
-                logger.debug("Searching {} Java files for endpoint '{}'", javaFiles.size(), endpoint);
+                logger.info("    [FILES] Searching {} Java files...", javaFiles.size());
                 
                 for (Path javaFile : javaFiles) {
                     String content = Files.readString(javaFile);
@@ -496,17 +508,16 @@ public class GenericDependencyScanner {
                     // Simple string search - if the endpoint appears anywhere, it's a match
                     // This will catch it in @PostMapping("/v1/rawMessage"), @GetMapping, string literals, etc.
                     if (content.contains("\"" + endpoint + "\"") || content.contains("'" + endpoint + "'")) {
-                        logger.info("[MATCH] Found endpoint '{}' in {} -> creates dependency: {} -> {}", 
-                            endpoint, javaFile.getFileName(), servicePath.getFileName(), targetServiceName);
+                        logger.info("    [MATCH] Found \"{}\" in file: {}", endpoint, javaFile.getFileName());
                         return true;
                     }
                 }
             }
         } catch (Exception e) {
-            logger.error("Error searching for endpoint in {}: {}", servicePath, e.getMessage(), e);
+            logger.error("    [ERROR] Search failed in {}: {}", servicePath, e.getMessage(), e);
         }
         
-        logger.debug("Endpoint '{}' not found in {}", endpoint, servicePath.getFileName());
+        logger.info("    [RESULT] Endpoint \"{}\" NOT found in {}", endpoint, servicePath.getFileName());
         return false;
     }
     
