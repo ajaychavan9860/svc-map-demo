@@ -473,45 +473,40 @@ public class GenericDependencyScanner {
     
     /**
      * Search for an endpoint string in a service's Java files.
-     * Returns true if found in files containing Feign/RestTemplate/WebClient indicators.
+     * Simple text search - if the endpoint string appears in ANY Java file, it's a match.
      */
     private boolean searchForEndpointInService(String endpoint, Path servicePath, String targetServiceName) {
-        logger.debug("   [SEARCH] Searching for endpoint '{}' in {}", endpoint, servicePath.getFileName());
+        logger.debug("Searching for endpoint '{}' in {}", endpoint, servicePath.getFileName());
         
         try {
-            PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.java");
+            PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.{java,JAVA,Java}");
             
             try (var stream = Files.walk(servicePath)) {
                 List<Path> javaFiles = stream
                     .filter(javaMatcher::matches)
                     .filter(Files::isRegularFile)
+                    .filter(path -> !path.toString().toLowerCase().contains("test"))
                     .collect(Collectors.toList());
                 
-                logger.debug("      Checking {} Java files", javaFiles.size());
+                logger.debug("Searching {} Java files for endpoint '{}'", javaFiles.size(), endpoint);
                 
                 for (Path javaFile : javaFiles) {
                     String content = Files.readString(javaFile);
                     
-                    // Check if this file contains REST client code
-                    boolean isRestClientFile = content.contains("@FeignClient") || 
-                                             content.contains("RestTemplate") ||
-                                             content.contains("WebClient") ||
-                                             content.contains("@GetMapping") ||
-                                             content.contains("@PostMapping") ||
-                                             content.contains("@PutMapping") ||
-                                             content.contains("@DeleteMapping");
-                    
-                    if (isRestClientFile && content.contains("\"" + endpoint + "\"")) {
-                        logger.info("   [MATCH] Found endpoint '{}' in {}", endpoint, javaFile.getFileName());
+                    // Simple string search - if the endpoint appears anywhere, it's a match
+                    // This will catch it in @PostMapping("/v1/rawMessage"), @GetMapping, string literals, etc.
+                    if (content.contains("\"" + endpoint + "\"") || content.contains("'" + endpoint + "'")) {
+                        logger.info("[MATCH] Found endpoint '{}' in {} -> creates dependency: {} -> {}", 
+                            endpoint, javaFile.getFileName(), servicePath.getFileName(), targetServiceName);
                         return true;
                     }
                 }
             }
         } catch (Exception e) {
-            logger.debug("Error searching for endpoint in {}: {}", servicePath, e.getMessage());
+            logger.error("Error searching for endpoint in {}: {}", servicePath, e.getMessage(), e);
         }
         
-        logger.debug("      Endpoint '{}' not found in {}", endpoint, servicePath.getFileName());
+        logger.debug("Endpoint '{}' not found in {}", endpoint, servicePath.getFileName());
         return false;
     }
     
