@@ -41,6 +41,11 @@ public class MicroserviceAnalyzer {
 
         // Analyze dependencies for each service
         GenericDependencyScanner dependencyScanner = new GenericDependencyScanner(config);
+        
+        // FIRST: Build endpoint map for all services (to validate dependencies and filter external services)
+        logger.info("📍 Building service endpoint map...");
+        dependencyScanner.buildServiceEndpointsMap(services, projectPath);
+        
         List<ServiceDependency> allDependencies = new ArrayList<>();
         
         for (ServiceInfo service : services) {

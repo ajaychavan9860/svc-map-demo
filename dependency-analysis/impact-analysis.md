@@ -2,8 +2,8 @@
 
 ## Executive Summary
 - **Total Services**: 13
-- **Total Dependencies**: 24
-- **Analysis Date**: 2026-01-26T09:23:14.218647
+- **Total Dependencies**: 20
+- **Analysis Date**: 2026-01-26T09:32:26.262707
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -16,7 +16,7 @@
 | gateway-service | 8080 | null | 11 |
 | logging-service | 8088 | null | 0 |
 | order-service | 8083 | null | 3 |
-| analytics-service | 8090 | null | 4 |
+| analytics-service | 8090 | null | 0 |
 | email-service | 8087 | null | 0 |
 | reporting-service | 8089 | null | 2 |
 | user-service | 8081 | null | 2 |
@@ -44,26 +44,6 @@
 - **Type**: rest-template
 - **Endpoint**: http://email-service:8087/api/email/send
 - **Source**: src/main/java/com/example/orderservice/service/OrderNotificationService.java
-
-### analytics-service → user-service
-- **Type**: rest-template
-- **Endpoint**: http://user-service:8081/api/users/analytics
-- **Source**: src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
-
-### analytics-service → order-service
-- **Type**: rest-template
-- **Endpoint**: http://order-service:8083/api/orders/analytics
-- **Source**: src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
-
-### analytics-service → payment-service
-- **Type**: rest-template
-- **Endpoint**: http://payment-service:8084/api/payments/analytics
-- **Source**: src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
-
-### analytics-service → inventory-service
-- **Type**: rest-template
-- **Endpoint**: http://inventory-service:8085/api/inventory/analytics
-- **Source**: src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
 
 ### reporting-service → payment-service
 - **Type**: feign-client

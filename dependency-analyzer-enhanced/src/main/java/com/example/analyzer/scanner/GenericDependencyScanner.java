@@ -30,9 +30,142 @@ public class GenericDependencyScanner {
     private final JavaParser javaParser = new JavaParser();
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private Map<String, String> serviceProperties = new HashMap<>();
+    private Map<String, List<String>> serviceEndpointsMap = new HashMap<>(); // service -> list of endpoints
     
     public GenericDependencyScanner(AnalyzerConfiguration config) {
         this.config = config;
+    }
+    
+    /**
+     * Build a map of all internal services and their endpoints FIRST
+     * This allows us to validate dependencies and ignore external services
+     */
+    public void buildServiceEndpointsMap(List<ServiceInfo> allServices, Path projectRoot) {
+        serviceEndpointsMap.clear();
+        
+        for (ServiceInfo service : allServices) {
+            Path servicePath = projectRoot.resolve(service.getPath());
+            List<String> endpoints = extractServiceEndpoints(servicePath);
+            serviceEndpointsMap.put(service.getName(), endpoints);
+            logger.debug("Service {} has {} endpoints", service.getName(), endpoints.size());
+        }
+    }
+    
+    /**
+     * Extract all controller endpoints from a service
+     */
+    private List<String> extractServiceEndpoints(Path servicePath) {
+        List<String> endpoints = new ArrayList<>();
+        
+        try {
+            PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.java");
+            
+            try (var stream = Files.walk(servicePath)) {
+                List<Path> javaFiles = stream
+                    .filter(javaMatcher::matches)
+                    .filter(path -> !path.toString().contains("test"))
+                    .collect(Collectors.toList());
+                
+                for (Path javaFile : javaFiles) {
+                    endpoints.addAll(extractEndpointsFromController(javaFile));
+                }
+            }
+        } catch (Exception e) {
+            logger.debug("Error extracting endpoints from {}: {}", servicePath, e.getMessage());
+        }
+        
+        return endpoints;
+    }
+    
+    /**
+     * Extract endpoints from @RestController classes
+     * Handles @RequestMapping, @GetMapping, @PostMapping, etc.
+     */
+    private List<String> extractEndpointsFromController(Path javaFile) {
+        List<String> endpoints = new ArrayList<>();
+        
+        try {
+            CompilationUnit cu = javaParser.parse(javaFile).getResult().orElse(null);
+            if (cu == null) {
+                return endpoints;
+            }
+            
+            cu.findAll(ClassOrInterfaceDeclaration.class).forEach(classDecl -> {
+                // Check if it's a controller
+                boolean isController = classDecl.getAnnotations().stream()
+                    .anyMatch(ann -> ann.getNameAsString().contains("RestController") || 
+                                   ann.getNameAsString().contains("Controller"));
+                
+                if (isController) {
+                    // Get base path from class-level @RequestMapping
+                    final String[] basePathHolder = {""};
+                    for (AnnotationExpr ann : classDecl.getAnnotations()) {
+                        if (ann.getNameAsString().contains("RequestMapping")) {
+                            String path = extractPathFromAnnotation(ann.toString());
+                            if (path != null) {
+                                basePathHolder[0] = path;
+                            }
+                        }
+                    }
+                    
+                    // Get all method-level mappings
+                    String finalBasePath = basePathHolder[0];
+                    classDecl.getMethods().forEach(method -> {
+                        for (AnnotationExpr ann : method.getAnnotations()) {
+                            String annName = ann.getNameAsString();
+                            if (annName.contains("Mapping")) { // Covers all *Mapping annotations
+                                String methodPath = extractPathFromAnnotation(ann.toString());
+                                if (methodPath != null) {
+                                    String fullPath = combinePaths(finalBasePath, methodPath);
+                                    endpoints.add(fullPath);
+                                    logger.debug("Found endpoint: {}", fullPath);
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            
+        } catch (Exception e) {
+            logger.debug("Error parsing controller file {}: {}", javaFile, e.getMessage());
+        }
+        
+        return endpoints;
+    }
+    
+    /**
+     * Extract path from mapping annotation like @GetMapping("/users") or @RequestMapping(value = "/users")
+     */
+    private String extractPathFromAnnotation(String annotation) {
+        // Try to find path in quotes
+        String[] parts = annotation.split("[\"\']");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.startsWith("/")) {
+                return part;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Combine base path and method path
+     */
+    private String combinePaths(String basePath, String methodPath) {
+        if (basePath.isEmpty()) {
+            return methodPath;
+        }
+        if (methodPath.isEmpty()) {
+            return basePath;
+        }
+        // Ensure no double slashes
+        if (basePath.endsWith("/")) {
+            basePath = basePath.substring(0, basePath.length() - 1);
+        }
+        if (!methodPath.startsWith("/")) {
+            methodPath = "/" + methodPath;
+        }
+        return basePath + methodPath;
     }
     
     public List<ServiceDependency> scanDependencies(ServiceInfo service, List<ServiceInfo> allServices, Path projectRoot) {
@@ -680,28 +813,114 @@ public class GenericDependencyScanner {
         return null;
     }
     
+    /**
+     * Extract service name from URL and validate against internal services
+     * Also validates that the endpoint exists in the target service
+     */
     private String extractServiceNameFromUrl(String url, List<ServiceInfo> allServices) {
-        // Try to match URL pattern to known services
-        for (ServiceInfo service : allServices) {
-            if (url.contains(service.getName())) {
-                return service.getName();
-            }
-            if (service.getPort() != null && url.contains(":" + service.getPort())) {
-                return service.getName();
-            }
+        if (url == null || url.isEmpty()) {
+            return null;
         }
         
-        // Extract service name from URL pattern (e.g., http://user-service/api/users)
+        // Extract endpoint path from URL (e.g., http://excel-service:8080/api/excel -> /api/excel)
+        String endpointPath = extractEndpointFromUrl(url);
+        
+        // Extract service name from URL hostname
+        String urlServiceName = null;
         if (url.contains("://")) {
             String[] parts = url.split("://");
             if (parts.length > 1) {
                 String hostPart = parts[1].split("/")[0];
-                String serviceName = hostPart.split(":")[0];
-                return serviceName;
+                urlServiceName = hostPart.split(":")[0];
             }
         }
         
+        // Try to match against known internal services
+        for (ServiceInfo service : allServices) {
+            String serviceName = service.getName();
+            
+            // Direct name match
+            if (url.contains(serviceName)) {
+                // Validate endpoint if we have endpoint map
+                if (endpointPath != null && !serviceEndpointsMap.isEmpty()) {
+                    if (serviceHasEndpoint(serviceName, endpointPath)) {
+                        logger.debug("Matched URL {} to service {} via endpoint {}", url, serviceName, endpointPath);
+                        return serviceName;
+                    }
+                } else {
+                    return serviceName;
+                }
+            }
+            
+            // Port match
+            if (service.getPort() != null && url.contains(":" + service.getPort())) {
+                if (endpointPath == null || serviceHasEndpoint(serviceName, endpointPath)) {
+                    return serviceName;
+                }
+            }
+            
+            // Fuzzy match with extracted service name from URL
+            if (urlServiceName != null) {
+                String matchedName = findMatchingServiceName(urlServiceName, allServices);
+                if (matchedName != null && matchedName.equals(serviceName)) {
+                    if (endpointPath == null || serviceHasEndpoint(serviceName, endpointPath)) {
+                        return serviceName;
+                    }
+                }
+            }
+        }
+        
+        // If we got here, it might be an external service (not in our service list)
+        logger.debug("URL {} does not match any internal service - likely external dependency", url);
         return null;
+    }
+    
+    /**
+     * Extract endpoint path from full URL
+     * Example: http://excel-service:8080/api/excel/generate -> /api/excel/generate
+     */
+    private String extractEndpointFromUrl(String url) {
+        if (!url.contains("://")) {
+            return null;
+        }
+        
+        String[] parts = url.split("://");
+        if (parts.length < 2) {
+            return null;
+        }
+        
+        String afterProtocol = parts[1];
+        int firstSlash = afterProtocol.indexOf('/');
+        if (firstSlash < 0) {
+            return null;
+        }
+        
+        return afterProtocol.substring(firstSlash);
+    }
+    
+    /**
+     * Check if a service has a specific endpoint (with partial matching)
+     */
+    private boolean serviceHasEndpoint(String serviceName, String endpoint) {
+        List<String> endpoints = serviceEndpointsMap.get(serviceName);
+        if (endpoints == null || endpoints.isEmpty()) {
+            return true; // If we don't have endpoint info, assume it's valid
+        }
+        
+        // Exact match
+        if (endpoints.contains(endpoint)) {
+            return true;
+        }
+        
+        // Partial match (endpoint starts with any registered endpoint)
+        for (String registeredEndpoint : endpoints) {
+            if (endpoint.startsWith(registeredEndpoint) || registeredEndpoint.startsWith(endpoint)) {
+                return true;
+            }
+        }
+        
+        logger.debug("Endpoint {} not found in service {}", endpoint, serviceName);
+        return false;
     }
     
     private List<ServiceDependency> scanConfigurationFiles(Path servicePath, List<ServiceInfo> allServices) {

@@ -1,9 +1,9 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 26, 9, 23, 14, 218647000 ],
-  "analysis_date" : [ 2026, 1, 26, 9, 23, 14, 218647000 ],
+  "analysisTimestamp" : [ 2026, 1, 26, 9, 32, 26, 262707000 ],
+  "analysis_date" : [ 2026, 1, 26, 9, 32, 26, 262707000 ],
   "project_path" : "/Users/ajay/svc-map-demo",
   "total_services" : 13,
-  "total_dependencies" : 24,
+  "total_dependencies" : 20,
   "services" : [ {
     "name" : "product-service",
     "type" : "business",
@@ -261,51 +261,7 @@
     "language" : "java",
     "config_files" : [ "application.properties" ],
     "main_class" : null,
-    "dependencies" : [ {
-      "toService" : "user-service",
-      "type" : "rest-template",
-      "from_service" : "analytics-service",
-      "target_service" : "user-service",
-      "dependency_type" : "rest-template",
-      "description" : "HTTP call to user-service",
-      "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-      "line_number" : null,
-      "endpoint" : "http://user-service:8081/api/users/analytics",
-      "http_method" : null
-    }, {
-      "toService" : "order-service",
-      "type" : "rest-template",
-      "from_service" : "analytics-service",
-      "target_service" : "order-service",
-      "dependency_type" : "rest-template",
-      "description" : "HTTP call to order-service",
-      "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-      "line_number" : null,
-      "endpoint" : "http://order-service:8083/api/orders/analytics",
-      "http_method" : null
-    }, {
-      "toService" : "payment-service",
-      "type" : "rest-template",
-      "from_service" : "analytics-service",
-      "target_service" : "payment-service",
-      "dependency_type" : "rest-template",
-      "description" : "HTTP call to payment-service",
-      "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-      "line_number" : null,
-      "endpoint" : "http://payment-service:8084/api/payments/analytics",
-      "http_method" : null
-    }, {
-      "toService" : "inventory-service",
-      "type" : "rest-template",
-      "from_service" : "analytics-service",
-      "target_service" : "inventory-service",
-      "dependency_type" : "rest-template",
-      "description" : "HTTP call to inventory-service",
-      "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-      "line_number" : null,
-      "endpoint" : "http://inventory-service:8085/api/inventory/analytics",
-      "http_method" : null
-    } ],
+    "dependencies" : [ ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   }, {
@@ -343,17 +299,6 @@
     "config_files" : [ "application.yml" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "user-service",
-      "type" : "http-client",
-      "from_service" : "reporting-service",
-      "target_service" : "user-service",
-      "dependency_type" : "http-client",
-      "description" : "HTTP call to user-service",
-      "source_file" : "src/main/java/com/example/reportingservice/service/ReportService.java",
-      "line_number" : null,
-      "endpoint" : "http://user-service/api/users/count",
-      "http_method" : null
-    }, {
       "toService" : "payment-service",
       "type" : "feign-client",
       "from_service" : "reporting-service",
@@ -481,50 +426,6 @@
     "source_file" : "src/main/java/com/example/orderservice/service/OrderNotificationService.java",
     "line_number" : null,
     "endpoint" : "http://email-service:8087/api/email/send",
-    "http_method" : null
-  }, {
-    "toService" : "user-service",
-    "type" : "rest-template",
-    "from_service" : "analytics-service",
-    "target_service" : "user-service",
-    "dependency_type" : "rest-template",
-    "description" : "HTTP call to user-service",
-    "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-    "line_number" : null,
-    "endpoint" : "http://user-service:8081/api/users/analytics",
-    "http_method" : null
-  }, {
-    "toService" : "order-service",
-    "type" : "rest-template",
-    "from_service" : "analytics-service",
-    "target_service" : "order-service",
-    "dependency_type" : "rest-template",
-    "description" : "HTTP call to order-service",
-    "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-    "line_number" : null,
-    "endpoint" : "http://order-service:8083/api/orders/analytics",
-    "http_method" : null
-  }, {
-    "toService" : "payment-service",
-    "type" : "rest-template",
-    "from_service" : "analytics-service",
-    "target_service" : "payment-service",
-    "dependency_type" : "rest-template",
-    "description" : "HTTP call to payment-service",
-    "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-    "line_number" : null,
-    "endpoint" : "http://payment-service:8084/api/payments/analytics",
-    "http_method" : null
-  }, {
-    "toService" : "inventory-service",
-    "type" : "rest-template",
-    "from_service" : "analytics-service",
-    "target_service" : "inventory-service",
-    "dependency_type" : "rest-template",
-    "description" : "HTTP call to inventory-service",
-    "source_file" : "src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java",
-    "line_number" : null,
-    "endpoint" : "http://inventory-service:8085/api/inventory/analytics",
     "http_method" : null
   }, {
     "toService" : "payment-service",

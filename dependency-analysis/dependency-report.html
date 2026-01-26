@@ -23,11 +23,11 @@
 </div>
 <div class='summary'>
     <h2>📊 Executive Summary</h2>
-    <p><strong>Analysis Date:</strong> 2026-01-26T09:23:14.218647</p>
+    <p><strong>Analysis Date:</strong> 2026-01-26T09:32:26.262707</p>
     <p><strong>Total Services:</strong> 13</p>
-    <p><strong>Total Dependencies:</strong> 24</p>
-    <p><strong>Average Dependencies per Service:</strong> 1.8</p>
-    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~28%</p>
+    <p><strong>Total Dependencies:</strong> 20</p>
+    <p><strong>Average Dependencies per Service:</strong> 1.5</p>
+    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~23%</p>
 </div>
 <h2>🏢 Services Overview</h2>
 <table>
@@ -40,7 +40,7 @@
 <tr><td>gateway-service</td><td>8080</td><td>null</td><td>11</td><td class='low-confidence'>High</td></tr>
 <tr><td>logging-service</td><td>8088</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>order-service</td><td>8083</td><td>null</td><td>3</td><td class='medium-confidence'>Medium</td></tr>
-<tr><td>analytics-service</td><td>8090</td><td>null</td><td>4</td><td class='medium-confidence'>Medium</td></tr>
+<tr><td>analytics-service</td><td>8090</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>email-service</td><td>8087</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>reporting-service</td><td>8089</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
 <tr><td>user-service</td><td>8081</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
@@ -63,12 +63,6 @@
 <div class='dependency'>→ <strong>reporting-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>user-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>inventory-service</strong> (<em>gateway</em>)</div>
-</div>
-<div class='service'><h3>📦 analytics-service</h3>
-<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service:8081/api/users/analytics)</div>
-<div class='dependency'>→ <strong>order-service</strong> (<em>rest-template</em> endpoint: http://order-service:8083/api/orders/analytics)</div>
-<div class='dependency'>→ <strong>payment-service</strong> (<em>rest-template</em> endpoint: http://payment-service:8084/api/payments/analytics)</div>
-<div class='dependency'>→ <strong>inventory-service</strong> (<em>rest-template</em> endpoint: http://inventory-service:8085/api/inventory/analytics)</div>
 </div>
 <div class='service'><h3>📦 reporting-service</h3>
 <div class='dependency'>→ <strong>payment-service</strong> (<em>feign-client</em>)</div>
