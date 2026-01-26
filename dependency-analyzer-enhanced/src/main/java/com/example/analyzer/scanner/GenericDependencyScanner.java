@@ -177,6 +177,11 @@ public class GenericDependencyScanner {
             // Load service properties first (for resolving ${...} placeholders)
             loadServiceProperties(servicePath);
             
+            // Scan pom.xml for Maven dependencies (catches library/module dependencies)
+            if ("java".equals(service.getLanguage())) {
+                dependencies.addAll(scanMavenDependencies(servicePath, allServices, projectRoot));
+            }
+            
             // Scan Java files for Feign clients, REST templates, etc.
             if ("java".equals(service.getLanguage())) {
                 dependencies.addAll(scanJavaFiles(servicePath, allServices));
@@ -196,6 +201,101 @@ public class GenericDependencyScanner {
         }
         
         return dependencies;
+    }
+    
+    /**
+     * Scan pom.xml for dependencies on other services in the same project
+     * Catches library/module dependencies where one service depends on another as a JAR
+     */
+    private List<ServiceDependency> scanMavenDependencies(Path servicePath, List<ServiceInfo> allServices, Path projectRoot) {
+        List<ServiceDependency> dependencies = new ArrayList<>();
+        
+        Path pomFile = servicePath.resolve("pom.xml");
+        if (!Files.exists(pomFile)) {
+            return dependencies;
+        }
+        
+        try {
+            org.apache.maven.model.io.xpp3.MavenXpp3Reader reader = new org.apache.maven.model.io.xpp3.MavenXpp3Reader();
+            org.apache.maven.model.Model model = reader.read(new FileReader(pomFile.toFile()));
+            
+            String sourceServiceName = servicePath.getFileName().toString();
+            
+            // Get all dependencies from pom.xml
+            for (org.apache.maven.model.Dependency dep : model.getDependencies()) {
+                String groupId = dep.getGroupId();
+                String artifactId = dep.getArtifactId();
+                
+                // Check if this dependency matches any of our internal services
+                for (ServiceInfo targetService : allServices) {
+                    if (isMatchingService(targetService, groupId, artifactId, projectRoot)) {
+                        ServiceDependency dependency = new ServiceDependency(
+                            sourceServiceName,
+                            targetService.getName(),
+                            "maven-dependency"
+                        );
+                        dependency.setDescription("Maven dependency on " + targetService.getName());
+                        dependency.setSourceFile("pom.xml");
+                        
+                        logger.debug("Found Maven dependency: {} -> {} ({}:{})", 
+                            sourceServiceName, targetService.getName(), groupId, artifactId);
+                        
+                        dependencies.add(dependency);
+                    }
+                }
+            }
+            
+        } catch (Exception e) {
+            logger.debug("Error scanning Maven dependencies in {}: {}", pomFile, e.getMessage());
+        }
+        
+        return dependencies;
+    }
+    
+    /**
+     * Check if a Maven dependency matches an internal service
+     * Matches by artifactId or service folder name
+     */
+    private boolean isMatchingService(ServiceInfo service, String groupId, String artifactId, Path projectRoot) {
+        String serviceName = service.getName();
+        
+        // Direct match by artifactId
+        if (artifactId != null && artifactId.equals(serviceName)) {
+            return true;
+        }
+        
+        // Fuzzy match by artifactId (normalized)
+        if (artifactId != null) {
+            String normalizedArtifact = normalizeServiceName(artifactId);
+            String normalizedService = normalizeServiceName(serviceName);
+            if (normalizedArtifact.equals(normalizedService)) {
+                return true;
+            }
+        }
+        
+        // Try to read the target service's pom.xml and match groupId:artifactId
+        Path targetPomFile = projectRoot.resolve(service.getPath()).resolve("pom.xml");
+        if (Files.exists(targetPomFile)) {
+            try {
+                org.apache.maven.model.io.xpp3.MavenXpp3Reader reader = new org.apache.maven.model.io.xpp3.MavenXpp3Reader();
+                org.apache.maven.model.Model targetModel = reader.read(new FileReader(targetPomFile.toFile()));
+                
+                String targetGroupId = targetModel.getGroupId() != null ? targetModel.getGroupId() : 
+                                      (targetModel.getParent() != null ? targetModel.getParent().getGroupId() : null);
+                String targetArtifactId = targetModel.getArtifactId();
+                
+                // Exact match by groupId:artifactId
+                if (groupId != null && groupId.equals(targetGroupId) && 
+                    artifactId != null && artifactId.equals(targetArtifactId)) {
+                    return true;
+                }
+                
+            } catch (Exception e) {
+                // Ignore parse errors
+            }
+        }
+        
+        return false;
     }
     
     /**
