@@ -42,10 +42,10 @@ public class GenericMicroservicesDependencyAnalyzer {
 
             try {
                 analyzer.analyzeProject(projectPath, configPath);
-                logger.info("✅ Analysis completed successfully!");
+                logger.info("[OK] Analysis completed successfully!");
                 logger.info("📊 Reports generated in: {}", projectPath.resolve("dependency-analysis"));
             } catch (Exception e) {
-                logger.error("❌ Analysis failed: {}", e.getMessage(), e);
+                logger.error("[FAIL] Analysis failed: {}", e.getMessage(), e);
                 System.exit(1);
             }
         };

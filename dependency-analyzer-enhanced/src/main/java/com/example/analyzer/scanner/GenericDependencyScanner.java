@@ -57,7 +57,7 @@ public class GenericDependencyScanner {
             serviceEndpointsMap.put(service.getName(), endpoints);
             
             if (!endpoints.isEmpty()) {
-                logger.info("   ✓ {}: {} endpoints", service.getName(), endpoints.size());
+                logger.info("   [OK] {}: {} endpoints", service.getName(), endpoints.size());
                 for (String endpoint : endpoints) {
                     logger.debug("      - {}", endpoint);
                 }
@@ -326,7 +326,7 @@ public class GenericDependencyScanner {
         
         // Direct match by artifactId
         if (artifactId != null && artifactId.equals(serviceName)) {
-            logger.debug("      ✓ Direct match: {} == {}", artifactId, serviceName);
+            logger.debug("      [OK] Direct match: {} == {}", artifactId, serviceName);
             return true;
         }
         
@@ -335,7 +335,7 @@ public class GenericDependencyScanner {
             String normalizedArtifact = normalizeServiceName(artifactId);
             String normalizedService = normalizeServiceName(serviceName);
             if (normalizedArtifact.equals(normalizedService)) {
-                logger.debug("      ✓ Fuzzy match: {} == {} (normalized: {} == {})", 
+                logger.debug("      [OK] Fuzzy match: {} == {} (normalized: {} == {})", 
                     artifactId, serviceName, normalizedArtifact, normalizedService);
                 return true;
             }
@@ -355,7 +355,7 @@ public class GenericDependencyScanner {
                 // Exact match by groupId:artifactId
                 if (groupId != null && groupId.equals(targetGroupId) && 
                     artifactId != null && artifactId.equals(targetArtifactId)) {
-                    logger.debug("      ✓ Exact match: {}:{} == {}:{}", 
+                    logger.debug("      [OK] Exact match: {}:{} == {}:{}", 
                         groupId, artifactId, targetGroupId, targetArtifactId);
                     return true;
                 }
@@ -768,20 +768,20 @@ public class GenericDependencyScanner {
         // Direct match first
         for (ServiceInfo service : allServices) {
             if (service.getName().equals(feignClientName)) {
-                logger.info("   ✓ Direct match: '{}' == '{}'", feignClientName, service.getName());
+                logger.info("   [OK] Direct match: '{}' == '{}'", feignClientName, service.getName());
                 return service.getName();
             }
         }
         
         // Normalize the feign client name for comparison
         String normalizedFeignName = normalizeServiceName(feignClientName);
-        logger.debug("   Normalized '{}' → '{}'", feignClientName, normalizedFeignName);
+        logger.debug("   Normalized '{}'  ->  '{}'", feignClientName, normalizedFeignName);
         
         // Try normalized matching
         for (ServiceInfo service : allServices) {
             String normalizedServiceName = normalizeServiceName(service.getName());
             if (normalizedServiceName.equals(normalizedFeignName)) {
-                logger.info("   ✓ Normalized match: '{}' ('{}') == '{}' ('{}')", 
+                logger.info("   [OK] Normalized match: '{}' ('{}') == '{}' ('{}')", 
                     feignClientName, normalizedFeignName, service.getName(), normalizedServiceName);
                 return service.getName();
             }
@@ -793,14 +793,14 @@ public class GenericDependencyScanner {
             
             // Check if service name contains feign name (ccg core contains ccg)
             if (normalizedServiceName.contains(normalizedFeignName) && normalizedFeignName.length() > 2) {
-                logger.info("   ✓ Partial match (service contains feign): '{}' ('{}') contains '{}' ('{}')", 
+                logger.info("   [OK] Partial match (service contains feign): '{}' ('{}') contains '{}' ('{}')", 
                     service.getName(), normalizedServiceName, feignClientName, normalizedFeignName);
                 return service.getName();
             }
             
             // Check if feign name contains service name  
             if (normalizedFeignName.contains(normalizedServiceName) && normalizedServiceName.length() > 2) {
-                logger.info("   ✓ Partial match (feign contains service): '{}' ('{}') contains '{}' ('{}')", 
+                logger.info("   [OK] Partial match (feign contains service): '{}' ('{}') contains '{}' ('{}')", 
                     feignClientName, normalizedFeignName, service.getName(), normalizedServiceName);
                 return service.getName();
             }
@@ -816,14 +816,14 @@ public class GenericDependencyScanner {
             String feignBase = feignName.replaceAll("[-_]service$", "");
             
             if (serviceBase.equals(feignBase)) {
-                logger.debug("✓ Base match: {} ({}) == {} ({})", 
+                logger.debug("[OK] Base match: {} ({}) == {} ({})", 
                     feignClientName, feignBase, service.getName(), serviceBase);
                 return service.getName();
             }
             
             // Check if one is prefix of other after removing -service suffix
             if (serviceBase.startsWith(feignBase) || feignBase.startsWith(serviceBase)) {
-                logger.debug("✓ Prefix match: {} ({}) ~ {} ({})", 
+                logger.debug("[OK] Prefix match: {} ({}) ~ {} ({})", 
                     feignClientName, feignBase, service.getName(), serviceBase);
                 return service.getName();
             }
@@ -850,7 +850,7 @@ public class GenericDependencyScanner {
             
             // If majority of words match, consider it a match
             if (matchCount > 0 && matchCount >= feignWords.length / 2) {
-                logger.debug("✓ Word-based match: {} ~ {} ({}/{} words matched)", 
+                logger.debug("[OK] Word-based match: {} ~ {} ({}/{} words matched)", 
                     feignClientName, service.getName(), matchCount, feignWords.length);
                 return service.getName();
             }
@@ -912,7 +912,7 @@ public class GenericDependencyScanner {
                     } else {
                         loadPropertiesFile(configPath);
                     }
-                    logger.info("   ✓ Loaded properties from: {}", configFile);
+                    logger.info("   [OK] Loaded properties from: {}", configFile);
                     logger.debug("   [LIST] Properties loaded: {}", serviceProperties.keySet());
                     foundAny = true;
                 } catch (Exception e) {
@@ -1325,7 +1325,7 @@ public class GenericDependencyScanner {
                 // Validate endpoint if we have endpoint map
                 if (endpointPath != null && !serviceEndpointsMap.isEmpty()) {
                     if (serviceHasEndpoint(serviceName, endpointPath)) {
-                        logger.debug("✓ Matched URL {} to service {} via name + endpoint validation", url, serviceName);
+                        logger.debug("[OK] Matched URL {} to service {} via name + endpoint validation", url, serviceName);
                         return serviceName;
                     } else {
                         logger.debug("[WARN]  URL contains '{}' but endpoint {} not found in that service", serviceName, endpointPath);
@@ -1339,7 +1339,7 @@ public class GenericDependencyScanner {
             // Port match
             if (service.getPort() != null && url.contains(":" + service.getPort())) {
                 if (endpointPath == null || serviceHasEndpoint(serviceName, endpointPath)) {
-                    logger.debug("✓ Matched URL {} to service {} via port: {}", url, serviceName, service.getPort());
+                    logger.debug("[OK] Matched URL {} to service {} via port: {}", url, serviceName, service.getPort());
                     return serviceName;
                 }
             }
@@ -1349,7 +1349,7 @@ public class GenericDependencyScanner {
                 String matchedName = findMatchingServiceName(urlServiceName, allServices);
                 if (matchedName != null && matchedName.equals(serviceName)) {
                     if (endpointPath == null || serviceHasEndpoint(serviceName, endpointPath)) {
-                        logger.debug("✓ Matched URL {} to service {} via fuzzy name match", url, serviceName);
+                        logger.debug("[OK] Matched URL {} to service {} via fuzzy name match", url, serviceName);
                         return serviceName;
                     }
                 }
@@ -1413,7 +1413,7 @@ public class GenericDependencyScanner {
             List<String> endpoints = entry.getValue();
             
             if (endpoints.contains(endpointPath)) {
-                logger.debug("   → Endpoint {} found in service {} (exact match)", endpointPath, serviceName);
+                logger.debug("    ->  Endpoint {} found in service {} (exact match)", endpointPath, serviceName);
                 return serviceName;
             }
         }
@@ -1428,7 +1428,7 @@ public class GenericDependencyScanner {
                 // Check if the called endpoint starts with a registered endpoint
                 // E.g., /api/users/123 matches /api/users
                 if (endpointPath.startsWith(registeredEndpoint)) {
-                    logger.debug("   → Endpoint {} matched to service {} (starts with {})", 
+                    logger.debug("    ->  Endpoint {} matched to service {} (starts with {})", 
                         endpointPath, serviceName, registeredEndpoint);
                     return serviceName;
                 }
@@ -1436,14 +1436,14 @@ public class GenericDependencyScanner {
                 // Check if registered endpoint starts with called endpoint
                 // E.g., /api matches /api/users
                 if (registeredEndpoint.startsWith(endpointPath)) {
-                    logger.debug("   → Endpoint {} matched to service {} (prefix of {})", 
+                    logger.debug("    ->  Endpoint {} matched to service {} (prefix of {})", 
                         endpointPath, serviceName, registeredEndpoint);
                     return serviceName;
                 }
             }
         }
         
-        logger.debug("   → Endpoint {} not found in any service's endpoint map", endpointPath);
+        logger.debug("    ->  Endpoint {} not found in any service's endpoint map", endpointPath);
         return null;
     }
     
@@ -1485,14 +1485,14 @@ public class GenericDependencyScanner {
         
         // Exact match
         if (endpoints.contains(endpoint)) {
-            logger.debug("   ✓ Exact endpoint match: {}", endpoint);
+            logger.debug("   [OK] Exact endpoint match: {}", endpoint);
             return true;
         }
         
         // Partial match (endpoint starts with any registered endpoint)
         for (String registeredEndpoint : endpoints) {
             if (endpoint.startsWith(registeredEndpoint) || registeredEndpoint.startsWith(endpoint)) {
-                logger.debug("   ✓ Partial endpoint match: {} ~ {}", endpoint, registeredEndpoint);
+                logger.debug("   [OK] Partial endpoint match: {} ~ {}", endpoint, registeredEndpoint);
                 return true;
             }
         }
@@ -1501,12 +1501,12 @@ public class GenericDependencyScanner {
         // Example: /ccgcore/v1/rawMessage should match /v1/rawMessage
         for (String registeredEndpoint : endpoints) {
             if (endpoint.endsWith(registeredEndpoint)) {
-                logger.debug("   ✓ Suffix endpoint match: {} ends with {}", endpoint, registeredEndpoint);
+                logger.debug("   [OK] Suffix endpoint match: {} ends with {}", endpoint, registeredEndpoint);
                 return true;
             }
             // Or the registered endpoint might be part of the URL path
             if (endpoint.contains(registeredEndpoint)) {
-                logger.debug("   ✓ Contains endpoint match: {} contains {}", endpoint, registeredEndpoint);
+                logger.debug("   [OK] Contains endpoint match: {} contains {}", endpoint, registeredEndpoint);
                 return true;
             }
         }

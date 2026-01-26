@@ -62,7 +62,7 @@ public class GraphVizJavaSvgGenerator {
         
         // Add compact legend at the top using simple text approach
         graph.add(mutNode("legend_info")
-            .add("label", "Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray\\nConnections: →Gateway(Green) →REST/Feign(Blue) →Messaging(Purple)")
+            .add("label", "Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray\\nConnections:  -> Gateway(Green)  -> REST/Feign(Blue)  -> Messaging(Purple)")
             .add("shape", "plaintext")
             .add("fontsize", "10")
             .add("pos", "0,0!")  // Force position at top
@@ -104,11 +104,11 @@ public class GraphVizJavaSvgGenerator {
                 .render(Format.SVG)
                 .toFile(outputPath.toFile());
                 
-            System.out.println("✅ GraphViz Java SVG diagram generated: " + outputPath);
+            System.out.println("[OK] GraphViz Java SVG diagram generated: " + outputPath);
             System.out.println("   🏆 Original GraphViz quality with ZERO system dependencies!");
             System.out.println("   📦 Pure Maven solution - " + services.size() + " services, " + dependencies.size() + " dependencies");
         } catch (Exception e) {
-            System.err.println("⚠️  GraphViz Java generation failed: " + e.getMessage());
+            System.err.println("[WARN]  GraphViz Java generation failed: " + e.getMessage());
             System.err.println("   💡 This is normal - some engines need additional setup");
             
             // For now, throw the exception - we'll use PlantUML as backup

@@ -95,10 +95,10 @@ public class MicroserviceAnalyzer {
         reportGenerator.generateReports(result, outputDir, config);
 
         logger.info("📂 Reports generated:");
-        if (config.getOutputFormats().isHtml()) logger.info("   ✅ {}", AnalyzerConstants.HTML_REPORT_FILE);
-        if (config.getOutputFormats().isJson()) logger.info("   ✅ {}", AnalyzerConstants.JSON_REPORT_FILE);
-        if (config.getOutputFormats().isCsv()) logger.info("   ✅ {}", AnalyzerConstants.CSV_MATRIX_FILE);
-        if (config.getOutputFormats().isMarkdown()) logger.info("   ✅ {}", AnalyzerConstants.IMPACT_ANALYSIS_FILE);
+        if (config.getOutputFormats().isHtml()) logger.info("   [OK] {}", AnalyzerConstants.HTML_REPORT_FILE);
+        if (config.getOutputFormats().isJson()) logger.info("   [OK] {}", AnalyzerConstants.JSON_REPORT_FILE);
+        if (config.getOutputFormats().isCsv()) logger.info("   [OK] {}", AnalyzerConstants.CSV_MATRIX_FILE);
+        if (config.getOutputFormats().isMarkdown()) logger.info("   [OK] {}", AnalyzerConstants.IMPACT_ANALYSIS_FILE);
         if (config.getOutputFormats().isSvg()) {
             logger.info("   🏆 {} (Original GraphViz + Pure Java)", AnalyzerConstants.SVG_DIAGRAM_FILE);
         }

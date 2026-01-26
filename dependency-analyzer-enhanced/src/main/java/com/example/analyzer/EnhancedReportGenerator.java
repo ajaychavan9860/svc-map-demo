@@ -65,7 +65,7 @@ public class EnhancedReportGenerator {
         // Generate GraphViz Java visualization
         generateGraphVizJavaSvgReport(result, outputDir); // 🏆 ORIGINAL GraphViz with Pure Java!
         
-        System.out.println("✅ All reports generated successfully!");
+        System.out.println("[OK] All reports generated successfully!");
         System.out.println("   🏆 GraphViz Java - Original quality with pure Maven dependencies!");
     }
     
@@ -140,7 +140,7 @@ public class EnhancedReportGenerator {
             writer.println("## Dependency Details");
             
             for (ServiceDependency dep : result.getDependencies()) {
-                writer.printf("### %s → %s%n", dep.getFromService(), dep.getToService());
+                writer.printf("### %s  ->  %s%n", dep.getFromService(), dep.getToService());
                 writer.printf("- **Type**: %s%n", dep.getType());
                 if (dep.getEndpoint() != null) {
                     writer.printf("- **Endpoint**: %s%n", dep.getEndpoint());
@@ -225,7 +225,7 @@ public class EnhancedReportGenerator {
                 writer.printf("<div class='service'><h3>📦 %s</h3>%n", entry.getKey());
                 
                 for (ServiceDependency dep : entry.getValue()) {
-                    writer.printf("<div class='dependency'>→ <strong>%s</strong> " +
+                    writer.printf("<div class='dependency'> ->  <strong>%s</strong> " +
                                  "(<em>%s</em>", dep.getToService(), dep.getType());
                                  
                     if (dep.getEndpoint() != null && !dep.getEndpoint().isEmpty()) {
