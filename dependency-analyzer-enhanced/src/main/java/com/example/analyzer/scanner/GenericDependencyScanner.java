@@ -165,20 +165,27 @@ public class GenericDependencyScanner {
                 // Clean up service name (remove any trailing spaces or special chars)
                 targetServiceName = targetServiceName.trim();
                 
+                // Try to match with actual service names using fuzzy matching
+                String matchedServiceName = findMatchingServiceName(targetServiceName, allServices);
+                if (matchedServiceName == null) {
+                    matchedServiceName = targetServiceName; // Keep original if no match found
+                }
+                
                 // Extract source service name from the service path
                 String sourceServiceName = servicePath.getFileName().toString();
                 
                 String relativeFile = servicePath.relativize(javaFile).toString();
                 ServiceDependency dependency = new ServiceDependency(
                     sourceServiceName,        // fromService
-                    targetServiceName,        // targetService 
+                    matchedServiceName,       // targetService (matched to actual service)
                     "feign-client"           // dependencyType
                 );
-                dependency.setDescription("Feign client call to " + targetServiceName);
+                dependency.setDescription("Feign client call to " + matchedServiceName);
                 dependency.setSourceFile(relativeFile);
                 dependency.setLineNumber(annotation.getBegin().map(pos -> pos.line).orElse(null));
                 
-                logger.debug("Found Feign dependency: {} -> {}", sourceServiceName, targetServiceName);
+                logger.debug("Found Feign dependency: {} -> {} (original: {})", 
+                    sourceServiceName, matchedServiceName, targetServiceName);
                 
                 return dependency;
             }
@@ -188,6 +195,58 @@ public class GenericDependencyScanner {
         }
         
         return null;
+    }
+    
+    /**
+     * Fuzzy matching to find the actual service name from Feign client name
+     * Handles variations like:
+     * - task-service -> TaskManagementService
+     * - excel-generation-service -> excel-service
+     * - user-service -> UserService
+     */
+    private String findMatchingServiceName(String feignClientName, List<ServiceInfo> allServices) {
+        // Direct match first
+        for (ServiceInfo service : allServices) {
+            if (service.getName().equals(feignClientName)) {
+                return service.getName();
+            }
+        }
+        
+        // Normalize the feign client name for comparison
+        String normalizedFeignName = normalizeServiceName(feignClientName);
+        
+        // Try normalized matching
+        for (ServiceInfo service : allServices) {
+            String normalizedServiceName = normalizeServiceName(service.getName());
+            if (normalizedServiceName.equals(normalizedFeignName)) {
+                return service.getName();
+            }
+        }
+        
+        // Try partial matching (contains)
+        for (ServiceInfo service : allServices) {
+            String normalizedServiceName = normalizeServiceName(service.getName());
+            // Check if one contains the other
+            if (normalizedServiceName.contains(normalizedFeignName) || 
+                normalizedFeignName.contains(normalizedServiceName)) {
+                return service.getName();
+            }
+        }
+        
+        // No match found
+        return null;
+    }
+    
+    /**
+     * Normalize service name for matching
+     * Converts: TaskManagementService, task-management-service, task_management_service
+     * To: taskmanagementservice
+     */
+    private String normalizeServiceName(String serviceName) {
+        return serviceName
+            .toLowerCase()
+            .replaceAll("[-_]", "")  // Remove hyphens and underscores
+            .replaceAll("service$", "");  // Remove trailing "service"
     }
     
     private ServiceDependency extractRestTemplateDependency(MethodDeclaration method, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
