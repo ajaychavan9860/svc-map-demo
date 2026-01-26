@@ -33,12 +33,15 @@ public class MicroserviceAnalyzer {
         GenericServiceDiscovery serviceDiscovery = new GenericServiceDiscovery(config);
         List<ServiceInfo> services = serviceDiscovery.discoverServices(projectPath);
         
-        // Filter out gateway services completely (unless --include-all is specified)
+        // Filter out gateway services and libraries (unless --include-all is specified)
         if (!includeAll) {
             services = services.stream()
-                .filter(s -> !s.getName().toLowerCase().contains("gateway"))
+                .filter(s -> {
+                    String name = s.getName().toLowerCase();
+                    return !name.contains("gateway") && !name.contains("lib");
+                })
                 .collect(Collectors.toList());
-            logger.info("[LIST] Found {} services (excluding gateways):", services.size());
+            logger.info("[LIST] Found {} services (excluding gateways and libraries):", services.size());
         } else {
             logger.info("[LIST] Found {} services (including all):", services.size());
         }

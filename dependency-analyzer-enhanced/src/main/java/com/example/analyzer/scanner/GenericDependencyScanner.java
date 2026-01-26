@@ -231,9 +231,9 @@ public class GenericDependencyScanner {
     public List<ServiceDependency> scanDependencies(ServiceInfo service, List<ServiceInfo> allServices, Path projectRoot) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
-        // Skip gateway services (unless --include-all is specified)
-        if (!includeAll && service.getName().toLowerCase().contains("gateway")) {
-            logger.info("[SKIP] Ignoring gateway service: {}", service.getName());
+        // Skip gateway services and libraries (unless --include-all is specified)
+        if (!includeAll && (service.getName().toLowerCase().contains("gateway") || service.getName().toLowerCase().contains("lib"))) {
+            logger.info("[SKIP] Ignoring gateway/library service: {}", service.getName());
             return dependencies;
         }
         
@@ -463,9 +463,9 @@ public class GenericDependencyScanner {
             
             String targetServiceName = targetService.getName();
             
-            // Skip gateway services as targets (unless --include-all is specified)
-            if (!includeAll && targetServiceName.toLowerCase().contains("gateway")) {
-                logger.info("  [SKIP] Ignoring gateway service as target: {}", targetServiceName);
+            // Skip gateway services and libraries as targets (unless --include-all is specified)
+            if (!includeAll && (targetServiceName.toLowerCase().contains("gateway") || targetServiceName.toLowerCase().contains("lib"))) {
+                logger.info("  [SKIP] Ignoring gateway/library service as target: {}", targetServiceName);
                 continue;
             }
             
@@ -811,8 +811,8 @@ public class GenericDependencyScanner {
         
         // Direct match first
         for (ServiceInfo service : allServices) {
-            // Skip gateway services (unless --include-all is specified)
-            if (!includeAll && service.getName().toLowerCase().contains("gateway")) {
+            // Skip gateway services and libraries (unless --include-all is specified)
+            if (!includeAll && (service.getName().toLowerCase().contains("gateway") || service.getName().toLowerCase().contains("lib"))) {
                 continue;
             }
             
@@ -828,8 +828,8 @@ public class GenericDependencyScanner {
         
         // Try normalized matching
         for (ServiceInfo service : allServices) {
-            // Skip gateway services (unless --include-all is specified)
-            if (!includeAll && service.getName().toLowerCase().contains("gateway")) {
+            // Skip gateway services and libraries (unless --include-all is specified)
+            if (!includeAll && (service.getName().toLowerCase().contains("gateway") || service.getName().toLowerCase().contains("lib"))) {
                 continue;
             }
             
@@ -843,8 +843,8 @@ public class GenericDependencyScanner {
         
         // Try partial matching (contains) - handles ccg-service -> ccg-core-service
         for (ServiceInfo service : allServices) {
-            // Skip gateway services (unless --include-all is specified)
-            if (!includeAll && service.getName().toLowerCase().contains("gateway")) {
+            // Skip gateway services and libraries (unless --include-all is specified)
+            if (!includeAll && (service.getName().toLowerCase().contains("gateway") || service.getName().toLowerCase().contains("lib"))) {
                 continue;
             }
             
