@@ -30,7 +30,8 @@ public class GenericServiceDiscovery {
             
             for (Path servicePath : servicePaths) {
                 ServiceInfo service = analyzeServiceDirectory(servicePath, projectPath);
-                if (service != null) {
+                if (service != null && !"parent-pom".equals(service.getType())) {
+                    // Exclude parent/aggregator POMs from the service list
                     services.add(service);
                 }
             }
@@ -170,6 +171,16 @@ public class GenericServiceDiscovery {
         try {
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader(pomFile.toFile()));
+            
+            // Skip parent/aggregator POMs (they are not actual services)
+            // Parent POMs have <packaging>pom</packaging> and typically have <modules>
+            if ("pom".equalsIgnoreCase(model.getPackaging())) {
+                if (model.getModules() != null && !model.getModules().isEmpty()) {
+                    // This is a parent/aggregator POM, mark it to be excluded
+                    service.setType("parent-pom");
+                    return;
+                }
+            }
             
             service.setBuildTool("maven");
             service.setLanguage("java");
