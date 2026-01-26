@@ -1,9 +1,9 @@
 # Microservices Dependency Impact Analysis
 
 ## Executive Summary
-- **Total Services**: 13
-- **Total Dependencies**: 22
-- **Analysis Date**: 2026-01-25T09:03:43.833472
+- **Total Services**: 14
+- **Total Dependencies**: 34
+- **Analysis Date**: 2026-01-25T11:34:09.116336
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -13,7 +13,8 @@
 | notification-service | 8086 | null | 0 |
 | dependency-analyzer-enhanced | null | null | 0 |
 | payment-service | 8084 | null | 1 |
-| gateway-service | 8080 | null | 11 |
+| gateway-service | 8080 | null | 12 |
+| .. | null | null | 11 |
 | logging-service | 8088 | null | 0 |
 | order-service | 8083 | null | 2 |
 | analytics-service | 8090 | null | 4 |
@@ -27,6 +28,61 @@
 - **Type**: rest-template
 - **Endpoint**: http://email-service:8087/api/email/send
 - **Source**: src/main/java/com/example/paymentservice/service/PaymentNotificationService.java
+
+### .. → email-service
+- **Type**: rest-template
+- **Endpoint**: http://email-service:8087/api/email/send
+- **Source**: payment-service/src/main/java/com/example/paymentservice/service/PaymentNotificationService.java
+
+### .. → email-service
+- **Type**: rest-template
+- **Endpoint**: http://email-service:8087/api/email/send
+- **Source**: order-service/src/main/java/com/example/orderservice/service/OrderNotificationService.java
+
+### .. → email-service
+- **Type**: rest-template
+- **Endpoint**: http://email-service:8087/api/email/send
+- **Source**: order-service/src/main/java/com/example/orderservice/service/OrderNotificationService.java
+
+### .. → user-service
+- **Type**: rest-template
+- **Endpoint**: http://user-service:8081/api/users/analytics
+- **Source**: analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
+
+### .. → order-service
+- **Type**: rest-template
+- **Endpoint**: http://order-service:8083/api/orders/analytics
+- **Source**: analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
+
+### .. → payment-service
+- **Type**: rest-template
+- **Endpoint**: http://payment-service:8084/api/payments/analytics
+- **Source**: analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
+
+### .. → inventory-service
+- **Type**: rest-template
+- **Endpoint**: http://inventory-service:8085/api/inventory/analytics
+- **Source**: analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
+
+### .. → user-service
+- **Type**: rest-template
+- **Endpoint**: http://user-service/api/users/count
+- **Source**: reporting-service/src/main/java/com/example/reportingservice/service/ReportService.java
+
+### .. → user-service
+- **Type**: rest-template
+- **Endpoint**: http://user-service/api/users/count
+- **Source**: reporting-service/src/main/java/com/example/reportingservice/service/ReportService.java
+
+### .. → logging-service
+- **Type**: rest-template
+- **Endpoint**: http://logging-service:8088/api/logs/user-activity
+- **Source**: user-service/src/main/java/com/example/userservice/service/UserActivityService.java
+
+### .. → email-service
+- **Type**: rest-template
+- **Endpoint**: http://email-service:8087/api/email/send
+- **Source**: user-service/src/main/java/com/example/userservice/service/UserActivityService.java
 
 ### order-service → email-service
 - **Type**: rest-template
@@ -88,6 +144,9 @@
 - **Type**: gateway
 
 ### gateway-service → payment-service
+- **Type**: gateway
+
+### gateway-service → ..
 - **Type**: gateway
 
 ### gateway-service → logging-service

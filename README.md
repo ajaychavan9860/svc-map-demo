@@ -88,6 +88,7 @@ git --version
 ### **Environment Variables**
 
 Add to your system PATH:
+
 - `JAVA_HOME` (e.g., `C:\Program Files\Java\jdk-17`)
 - Maven `bin` directory (e.g., `C:\apache-maven-3.9.0\bin`)
 
@@ -157,6 +158,7 @@ start dependency-analysis\dependency-report.html
 ### **Automated Script (Windows)**
 
 Use the batch file equivalent:
+
 ```cmd
 demo-enhanced-analyzer.bat
 ```

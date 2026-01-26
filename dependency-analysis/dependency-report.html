@@ -23,11 +23,11 @@
 </div>
 <div class='summary'>
     <h2>📊 Executive Summary</h2>
-    <p><strong>Analysis Date:</strong> 2026-01-25T09:03:43.833472</p>
-    <p><strong>Total Services:</strong> 13</p>
-    <p><strong>Total Dependencies:</strong> 22</p>
-    <p><strong>Average Dependencies per Service:</strong> 1.7</p>
-    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~25%</p>
+    <p><strong>Analysis Date:</strong> 2026-01-25T11:34:09.116336</p>
+    <p><strong>Total Services:</strong> 14</p>
+    <p><strong>Total Dependencies:</strong> 34</p>
+    <p><strong>Average Dependencies per Service:</strong> 2.4</p>
+    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~36%</p>
 </div>
 <h2>🏢 Services Overview</h2>
 <table>
@@ -37,7 +37,8 @@
 <tr><td>notification-service</td><td>8086</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>dependency-analyzer-enhanced</td><td>null</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>payment-service</td><td>8084</td><td>null</td><td>1</td><td class='high-confidence'>Low</td></tr>
-<tr><td>gateway-service</td><td>8080</td><td>null</td><td>11</td><td class='low-confidence'>High</td></tr>
+<tr><td>gateway-service</td><td>8080</td><td>null</td><td>12</td><td class='low-confidence'>High</td></tr>
+<tr><td>..</td><td>null</td><td>null</td><td>11</td><td class='low-confidence'>High</td></tr>
 <tr><td>logging-service</td><td>8088</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>order-service</td><td>8083</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
 <tr><td>analytics-service</td><td>8090</td><td>null</td><td>4</td><td class='medium-confidence'>Medium</td></tr>
@@ -47,6 +48,19 @@
 <tr><td>inventory-service</td><td>8085</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 </table>
 <h2>🔗 Dependency Relationships</h2>
+<div class='service'><h3>📦 ..</h3>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service:8081/api/users/analytics)</div>
+<div class='dependency'>→ <strong>order-service</strong> (<em>rest-template</em> endpoint: http://order-service:8083/api/orders/analytics)</div>
+<div class='dependency'>→ <strong>payment-service</strong> (<em>rest-template</em> endpoint: http://payment-service:8084/api/payments/analytics)</div>
+<div class='dependency'>→ <strong>inventory-service</strong> (<em>rest-template</em> endpoint: http://inventory-service:8085/api/inventory/analytics)</div>
+<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service/api/users/count)</div>
+<div class='dependency'>→ <strong>user-service</strong> (<em>rest-template</em> endpoint: http://user-service/api/users/count)</div>
+<div class='dependency'>→ <strong>logging-service</strong> (<em>rest-template</em> endpoint: http://logging-service:8088/api/logs/user-activity)</div>
+<div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
+</div>
 <div class='service'><h3>📦 payment-service</h3>
 <div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
 </div>
@@ -55,6 +69,7 @@
 <div class='dependency'>→ <strong>notification-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>dependency-analyzer-enhanced</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>payment-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>..</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>logging-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>order-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>analytics-service</strong> (<em>gateway</em>)</div>

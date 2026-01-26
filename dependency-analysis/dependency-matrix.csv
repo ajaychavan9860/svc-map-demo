@@ -1,5 +1,16 @@
 From Service,To Service,Dependency Type,Source File,Endpoint
 payment-service,email-service,rest-template,src/main/java/com/example/paymentservice/service/PaymentNotificationService.java,http://email-service:8087/api/email/send
+..,email-service,rest-template,payment-service/src/main/java/com/example/paymentservice/service/PaymentNotificationService.java,http://email-service:8087/api/email/send
+..,email-service,rest-template,order-service/src/main/java/com/example/orderservice/service/OrderNotificationService.java,http://email-service:8087/api/email/send
+..,email-service,rest-template,order-service/src/main/java/com/example/orderservice/service/OrderNotificationService.java,http://email-service:8087/api/email/send
+..,user-service,rest-template,analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://user-service:8081/api/users/analytics
+..,order-service,rest-template,analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://order-service:8083/api/orders/analytics
+..,payment-service,rest-template,analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://payment-service:8084/api/payments/analytics
+..,inventory-service,rest-template,analytics-service/src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://inventory-service:8085/api/inventory/analytics
+..,user-service,rest-template,reporting-service/src/main/java/com/example/reportingservice/service/ReportService.java,http://user-service/api/users/count
+..,user-service,rest-template,reporting-service/src/main/java/com/example/reportingservice/service/ReportService.java,http://user-service/api/users/count
+..,logging-service,rest-template,user-service/src/main/java/com/example/userservice/service/UserActivityService.java,http://logging-service:8088/api/logs/user-activity
+..,email-service,rest-template,user-service/src/main/java/com/example/userservice/service/UserActivityService.java,http://email-service:8087/api/email/send
 order-service,email-service,rest-template,src/main/java/com/example/orderservice/service/OrderNotificationService.java,http://email-service:8087/api/email/send
 order-service,email-service,rest-template,src/main/java/com/example/orderservice/service/OrderNotificationService.java,http://email-service:8087/api/email/send
 analytics-service,user-service,rest-template,src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://user-service:8081/api/users/analytics
@@ -14,6 +25,7 @@ gateway-service,product-service,gateway,unknown,n/a
 gateway-service,notification-service,gateway,unknown,n/a
 gateway-service,dependency-analyzer-enhanced,gateway,unknown,n/a
 gateway-service,payment-service,gateway,unknown,n/a
+gateway-service,..,gateway,unknown,n/a
 gateway-service,logging-service,gateway,unknown,n/a
 gateway-service,order-service,gateway,unknown,n/a
 gateway-service,analytics-service,gateway,unknown,n/a
