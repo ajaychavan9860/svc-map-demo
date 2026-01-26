@@ -850,14 +850,13 @@ public class GenericDependencyScanner {
     
     /**
      * Normalize service name for matching
-     * Converts: TaskManagementService, task-management-service, task_management_service, task-lib
-     * To: task management (removes common suffixes like "service", "lib", "api", "app")
+     * Converts: TaskManagementService, task-management-service, task_management_service
+     * To: task management service (preserves meaningful suffixes like lib vs service)
      */
     private String normalizeServiceName(String serviceName) {
         return serviceName
             .toLowerCase()
             .replaceAll("[-_]", " ")  // Convert hyphens and underscores to spaces
-            .replaceAll("\\b(service|lib|library|api|app|client|server)\\b", "")  // Remove common suffixes
             .replaceAll("\\s+", " ")  // Normalize multiple spaces to single space
             .trim();
     }
