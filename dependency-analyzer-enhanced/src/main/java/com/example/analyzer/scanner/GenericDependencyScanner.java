@@ -798,7 +798,37 @@ public class GenericDependencyScanner {
      * Resolve property placeholder like ${feign.taskservice.name}
      */
     private String resolveProperty(String propertyKey) {
-        return serviceProperties.get(propertyKey);
+        // Try exact match first
+        String value = serviceProperties.get(propertyKey);
+        if (value != null) {
+            return value;
+        }
+        
+        // Try without prefix (e.g., feign.consumer.name -> consumer.name)
+        // Handles cases where YAML has "consumer.name" but Feign uses "${feign.consumer.name}"
+        if (propertyKey.contains(".")) {
+            String[] parts = propertyKey.split("\\.", 2);
+            if (parts.length == 2) {
+                String withoutPrefix = parts[1];
+                value = serviceProperties.get(withoutPrefix);
+                if (value != null) {
+                    logger.debug("   💡 Found property without prefix: {} -> {}", withoutPrefix, value);
+                    return value;
+                }
+            }
+        }
+        
+        // Try adding common prefixes if not found
+        // Handles cases where YAML has "feign.consumer.name" but placeholder uses "${consumer.name}"
+        if (!propertyKey.startsWith("feign.")) {
+            value = serviceProperties.get("feign." + propertyKey);
+            if (value != null) {
+                logger.debug("   💡 Found property with feign prefix: feign.{} -> {}", propertyKey, value);
+                return value;
+            }
+        }
+        
+        return null;
     }
     
     private ServiceDependency extractRestTemplateDependency(MethodDeclaration method, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
