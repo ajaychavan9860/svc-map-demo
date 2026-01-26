@@ -473,35 +473,70 @@ public class GenericDependencyScanner {
             
             logger.debug("🔍 Analyzing Feign client in {}: {}", sourceServiceName, annotationStr);
             
-            // Extract service name from @FeignClient annotation
+            // Extract BOTH name and url from @FeignClient annotation
             // Supports patterns like:
             // @FeignClient(name = "service-name")
             // @FeignClient(value = "service-name")
             // @FeignClient("service-name")
             // @FeignClient(name = "service-name", url = "${service.url}")
             String targetServiceName = null;
+            String targetServiceUrl = null;
             
-            if (annotationStr.contains("name") || annotationStr.contains("value") || annotationStr.contains("FeignClient(\"")) {
-                // Parse @FeignClient(name = "service-name") or @FeignClient("service-name")
-                String[] parts = annotationStr.split("[\"\']");
-                for (int i = 0; i < parts.length - 1; i++) {
-                    if (parts[i].contains("name") || parts[i].contains("value") || parts[i].contains("FeignClient(")) {
-                        // Get the next quoted string
+            // Parse annotation to extract both name and url
+            String[] parts = annotationStr.split("[\"\']");
+            for (int i = 0; i < parts.length - 1; i++) {
+                String part = parts[i];
+                if (part.contains("name") || part.contains("value") || part.contains("FeignClient(")) {
+                    if (targetServiceName == null) {
                         targetServiceName = parts[i + 1];
                         logger.debug("   📝 Extracted raw name: '{}'", targetServiceName);
-                        break;
+                    }
+                }
+                if (part.contains("url")) {
+                    targetServiceUrl = parts[i + 1];
+                    logger.debug("   🌐 Extracted raw url: '{}'", targetServiceUrl);
+                }
+            }
+            
+            // STRATEGY 1: Try URL-based endpoint matching FIRST (Most Accurate!)
+            String matchedServiceName = null;
+            
+            if (targetServiceUrl != null && !targetServiceUrl.trim().isEmpty()) {
+                targetServiceUrl = targetServiceUrl.trim();
+                
+                // Resolve property placeholders in URL like ${feign.ccg.url}
+                if (targetServiceUrl.startsWith("${") && targetServiceUrl.endsWith("}")) {
+                    String propertyKey = targetServiceUrl.substring(2, targetServiceUrl.length() - 1);
+                    logger.debug("   🔑 Resolving URL property: {}", propertyKey);
+                    
+                    String resolvedValue = resolveProperty(propertyKey);
+                    if (resolvedValue != null) {
+                        logger.info("   ✅ Resolved {} = '{}' -> '{}'", propertyKey, targetServiceUrl, resolvedValue);
+                        targetServiceUrl = resolvedValue;
+                    } else {
+                        logger.warn("   ⚠️  URL Property '{}' not found in config files!", propertyKey);
+                        targetServiceUrl = null;
+                    }
+                }
+                
+                // Use URL to find service via endpoint matching
+                if (targetServiceUrl != null) {
+                    logger.debug("   🎯 Using URL for endpoint-first matching: '{}'", targetServiceUrl);
+                    matchedServiceName = extractServiceNameFromUrl(targetServiceUrl, allServices);
+                    if (matchedServiceName != null) {
+                        logger.info("   ✅ Matched via URL endpoint lookup: {} -> {}", targetServiceUrl, matchedServiceName);
                     }
                 }
             }
             
-            if (targetServiceName != null && !targetServiceName.trim().isEmpty()) {
-                // Clean up service name (remove any trailing spaces or special chars)
+            // STRATEGY 2: Fall back to name-based fuzzy matching
+            if (matchedServiceName == null && targetServiceName != null && !targetServiceName.trim().isEmpty()) {
                 targetServiceName = targetServiceName.trim();
                 
                 // Resolve property placeholders like ${feign.taskservice.name}
                 if (targetServiceName.startsWith("${") && targetServiceName.endsWith("}")) {
                     String propertyKey = targetServiceName.substring(2, targetServiceName.length() - 1);
-                    logger.debug("   🔑 Resolving property: {}", propertyKey);
+                    logger.debug("   🔑 Resolving name property: {}", propertyKey);
                     logger.debug("   📦 Available properties: {}", serviceProperties.keySet());
                     
                     String resolvedValue = resolveProperty(propertyKey);
@@ -509,7 +544,7 @@ public class GenericDependencyScanner {
                         logger.info("   ✅ Resolved {} = '{}' -> '{}'", propertyKey, targetServiceName, resolvedValue);
                         targetServiceName = resolvedValue;
                     } else {
-                        logger.warn("   ⚠️  Property '{}' not found in config files!", propertyKey);
+                        logger.warn("   ⚠️  Name Property '{}' not found in config files!", propertyKey);
                         logger.warn("   💡 Available properties: {}", 
                             serviceProperties.isEmpty() ? "NONE - config files not loaded?" : 
                             String.join(", ", serviceProperties.keySet()));
@@ -517,17 +552,19 @@ public class GenericDependencyScanner {
                     }
                 }
                 
-                logger.debug("   🎯 Target service name: '{}'", targetServiceName);
+                logger.debug("   🎯 Using name for fuzzy matching: '{}'", targetServiceName);
                 
                 // Try to match with actual service names using fuzzy matching
-                String matchedServiceName = findMatchingServiceName(targetServiceName, allServices);
+                matchedServiceName = findMatchingServiceName(targetServiceName, allServices);
                 if (matchedServiceName == null) {
                     logger.warn("   ❌ No matching service found for '{}'", targetServiceName);
                     matchedServiceName = targetServiceName; // Keep original if no match found
                 } else {
-                    logger.debug("   ✓ Matched to: {}", matchedServiceName);
+                    logger.info("   ✅ Matched via fuzzy name matching: {} -> {}", targetServiceName, matchedServiceName);
                 }
-                
+            }
+            
+            if (matchedServiceName != null) {
                 String relativeFile = servicePath.relativize(javaFile).toString();
                 ServiceDependency dependency = new ServiceDependency(
                     sourceServiceName,        // fromService
@@ -538,10 +575,12 @@ public class GenericDependencyScanner {
                 dependency.setSourceFile(relativeFile);
                 dependency.setLineNumber(annotation.getBegin().map(pos -> pos.line).orElse(null));
                 
-                logger.info("✅ Found Feign dependency: {} -> {} (original: {})", 
-                    sourceServiceName, matchedServiceName, targetServiceName);
+                logger.info("✅ Found Feign dependency: {} -> {}", sourceServiceName, matchedServiceName);
                 
                 return dependency;
+            } else {
+                logger.warn("   ❌ Could not determine target service from Feign client annotation");
+                return null;
             }
             
         } catch (Exception e) {
@@ -560,22 +599,25 @@ public class GenericDependencyScanner {
      * - ccg-core-service -> task management service (word matching)
      */
     private String findMatchingServiceName(String feignClientName, List<ServiceInfo> allServices) {
+        logger.debug("🔍 Fuzzy matching '{}' against {} services", feignClientName, allServices.size());
+        
         // Direct match first
         for (ServiceInfo service : allServices) {
             if (service.getName().equals(feignClientName)) {
-                logger.debug("✓ Direct match: {} == {}", feignClientName, service.getName());
+                logger.info("   ✓ Direct match: '{}' == '{}'", feignClientName, service.getName());
                 return service.getName();
             }
         }
         
         // Normalize the feign client name for comparison
         String normalizedFeignName = normalizeServiceName(feignClientName);
+        logger.debug("   Normalized '{}' → '{}'", feignClientName, normalizedFeignName);
         
         // Try normalized matching
         for (ServiceInfo service : allServices) {
             String normalizedServiceName = normalizeServiceName(service.getName());
             if (normalizedServiceName.equals(normalizedFeignName)) {
-                logger.debug("✓ Normalized match: {} ({}) == {} ({})", 
+                logger.info("   ✓ Normalized match: '{}' ('{}') == '{}' ('{}')", 
                     feignClientName, normalizedFeignName, service.getName(), normalizedServiceName);
                 return service.getName();
             }
@@ -587,14 +629,14 @@ public class GenericDependencyScanner {
             
             // Check if service name contains feign name (ccg core contains ccg)
             if (normalizedServiceName.contains(normalizedFeignName) && normalizedFeignName.length() > 2) {
-                logger.debug("✓ Partial match (service contains feign): {} ({}) contains {} ({})", 
+                logger.info("   ✓ Partial match (service contains feign): '{}' ('{}') contains '{}' ('{}')", 
                     service.getName(), normalizedServiceName, feignClientName, normalizedFeignName);
                 return service.getName();
             }
             
             // Check if feign name contains service name  
             if (normalizedFeignName.contains(normalizedServiceName) && normalizedServiceName.length() > 2) {
-                logger.debug("✓ Partial match (feign contains service): {} ({}) contains {} ({})", 
+                logger.info("   ✓ Partial match (feign contains service): '{}' ('{}') contains '{}' ('{}')", 
                     feignClientName, normalizedFeignName, service.getName(), normalizedServiceName);
                 return service.getName();
             }
