@@ -31,13 +31,13 @@ public class GenericMicroservicesDependencyAnalyzer {
             Path projectPath = Paths.get(args[0]);
             Path configPath = args.length > 1 ? Paths.get(args[1]) : null;
 
-            logger.info("🚀 Starting Generic Microservices Dependency Analysis...");
-            logger.info("📂 Project Path: {}", projectPath.toAbsolutePath());
+            logger.info("[START] Starting Generic Microservices Dependency Analysis...");
+            logger.info("Project Path: {}", projectPath.toAbsolutePath());
 
             if (configPath != null) {
-                logger.info("⚙️ Config File: {}", configPath.toAbsolutePath());
+                logger.info("[CONFIG] Config File: {}", configPath.toAbsolutePath());
             } else {
-                logger.info("⚙️ Using default configuration");
+                logger.info("[CONFIG] Using default configuration");
             }
 
             try {

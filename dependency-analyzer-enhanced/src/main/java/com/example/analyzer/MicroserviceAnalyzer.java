@@ -94,7 +94,7 @@ public class MicroserviceAnalyzer {
         EnhancedReportGenerator reportGenerator = new EnhancedReportGenerator(graphVizJavaGenerator);
         reportGenerator.generateReports(result, outputDir, config);
 
-        logger.info("📂 Reports generated:");
+        logger.info("Reports generated:");
         if (config.getOutputFormats().isHtml()) logger.info("   [OK] {}", AnalyzerConstants.HTML_REPORT_FILE);
         if (config.getOutputFormats().isJson()) logger.info("   [OK] {}", AnalyzerConstants.JSON_REPORT_FILE);
         if (config.getOutputFormats().isCsv()) logger.info("   [OK] {}", AnalyzerConstants.CSV_MATRIX_FILE);
@@ -109,7 +109,7 @@ public class MicroserviceAnalyzer {
             logger.info("📖 Loading configuration from: {}", configPath);
             return yamlMapper.readValue(configPath.toFile(), AnalyzerConfiguration.class);
         } else {
-            logger.info("⚙️ Using default configuration");
+            logger.info("[CONFIG] Using default configuration");
             return AnalyzerConfiguration.getDefault();
         }
     }

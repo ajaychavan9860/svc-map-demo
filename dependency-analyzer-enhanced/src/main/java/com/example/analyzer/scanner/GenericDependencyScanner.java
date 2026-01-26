@@ -889,7 +889,7 @@ public class GenericDependencyScanner {
         serviceProperties.clear();
         
         String serviceName = servicePath.getFileName().toString();
-        logger.debug("📂 Loading properties for service: {}", serviceName);
+        logger.debug("Loading properties for service: {}", serviceName);
         
         // Priority order: prd -> prod -> dev -> default
         String[] configFiles = {
