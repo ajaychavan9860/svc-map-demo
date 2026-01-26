@@ -2,8 +2,8 @@
 
 ## Executive Summary
 - **Total Services**: 13
-- **Total Dependencies**: 37
-- **Analysis Date**: 2026-01-25T23:01:13.766473
+- **Total Dependencies**: 25
+- **Analysis Date**: 2026-01-26T08:46:05.391517
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -12,25 +12,17 @@
 | config-service | 8761 | null | 0 |
 | notification-service | 8086 | null | 0 |
 | dependency-analyzer-enhanced | null | null | 0 |
-| payment-service | 8084 | null | 4 |
+| payment-service | 8084 | null | 2 |
 | gateway-service | 8080 | null | 11 |
 | logging-service | 8088 | null | 0 |
-| order-service | 8083 | null | 8 |
+| order-service | 8083 | null | 3 |
 | analytics-service | 8090 | null | 4 |
 | email-service | 8087 | null | 0 |
-| reporting-service | 8089 | null | 8 |
+| reporting-service | 8089 | null | 3 |
 | user-service | 8081 | null | 2 |
 | inventory-service | 8085 | null | 0 |
 
 ## Dependency Details
-### payment-service → order-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java
-
-### payment-service → order-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java
-
 ### payment-service → order-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java
@@ -44,30 +36,9 @@
 - **Type**: feign-client
 - **Source**: src/main/java/com/demo/microservices/order/client/ProductServiceClient.java
 
-### order-service → product-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/demo/microservices/order/client/ProductServiceClient.java
-
-### order-service → product-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/demo/microservices/order/client/ProductServiceClient.java
-
 ### order-service → user-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/demo/microservices/order/client/UserServiceClient.java
-
-### order-service → user-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/demo/microservices/order/client/UserServiceClient.java
-
-### order-service → user-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/demo/microservices/order/client/UserServiceClient.java
-
-### order-service → email-service
-- **Type**: rest-template
-- **Endpoint**: http://email-service:8087/api/email/send
-- **Source**: src/main/java/com/example/orderservice/service/OrderNotificationService.java
 
 ### order-service → email-service
 - **Type**: rest-template
@@ -99,30 +70,9 @@
 - **Endpoint**: http://user-service/api/users/count
 - **Source**: src/main/java/com/example/reportingservice/service/ReportService.java
 
-### reporting-service → user-service
-- **Type**: rest-template
-- **Endpoint**: http://user-service/api/users/count
-- **Source**: src/main/java/com/example/reportingservice/service/ReportService.java
-
 ### reporting-service → payment-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/example/reportingservice/client/PaymentServiceClient.java
-
-### reporting-service → payment-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/example/reportingservice/client/PaymentServiceClient.java
-
-### reporting-service → payment-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/example/reportingservice/client/PaymentServiceClient.java
-
-### reporting-service → order-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/example/reportingservice/client/OrderServiceClient.java
-
-### reporting-service → order-service
-- **Type**: feign-client
-- **Source**: src/main/java/com/example/reportingservice/client/OrderServiceClient.java
 
 ### reporting-service → order-service
 - **Type**: feign-client

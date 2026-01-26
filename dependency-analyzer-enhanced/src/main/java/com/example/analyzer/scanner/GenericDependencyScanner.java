@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileReader;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +29,7 @@ public class GenericDependencyScanner {
     private final AnalyzerConfiguration config;
     private final JavaParser javaParser = new JavaParser();
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+    private Map<String, String> serviceProperties = new HashMap<>();
     
     public GenericDependencyScanner(AnalyzerConfiguration config) {
         this.config = config;
@@ -39,6 +41,9 @@ public class GenericDependencyScanner {
         Path servicePath = projectRoot.resolve(service.getPath());
         
         try {
+            // Load service properties first (for resolving ${...} placeholders)
+            loadServiceProperties(servicePath);
+            
             // Scan Java files for Feign clients, REST templates, etc.
             if ("java".equals(service.getLanguage())) {
                 dependencies.addAll(scanJavaFiles(servicePath, allServices));
@@ -50,11 +55,42 @@ public class GenericDependencyScanner {
             // Scan for messaging dependencies
             dependencies.addAll(scanMessagingDependencies(servicePath, allServices));
             
+            // Deduplicate dependencies: only one arrow per source->target pair
+            dependencies = deduplicateDependencies(dependencies);
+            
         } catch (Exception e) {
             logger.error("Error scanning dependencies for {}: {}", service.getName(), e.getMessage(), e);
         }
         
         return dependencies;
+    }
+    
+    /**
+     * Deduplicate dependencies so that service A -> service B appears only once
+     * Even if there are multiple Feign client methods or multiple RestTemplate calls
+     */
+    private List<ServiceDependency> deduplicateDependencies(List<ServiceDependency> dependencies) {
+        Map<String, ServiceDependency> uniqueDeps = new LinkedHashMap<>();
+        
+        for (ServiceDependency dep : dependencies) {
+            String key = dep.getFromService() + " -> " + dep.getTargetService();
+            
+            // Keep the first occurrence, or prefer feign-client over other types
+            if (!uniqueDeps.containsKey(key)) {
+                uniqueDeps.put(key, dep);
+            } else {
+                ServiceDependency existing = uniqueDeps.get(key);
+                // Prefer feign-client type over others
+                if ("feign-client".equals(dep.getDependencyType()) && 
+                    !"feign-client".equals(existing.getDependencyType())) {
+                    uniqueDeps.put(key, dep);
+                }
+            }
+        }
+        
+        logger.debug("Deduplicated dependencies: {} -> {} unique", dependencies.size(), uniqueDeps.size());
+        
+        return new ArrayList<>(uniqueDeps.values());
     }
     
     private List<ServiceDependency> scanJavaFiles(Path servicePath, List<ServiceInfo> allServices) {
@@ -165,6 +201,16 @@ public class GenericDependencyScanner {
                 // Clean up service name (remove any trailing spaces or special chars)
                 targetServiceName = targetServiceName.trim();
                 
+                // Resolve property placeholders like ${feign.taskservice.name}
+                if (targetServiceName.startsWith("${") && targetServiceName.endsWith("}")) {
+                    String propertyKey = targetServiceName.substring(2, targetServiceName.length() - 1);
+                    String resolvedValue = resolveProperty(propertyKey);
+                    if (resolvedValue != null) {
+                        targetServiceName = resolvedValue;
+                        logger.debug("Resolved property {} to {}", propertyKey, resolvedValue);
+                    }
+                }
+                
                 // Try to match with actual service names using fuzzy matching
                 String matchedServiceName = findMatchingServiceName(targetServiceName, allServices);
                 if (matchedServiceName == null) {
@@ -270,6 +316,83 @@ public class GenericDependencyScanner {
             .replaceAll("service$", "")  // Remove trailing "service"
             .replaceAll("\\s+", " ")  // Normalize multiple spaces to single space
             .trim();
+    }
+    
+    /**
+     * Load service properties from application.yml, application-prd.yml, application.properties
+     */
+    private void loadServiceProperties(Path servicePath) {
+        serviceProperties.clear();
+        
+        String[] configFiles = {
+            "application-prd.yml",
+            "application-prod.yml",
+            "application.yml",
+            "application.yaml",
+            "application-prd.properties",
+            "application.properties"
+        };
+        
+        for (String configFile : configFiles) {
+            Path configPath = servicePath.resolve("src/main/resources/" + configFile);
+            if (Files.exists(configPath)) {
+                try {
+                    if (configFile.endsWith(".yml") || configFile.endsWith(".yaml")) {
+                        loadYamlProperties(configPath);
+                    } else {
+                        loadPropertiesFile(configPath);
+                    }
+                    logger.debug("Loaded properties from {}", configFile);
+                } catch (Exception e) {
+                    logger.debug("Error loading properties from {}: {}", configFile, e.getMessage());
+                }
+            }
+        }
+    }
+    
+    /**
+     * Load properties from YAML file (nested structure like feign.taskservice.name)
+     */
+    private void loadYamlProperties(Path yamlPath) throws Exception {
+        Map<String, Object> yaml = yamlMapper.readValue(yamlPath.toFile(), Map.class);
+        flattenYamlProperties("", yaml, serviceProperties);
+    }
+    
+    /**
+     * Flatten nested YAML structure to dot notation
+     * Example: {feign: {taskservice: {name: "task-service"}}} -> feign.taskservice.name=task-service
+     */
+    private void flattenYamlProperties(String prefix, Map<String, Object> map, Map<String, String> result) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String key = prefix.isEmpty() ? entry.getKey() : prefix + "." + entry.getKey();
+            Object value = entry.getValue();
+            
+            if (value instanceof Map) {
+                flattenYamlProperties(key, (Map<String, Object>) value, result);
+            } else if (value != null) {
+                result.put(key, value.toString());
+            }
+        }
+    }
+    
+    /**
+     * Load properties from .properties file
+     */
+    private void loadPropertiesFile(Path propertiesPath) throws Exception {
+        Properties props = new Properties();
+        try (FileReader reader = new FileReader(propertiesPath.toFile())) {
+            props.load(reader);
+            for (String key : props.stringPropertyNames()) {
+                serviceProperties.put(key, props.getProperty(key));
+            }
+        }
+    }
+    
+    /**
+     * Resolve property placeholder like ${feign.taskservice.name}
+     */
+    private String resolveProperty(String propertyKey) {
+        return serviceProperties.get(propertyKey);
     }
     
     private ServiceDependency extractRestTemplateDependency(MethodDeclaration method, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {

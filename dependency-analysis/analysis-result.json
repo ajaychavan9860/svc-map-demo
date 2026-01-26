@@ -1,9 +1,9 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 25, 23, 1, 13, 766473000 ],
-  "analysis_date" : [ 2026, 1, 25, 23, 1, 13, 766473000 ],
-  "project_path" : "..",
+  "analysisTimestamp" : [ 2026, 1, 26, 8, 46, 5, 391517000 ],
+  "analysis_date" : [ 2026, 1, 26, 8, 46, 5, 391517000 ],
+  "project_path" : "/Users/ajay/svc-map-demo",
   "total_services" : 13,
-  "total_dependencies" : 37,
+  "total_dependencies" : 25,
   "services" : [ {
     "name" : "product-service",
     "type" : "business",
@@ -78,28 +78,6 @@
     "config_files" : [ "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
-      "toService" : "order-service",
-      "type" : "feign-client",
-      "from_service" : "payment-service",
-      "target_service" : "order-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to order-service",
-      "source_file" : "src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java",
-      "line_number" : 9,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "order-service",
-      "type" : "feign-client",
-      "from_service" : "payment-service",
-      "target_service" : "order-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to order-service",
-      "source_file" : "src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java",
-      "line_number" : 9,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
       "toService" : "order-service",
       "type" : "feign-client",
       "from_service" : "payment-service",
@@ -249,28 +227,6 @@
       "endpoint" : null,
       "http_method" : null
     }, {
-      "toService" : "product-service",
-      "type" : "feign-client",
-      "from_service" : "order-service",
-      "target_service" : "product-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to product-service",
-      "source_file" : "src/main/java/com/demo/microservices/order/client/ProductServiceClient.java",
-      "line_number" : 8,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "product-service",
-      "type" : "feign-client",
-      "from_service" : "order-service",
-      "target_service" : "product-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to product-service",
-      "source_file" : "src/main/java/com/demo/microservices/order/client/ProductServiceClient.java",
-      "line_number" : 8,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
       "toService" : "user-service",
       "type" : "feign-client",
       "from_service" : "order-service",
@@ -280,39 +236,6 @@
       "source_file" : "src/main/java/com/demo/microservices/order/client/UserServiceClient.java",
       "line_number" : 7,
       "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "user-service",
-      "type" : "feign-client",
-      "from_service" : "order-service",
-      "target_service" : "user-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to user-service",
-      "source_file" : "src/main/java/com/demo/microservices/order/client/UserServiceClient.java",
-      "line_number" : 7,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "user-service",
-      "type" : "feign-client",
-      "from_service" : "order-service",
-      "target_service" : "user-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to user-service",
-      "source_file" : "src/main/java/com/demo/microservices/order/client/UserServiceClient.java",
-      "line_number" : 7,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "email-service",
-      "type" : "rest-template",
-      "from_service" : "order-service",
-      "target_service" : "email-service",
-      "dependency_type" : "rest-template",
-      "description" : "REST call to email-service",
-      "source_file" : "src/main/java/com/example/orderservice/service/OrderNotificationService.java",
-      "line_number" : null,
-      "endpoint" : "http://email-service:8087/api/email/send",
       "http_method" : null
     }, {
       "toService" : "email-service",
@@ -431,17 +354,6 @@
       "endpoint" : "http://user-service/api/users/count",
       "http_method" : null
     }, {
-      "toService" : "user-service",
-      "type" : "rest-template",
-      "from_service" : "reporting-service",
-      "target_service" : "user-service",
-      "dependency_type" : "rest-template",
-      "description" : "REST call to user-service",
-      "source_file" : "src/main/java/com/example/reportingservice/service/ReportService.java",
-      "line_number" : null,
-      "endpoint" : "http://user-service/api/users/count",
-      "http_method" : null
-    }, {
       "toService" : "payment-service",
       "type" : "feign-client",
       "from_service" : "reporting-service",
@@ -449,50 +361,6 @@
       "dependency_type" : "feign-client",
       "description" : "Feign client call to payment-service",
       "source_file" : "src/main/java/com/example/reportingservice/client/PaymentServiceClient.java",
-      "line_number" : 9,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "payment-service",
-      "type" : "feign-client",
-      "from_service" : "reporting-service",
-      "target_service" : "payment-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to payment-service",
-      "source_file" : "src/main/java/com/example/reportingservice/client/PaymentServiceClient.java",
-      "line_number" : 9,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "payment-service",
-      "type" : "feign-client",
-      "from_service" : "reporting-service",
-      "target_service" : "payment-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to payment-service",
-      "source_file" : "src/main/java/com/example/reportingservice/client/PaymentServiceClient.java",
-      "line_number" : 9,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "order-service",
-      "type" : "feign-client",
-      "from_service" : "reporting-service",
-      "target_service" : "order-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to order-service",
-      "source_file" : "src/main/java/com/example/reportingservice/client/OrderServiceClient.java",
-      "line_number" : 9,
-      "endpoint" : null,
-      "http_method" : null
-    }, {
-      "toService" : "order-service",
-      "type" : "feign-client",
-      "from_service" : "reporting-service",
-      "target_service" : "order-service",
-      "dependency_type" : "feign-client",
-      "description" : "Feign client call to order-service",
-      "source_file" : "src/main/java/com/example/reportingservice/client/OrderServiceClient.java",
       "line_number" : 9,
       "endpoint" : null,
       "http_method" : null
@@ -571,28 +439,6 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "order-service",
-    "type" : "feign-client",
-    "from_service" : "payment-service",
-    "target_service" : "order-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to order-service",
-    "source_file" : "src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java",
-    "line_number" : 9,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "order-service",
-    "type" : "feign-client",
-    "from_service" : "payment-service",
-    "target_service" : "order-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to order-service",
-    "source_file" : "src/main/java/com/demo/microservices/payment/client/OrderServiceClient.java",
-    "line_number" : 9,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
     "toService" : "email-service",
     "type" : "rest-template",
     "from_service" : "payment-service",
@@ -615,28 +461,6 @@
     "endpoint" : null,
     "http_method" : null
   }, {
-    "toService" : "product-service",
-    "type" : "feign-client",
-    "from_service" : "order-service",
-    "target_service" : "product-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to product-service",
-    "source_file" : "src/main/java/com/demo/microservices/order/client/ProductServiceClient.java",
-    "line_number" : 8,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "product-service",
-    "type" : "feign-client",
-    "from_service" : "order-service",
-    "target_service" : "product-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to product-service",
-    "source_file" : "src/main/java/com/demo/microservices/order/client/ProductServiceClient.java",
-    "line_number" : 8,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
     "toService" : "user-service",
     "type" : "feign-client",
     "from_service" : "order-service",
@@ -646,39 +470,6 @@
     "source_file" : "src/main/java/com/demo/microservices/order/client/UserServiceClient.java",
     "line_number" : 7,
     "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "user-service",
-    "type" : "feign-client",
-    "from_service" : "order-service",
-    "target_service" : "user-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to user-service",
-    "source_file" : "src/main/java/com/demo/microservices/order/client/UserServiceClient.java",
-    "line_number" : 7,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "user-service",
-    "type" : "feign-client",
-    "from_service" : "order-service",
-    "target_service" : "user-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to user-service",
-    "source_file" : "src/main/java/com/demo/microservices/order/client/UserServiceClient.java",
-    "line_number" : 7,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "email-service",
-    "type" : "rest-template",
-    "from_service" : "order-service",
-    "target_service" : "email-service",
-    "dependency_type" : "rest-template",
-    "description" : "REST call to email-service",
-    "source_file" : "src/main/java/com/example/orderservice/service/OrderNotificationService.java",
-    "line_number" : null,
-    "endpoint" : "http://email-service:8087/api/email/send",
     "http_method" : null
   }, {
     "toService" : "email-service",
@@ -747,17 +538,6 @@
     "endpoint" : "http://user-service/api/users/count",
     "http_method" : null
   }, {
-    "toService" : "user-service",
-    "type" : "rest-template",
-    "from_service" : "reporting-service",
-    "target_service" : "user-service",
-    "dependency_type" : "rest-template",
-    "description" : "REST call to user-service",
-    "source_file" : "src/main/java/com/example/reportingservice/service/ReportService.java",
-    "line_number" : null,
-    "endpoint" : "http://user-service/api/users/count",
-    "http_method" : null
-  }, {
     "toService" : "payment-service",
     "type" : "feign-client",
     "from_service" : "reporting-service",
@@ -765,50 +545,6 @@
     "dependency_type" : "feign-client",
     "description" : "Feign client call to payment-service",
     "source_file" : "src/main/java/com/example/reportingservice/client/PaymentServiceClient.java",
-    "line_number" : 9,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "payment-service",
-    "type" : "feign-client",
-    "from_service" : "reporting-service",
-    "target_service" : "payment-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to payment-service",
-    "source_file" : "src/main/java/com/example/reportingservice/client/PaymentServiceClient.java",
-    "line_number" : 9,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "payment-service",
-    "type" : "feign-client",
-    "from_service" : "reporting-service",
-    "target_service" : "payment-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to payment-service",
-    "source_file" : "src/main/java/com/example/reportingservice/client/PaymentServiceClient.java",
-    "line_number" : 9,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "order-service",
-    "type" : "feign-client",
-    "from_service" : "reporting-service",
-    "target_service" : "order-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to order-service",
-    "source_file" : "src/main/java/com/example/reportingservice/client/OrderServiceClient.java",
-    "line_number" : 9,
-    "endpoint" : null,
-    "http_method" : null
-  }, {
-    "toService" : "order-service",
-    "type" : "feign-client",
-    "from_service" : "reporting-service",
-    "target_service" : "order-service",
-    "dependency_type" : "feign-client",
-    "description" : "Feign client call to order-service",
-    "source_file" : "src/main/java/com/example/reportingservice/client/OrderServiceClient.java",
     "line_number" : 9,
     "endpoint" : null,
     "http_method" : null
