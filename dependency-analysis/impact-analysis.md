@@ -3,7 +3,7 @@
 ## Executive Summary
 - **Total Services**: 14
 - **Total Dependencies**: 24
-- **Analysis Date**: 2026-01-26T12:22:40.445863
+- **Analysis Date**: 2026-01-26T13:51:00.381334
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |

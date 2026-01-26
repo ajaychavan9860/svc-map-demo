@@ -212,8 +212,8 @@ public class GenericDependencyScanner {
             // Scan for messaging dependencies
             dependencies.addAll(scanMessagingDependencies(servicePath, allServices));
             
-            // ENDPOINT-FIRST DETECTION: Search for this service's endpoints being used in other services
-            dependencies.addAll(scanEndpointUsageInOtherServices(service, allServices, projectRoot));
+            // ENDPOINT-FIRST DETECTION: Search for this service using other services' endpoints
+            dependencies.addAll(scanForEndpointUsageByThisService(service, allServices, projectRoot));
             
             // Deduplicate dependencies: only one arrow per source->target pair
             dependencies = deduplicateDependencies(dependencies);
@@ -392,41 +392,40 @@ public class GenericDependencyScanner {
     /**
      * ENDPOINT-FIRST DETECTION STRATEGY
      * 
-     * For each endpoint that this service exposes:
-     * 1. Search for that endpoint string in OTHER services' Java files
-     * 2. If found in Feign/RestTemplate/WebClient code, create dependency: other -> this
+     * For each OTHER service that exposes endpoints:
+     * 1. Get their endpoint paths
+     * 2. Search if THIS service's code references those endpoints
+     * 3. If found, create dependency: this -> other
      * 
-     * This is more reliable than trying to resolve service names from URLs.
+     * This detects dependencies based on actual endpoint usage rather than service name matching.
      */
-    private List<ServiceDependency> scanEndpointUsageInOtherServices(ServiceInfo targetService, List<ServiceInfo> allServices, Path projectRoot) {
+    private List<ServiceDependency> scanForEndpointUsageByThisService(ServiceInfo sourceService, List<ServiceInfo> allServices, Path projectRoot) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
-        String targetServiceName = targetService.getName();
-        Path targetServicePath = projectRoot.resolve(targetService.getPath());
+        String sourceServiceName = sourceService.getName();
+        Path sourceServicePath = projectRoot.resolve(sourceService.getPath());
         
-        // Get all endpoints exposed by this target service
-        List<String> targetEndpoints = serviceEndpointsMap.getOrDefault(targetServiceName, new ArrayList<>());
+        logger.debug("🔍 Checking if {} calls endpoints from other services", sourceServiceName);
         
-        if (targetEndpoints.isEmpty()) {
-            logger.debug("📭 No endpoints found for {}, skipping endpoint-based detection", targetServiceName);
-            return dependencies;
-        }
-        
-        logger.info("🔍 Scanning for usage of {}'s {} endpoints in other services", targetServiceName, targetEndpoints.size());
-        
-        // For each OTHER service, search for these endpoints
-        for (ServiceInfo sourceService : allServices) {
-            if (sourceService.getName().equals(targetServiceName)) {
+        // For each OTHER service, check if THIS service calls their endpoints
+        for (ServiceInfo targetService : allServices) {
+            if (targetService.getName().equals(sourceServiceName)) {
                 continue; // Skip self
             }
             
-            String sourceServiceName = sourceService.getName();
-            Path sourceServicePath = projectRoot.resolve(sourceService.getPath());
+            String targetServiceName = targetService.getName();
             
-            // Search for endpoint usage in this source service's Java files
+            // Get all endpoints exposed by the target service
+            List<String> targetEndpoints = serviceEndpointsMap.getOrDefault(targetServiceName, new ArrayList<>());
+            
+            if (targetEndpoints.isEmpty()) {
+                continue; // No endpoints to check
+            }
+            
+            // Search if THIS service's code contains any of the target's endpoints
             for (String endpoint : targetEndpoints) {
                 if (searchForEndpointInService(endpoint, sourceServicePath, targetServiceName)) {
-                    // Found! Create dependency: source -> target
+                    // Found! Create dependency: this -> target
                     ServiceDependency dependency = new ServiceDependency(
                         sourceServiceName,
                         targetServiceName,
@@ -435,8 +434,8 @@ public class GenericDependencyScanner {
                     dependency.setDescription("Calls endpoint " + endpoint + " on " + targetServiceName);
                     dependencies.add(dependency);
                     
-                    logger.info("✅ Found endpoint usage: {} calls {} endpoint {} on {}", 
-                        sourceServiceName, endpoint, endpoint, targetServiceName);
+                    logger.info("✅ Found endpoint usage: {} calls {} on {}", 
+                        sourceServiceName, endpoint, targetServiceName);
                     
                     // Don't need to check other endpoints for this service pair
                     break;
