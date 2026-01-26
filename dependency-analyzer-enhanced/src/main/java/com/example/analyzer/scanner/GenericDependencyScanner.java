@@ -76,23 +76,33 @@ public class GenericDependencyScanner {
     private List<String> extractServiceEndpoints(Path servicePath) {
         List<String> endpoints = new ArrayList<>();
         
+        logger.debug("Extracting endpoints from service path: {}", servicePath);
+        
         try {
-            PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.java");
+            // Use case-insensitive pattern to handle both .java and .Java on Windows
+            PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.{java,JAVA,Java}");
             
             try (var stream = Files.walk(servicePath)) {
                 List<Path> javaFiles = stream
                     .filter(javaMatcher::matches)
-                    .filter(path -> !path.toString().contains("test"))
+                    .filter(path -> !path.toString().toLowerCase().contains("test"))  // Case-insensitive test filter
                     .collect(Collectors.toList());
                 
+                logger.info("Found {} Java files to scan for endpoints in {}", javaFiles.size(), servicePath.getFileName());
+                
                 for (Path javaFile : javaFiles) {
-                    endpoints.addAll(extractEndpointsFromController(javaFile));
+                    List<String> fileEndpoints = extractEndpointsFromController(javaFile);
+                    if (!fileEndpoints.isEmpty()) {
+                        logger.info("Extracted {} endpoints from {}", fileEndpoints.size(), javaFile.getFileName());
+                    }
+                    endpoints.addAll(fileEndpoints);
                 }
             }
         } catch (Exception e) {
-            logger.debug("Error extracting endpoints from {}: {}", servicePath, e.getMessage());
+            logger.error("Error extracting endpoints from {}: {}", servicePath, e.getMessage(), e);
         }
         
+        logger.info("Total endpoints extracted from {}: {}", servicePath.getFileName(), endpoints.size());
         return endpoints;
     }
     
