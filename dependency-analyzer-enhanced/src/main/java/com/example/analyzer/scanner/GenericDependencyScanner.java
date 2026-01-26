@@ -212,6 +212,9 @@ public class GenericDependencyScanner {
             // Scan for messaging dependencies
             dependencies.addAll(scanMessagingDependencies(servicePath, allServices));
             
+            // ENDPOINT-FIRST DETECTION: Search for this service's endpoints being used in other services
+            dependencies.addAll(scanEndpointUsageInOtherServices(service, allServices, projectRoot));
+            
             // Deduplicate dependencies: only one arrow per source->target pair
             dependencies = deduplicateDependencies(dependencies);
             
@@ -386,6 +389,108 @@ public class GenericDependencyScanner {
         return new ArrayList<>(uniqueDeps.values());
     }
     
+    /**
+     * ENDPOINT-FIRST DETECTION STRATEGY
+     * 
+     * For each endpoint that this service exposes:
+     * 1. Search for that endpoint string in OTHER services' Java files
+     * 2. If found in Feign/RestTemplate/WebClient code, create dependency: other -> this
+     * 
+     * This is more reliable than trying to resolve service names from URLs.
+     */
+    private List<ServiceDependency> scanEndpointUsageInOtherServices(ServiceInfo targetService, List<ServiceInfo> allServices, Path projectRoot) {
+        List<ServiceDependency> dependencies = new ArrayList<>();
+        
+        String targetServiceName = targetService.getName();
+        Path targetServicePath = projectRoot.resolve(targetService.getPath());
+        
+        // Get all endpoints exposed by this target service
+        List<String> targetEndpoints = serviceEndpointsMap.getOrDefault(targetServiceName, new ArrayList<>());
+        
+        if (targetEndpoints.isEmpty()) {
+            logger.debug("📭 No endpoints found for {}, skipping endpoint-based detection", targetServiceName);
+            return dependencies;
+        }
+        
+        logger.info("🔍 Scanning for usage of {}'s {} endpoints in other services", targetServiceName, targetEndpoints.size());
+        
+        // For each OTHER service, search for these endpoints
+        for (ServiceInfo sourceService : allServices) {
+            if (sourceService.getName().equals(targetServiceName)) {
+                continue; // Skip self
+            }
+            
+            String sourceServiceName = sourceService.getName();
+            Path sourceServicePath = projectRoot.resolve(sourceService.getPath());
+            
+            // Search for endpoint usage in this source service's Java files
+            for (String endpoint : targetEndpoints) {
+                if (searchForEndpointInService(endpoint, sourceServicePath, targetServiceName)) {
+                    // Found! Create dependency: source -> target
+                    ServiceDependency dependency = new ServiceDependency(
+                        sourceServiceName,
+                        targetServiceName,
+                        "endpoint-call"
+                    );
+                    dependency.setDescription("Calls endpoint " + endpoint + " on " + targetServiceName);
+                    dependencies.add(dependency);
+                    
+                    logger.info("✅ Found endpoint usage: {} calls {} endpoint {} on {}", 
+                        sourceServiceName, endpoint, endpoint, targetServiceName);
+                    
+                    // Don't need to check other endpoints for this service pair
+                    break;
+                }
+            }
+        }
+        
+        return dependencies;
+    }
+    
+    /**
+     * Search for an endpoint string in a service's Java files.
+     * Returns true if found in files containing Feign/RestTemplate/WebClient indicators.
+     */
+    private boolean searchForEndpointInService(String endpoint, Path servicePath, String targetServiceName) {
+        logger.debug("   🔎 Searching for endpoint '{}' in {}", endpoint, servicePath.getFileName());
+        
+        try {
+            PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.java");
+            
+            try (var stream = Files.walk(servicePath)) {
+                List<Path> javaFiles = stream
+                    .filter(javaMatcher::matches)
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+                
+                logger.debug("      Checking {} Java files", javaFiles.size());
+                
+                for (Path javaFile : javaFiles) {
+                    String content = Files.readString(javaFile);
+                    
+                    // Check if this file contains REST client code
+                    boolean isRestClientFile = content.contains("@FeignClient") || 
+                                             content.contains("RestTemplate") ||
+                                             content.contains("WebClient") ||
+                                             content.contains("@GetMapping") ||
+                                             content.contains("@PostMapping") ||
+                                             content.contains("@PutMapping") ||
+                                             content.contains("@DeleteMapping");
+                    
+                    if (isRestClientFile && content.contains("\"" + endpoint + "\"")) {
+                        logger.info("   🎯 Found endpoint '{}' in {}", endpoint, javaFile.getFileName());
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.debug("Error searching for endpoint in {}: {}", servicePath, e.getMessage());
+        }
+        
+        logger.debug("      Endpoint '{}' not found in {}", endpoint, servicePath.getFileName());
+        return false;
+    }
+    
     private List<ServiceDependency> scanJavaFiles(Path servicePath, List<ServiceInfo> allServices) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
@@ -425,7 +530,9 @@ public class GenericDependencyScanner {
                 
                 for (String feignPattern : config.getDependencyPatterns().getFeignClients()) {
                     if (annotationName.contains(feignPattern) || annotationName.equals("FeignClient")) {
-                        ServiceDependency dependency = extractFeignDependency(annotation, javaFile, servicePath, allServices);
+                        // Get the parent interface/class to extract method mappings
+                        com.github.javaparser.ast.Node parent = annotation.getParentNode().orElse(null);
+                        ServiceDependency dependency = extractFeignDependency(annotation, parent, javaFile, servicePath, allServices);
                         if (dependency != null) {
                             dependencies.add(dependency);
                         }
@@ -466,12 +573,12 @@ public class GenericDependencyScanner {
         return dependencies;
     }
     
-    private ServiceDependency extractFeignDependency(AnnotationExpr annotation, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
+    private ServiceDependency extractFeignDependency(AnnotationExpr annotation, com.github.javaparser.ast.Node parent, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
         try {
             String annotationStr = annotation.toString();
             String sourceServiceName = servicePath.getFileName().toString();
             
-            logger.debug("🔍 Analyzing Feign client in {}: {}", sourceServiceName, annotationStr);
+            logger.info("🔍 Analyzing Feign client in {}: {}", sourceServiceName, annotationStr);
             
             // Extract BOTH name and url from @FeignClient annotation
             // Supports patterns like:
@@ -498,6 +605,30 @@ public class GenericDependencyScanner {
                 }
             }
             
+            // Extract endpoint paths from Feign client methods
+            List<String> endpointPaths = new ArrayList<>();
+            if (parent instanceof com.github.javaparser.ast.body.ClassOrInterfaceDeclaration) {
+                com.github.javaparser.ast.body.ClassOrInterfaceDeclaration classDecl = 
+                    (com.github.javaparser.ast.body.ClassOrInterfaceDeclaration) parent;
+                
+                classDecl.getMethods().forEach(method -> {
+                    method.getAnnotations().forEach(methodAnnotation -> {
+                        String methodAnnName = methodAnnotation.getNameAsString();
+                        if (methodAnnName.contains("Mapping")) { // GetMapping, PostMapping, PutMapping, etc.
+                            String methodAnnStr = methodAnnotation.toString();
+                            String[] methodParts = methodAnnStr.split("[\"\']");
+                            if (methodParts.length > 1) {
+                                String endpoint = methodParts[1];
+                                if (endpoint.startsWith("/")) {
+                                    endpointPaths.add(endpoint);
+                                    logger.debug("   📍 Found method endpoint: {}", endpoint);
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+            
             // STRATEGY 1: Try URL-based endpoint matching FIRST (Most Accurate!)
             String matchedServiceName = null;
             
@@ -519,10 +650,28 @@ public class GenericDependencyScanner {
                     }
                 }
                 
-                // Use URL to find service via endpoint matching
-                if (targetServiceUrl != null) {
+                // Build full endpoint paths by combining URL base path with method paths
+                if (targetServiceUrl != null && !endpointPaths.isEmpty()) {
+                    String basePath = extractPathFromUrl(targetServiceUrl);
+                    logger.debug("   🔗 Base path from URL: '{}'", basePath);
+                    
+                    for (String methodPath : endpointPaths) {
+                        String fullPath = basePath.isEmpty() ? methodPath : basePath + methodPath;
+                        logger.info("   🎯 Combined endpoint: {} + {} = {}", basePath, methodPath, fullPath);
+                        
+                        // Try to match this combined endpoint to a service
+                        matchedServiceName = extractServiceNameFromUrl(targetServiceUrl, fullPath, allServices);
+                        if (matchedServiceName != null) {
+                            logger.info("   ✅ Matched via endpoint lookup: {} -> {}", fullPath, matchedServiceName);
+                            break;
+                        }
+                    }
+                }
+                
+                // If no method paths or no match yet, try just the URL
+                if (matchedServiceName == null && targetServiceUrl != null) {
                     logger.debug("   🎯 Using URL for endpoint-first matching: '{}'", targetServiceUrl);
-                    matchedServiceName = extractServiceNameFromUrl(targetServiceUrl, allServices);
+                    matchedServiceName = extractServiceNameFromUrl(targetServiceUrl, null, allServices);
                     if (matchedServiceName != null) {
                         logger.info("   ✅ Matched via URL endpoint lookup: {} -> {}", targetServiceUrl, matchedServiceName);
                     }
@@ -599,7 +748,8 @@ public class GenericDependencyScanner {
      * - ccg-core-service -> task management service (word matching)
      */
     private String findMatchingServiceName(String feignClientName, List<ServiceInfo> allServices) {
-        logger.debug("🔍 Fuzzy matching '{}' against {} services", feignClientName, allServices.size());
+        logger.info("🔍 Fuzzy matching '{}' against {} services", feignClientName, allServices.size());
+        logger.debug("   Available services: {}", allServices.stream().map(ServiceInfo::getName).collect(java.util.stream.Collectors.joining(", ")));
         
         // Direct match first
         for (ServiceInfo service : allServices) {
@@ -956,7 +1106,7 @@ public class GenericDependencyScanner {
                 }
                 
                 if (hasHttpClient) {
-                    String targetServiceName = extractServiceNameFromUrl(foundUrl.get(), allServices);
+                    String targetServiceName = extractServiceNameFromUrl(foundUrl.get(), null, allServices);
                     if (targetServiceName != null) {
                         String relativeFile = servicePath.relativize(javaFile).toString();
                         String sourceServiceName = servicePath.getFileName().toString();
@@ -1125,13 +1275,13 @@ public class GenericDependencyScanner {
      * 
      * This is more reliable than fuzzy name matching because it validates against actual API endpoints.
      */
-    private String extractServiceNameFromUrl(String url, List<ServiceInfo> allServices) {
+    private String extractServiceNameFromUrl(String url, String explicitEndpoint, List<ServiceInfo> allServices) {
         if (url == null || url.isEmpty()) {
             return null;
         }
         
-        // Extract endpoint path from URL (e.g., http://excel-service:8080/api/excel -> /api/excel)
-        String endpointPath = extractEndpointFromUrl(url);
+        // Use explicit endpoint if provided, otherwise extract from URL
+        String endpointPath = explicitEndpoint != null ? explicitEndpoint : extractEndpointFromUrl(url);
         
         // STRATEGY 1: ENDPOINT-FIRST MATCHING (Most Accurate!)
         // Look up which service owns this endpoint
@@ -1196,6 +1346,40 @@ public class GenericDependencyScanner {
         // If we got here, it might be an external service (not in our service list)
         logger.debug("❌ URL {} does not match any internal service - likely external dependency", url);
         return null;
+    }
+    
+    /**
+     * Extract the path component from a URL.
+     * Examples:
+     * - "http://localhost:9095/ccgcore" -> "/ccgcore"
+     * - "http://localhost:8080" -> ""
+     * - "http://service:8080/api/v1" -> "/api/v1"
+     */
+    private String extractPathFromUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return "";
+        }
+        
+        try {
+            // Remove protocol if present
+            String path = url;
+            if (path.contains("://")) {
+                path = path.substring(path.indexOf("://") + 3);
+            }
+            
+            // Remove host:port
+            int slashIndex = path.indexOf('/');
+            if (slashIndex >= 0) {
+                path = path.substring(slashIndex);
+            } else {
+                return "";
+            }
+            
+            return path;
+        } catch (Exception e) {
+            logger.warn("Failed to extract path from URL: {}", url, e);
+            return "";
+        }
     }
     
     /**
