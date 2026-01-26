@@ -237,7 +237,7 @@ public class GenericDependencyScanner {
                         dependency.setDescription("Maven dependency on " + targetService.getName());
                         dependency.setSourceFile("pom.xml");
                         
-                        logger.debug("Found Maven dependency: {} -> {} ({}:{})", 
+                        logger.info("✅ Found Maven dependency: {} -> {} ({}:{})", 
                             sourceServiceName, targetService.getName(), groupId, artifactId);
                         
                         dependencies.add(dependency);
@@ -313,15 +313,23 @@ public class GenericDependencyScanner {
                 uniqueDeps.put(key, dep);
             } else {
                 ServiceDependency existing = uniqueDeps.get(key);
-                // Prefer feign-client type over others
+                // Prefer feign-client type over others, then maven-dependency
                 if ("feign-client".equals(dep.getDependencyType()) && 
                     !"feign-client".equals(existing.getDependencyType())) {
+                    logger.info("🔄 Replacing {} with {} for {}", existing.getDependencyType(), dep.getDependencyType(), key);
                     uniqueDeps.put(key, dep);
+                } else if ("maven-dependency".equals(dep.getDependencyType()) && 
+                          !"feign-client".equals(existing.getDependencyType()) &&
+                          !"maven-dependency".equals(existing.getDependencyType())) {
+                    logger.info("🔄 Replacing {} with {} for {}", existing.getDependencyType(), dep.getDependencyType(), key);
+                    uniqueDeps.put(key, dep);
+                } else {
+                    logger.info("⏭️  Skipping duplicate {}: {} (keeping {})", key, dep.getDependencyType(), existing.getDependencyType());
                 }
             }
         }
         
-        logger.debug("Deduplicated dependencies: {} -> {} unique", dependencies.size(), uniqueDeps.size());
+        logger.info("📊 Deduplicated dependencies: {} -> {} unique", dependencies.size(), uniqueDeps.size());
         
         return new ArrayList<>(uniqueDeps.values());
     }

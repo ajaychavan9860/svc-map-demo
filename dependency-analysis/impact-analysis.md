@@ -1,9 +1,9 @@
 # Microservices Dependency Impact Analysis
 
 ## Executive Summary
-- **Total Services**: 13
-- **Total Dependencies**: 20
-- **Analysis Date**: 2026-01-26T09:59:49.867586
+- **Total Services**: 14
+- **Total Dependencies**: 23
+- **Analysis Date**: 2026-01-26T10:08:28.246466
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -13,13 +13,14 @@
 | notification-service | 8086 | null | 0 |
 | dependency-analyzer-enhanced | null | null | 0 |
 | payment-service | 8084 | null | 2 |
-| gateway-service | 8080 | null | 11 |
+| gateway-service | 8080 | null | 12 |
 | logging-service | 8088 | null | 0 |
-| order-service | 8083 | null | 3 |
+| order-service | 8083 | null | 4 |
 | analytics-service | 8090 | null | 0 |
 | email-service | 8087 | null | 0 |
 | reporting-service | 8089 | null | 2 |
-| user-service | 8081 | null | 2 |
+| user-service | 8081 | null | 3 |
+| common-lib | null | null | 0 |
 | inventory-service | 8085 | null | 0 |
 
 ## Dependency Details
@@ -31,6 +32,10 @@
 - **Type**: rest-template
 - **Endpoint**: http://email-service:8087/api/email/send
 - **Source**: src/main/java/com/example/paymentservice/service/PaymentNotificationService.java
+
+### order-service → common-lib
+- **Type**: maven-dependency
+- **Source**: pom.xml
 
 ### order-service → product-service
 - **Type**: feign-client
@@ -52,6 +57,10 @@
 ### reporting-service → order-service
 - **Type**: feign-client
 - **Source**: src/main/java/com/example/reportingservice/client/OrderServiceClient.java
+
+### user-service → common-lib
+- **Type**: maven-dependency
+- **Source**: pom.xml
 
 ### user-service → logging-service
 - **Type**: rest-template
@@ -91,6 +100,9 @@
 - **Type**: gateway
 
 ### gateway-service → user-service
+- **Type**: gateway
+
+### gateway-service → common-lib
 - **Type**: gateway
 
 ### gateway-service → inventory-service

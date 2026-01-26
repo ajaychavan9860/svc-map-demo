@@ -160,7 +160,8 @@ public class MicroserviceAnalyzer {
                        type.equals(AnalyzerConstants.WEBCLIENT_TYPE) ||
                        type.equals(AnalyzerConstants.ASYNC_TYPE) ||
                        type.equals(AnalyzerConstants.MESSAGING_TYPE) ||
-                       type.equals(AnalyzerConstants.FEIGN_CLIENT_TYPE);
+                       type.equals(AnalyzerConstants.FEIGN_CLIENT_TYPE) ||
+                       type.equals("maven-dependency");
             })
             .collect(Collectors.toList());
     }

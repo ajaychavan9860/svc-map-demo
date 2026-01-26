@@ -1,9 +1,9 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 26, 9, 59, 49, 867586000 ],
-  "analysis_date" : [ 2026, 1, 26, 9, 59, 49, 867586000 ],
+  "analysisTimestamp" : [ 2026, 1, 26, 10, 8, 28, 246466000 ],
+  "analysis_date" : [ 2026, 1, 26, 10, 8, 28, 246466000 ],
   "project_path" : "/Users/ajay/svc-map-demo",
-  "total_services" : 13,
-  "total_dependencies" : 20,
+  "total_services" : 14,
+  "total_dependencies" : 23,
   "services" : [ {
     "name" : "product-service",
     "type" : "business",
@@ -216,6 +216,17 @@
     "config_files" : [ "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
+      "toService" : "common-lib",
+      "type" : "maven-dependency",
+      "from_service" : "order-service",
+      "target_service" : "common-lib",
+      "dependency_type" : "maven-dependency",
+      "description" : "Maven dependency on common-lib",
+      "source_file" : "pom.xml",
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
       "toService" : "product-service",
       "type" : "feign-client",
       "from_service" : "order-service",
@@ -334,6 +345,17 @@
     "config_files" : [ "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
+      "toService" : "common-lib",
+      "type" : "maven-dependency",
+      "from_service" : "user-service",
+      "target_service" : "common-lib",
+      "dependency_type" : "maven-dependency",
+      "description" : "Maven dependency on common-lib",
+      "source_file" : "pom.xml",
+      "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
       "toService" : "logging-service",
       "type" : "rest-template",
       "from_service" : "user-service",
@@ -356,6 +378,19 @@
       "endpoint" : "http://email-service:8087/api/email/send",
       "http_method" : null
     } ],
+    "exposes_endpoints" : [ ],
+    "database_connections" : [ ]
+  }, {
+    "name" : "common-lib",
+    "type" : "business",
+    "path" : "common-lib",
+    "port" : null,
+    "framework" : null,
+    "build_tool" : "maven",
+    "language" : "java",
+    "config_files" : [ ],
+    "main_class" : null,
+    "dependencies" : [ ],
     "exposes_endpoints" : [ ],
     "database_connections" : [ ]
   }, {
@@ -393,6 +428,17 @@
     "source_file" : "src/main/java/com/example/paymentservice/service/PaymentNotificationService.java",
     "line_number" : null,
     "endpoint" : "http://email-service:8087/api/email/send",
+    "http_method" : null
+  }, {
+    "toService" : "common-lib",
+    "type" : "maven-dependency",
+    "from_service" : "order-service",
+    "target_service" : "common-lib",
+    "dependency_type" : "maven-dependency",
+    "description" : "Maven dependency on common-lib",
+    "source_file" : "pom.xml",
+    "line_number" : null,
+    "endpoint" : null,
     "http_method" : null
   }, {
     "toService" : "product-service",
@@ -447,6 +493,17 @@
     "description" : "Feign client call to order-service",
     "source_file" : "src/main/java/com/example/reportingservice/client/OrderServiceClient.java",
     "line_number" : 9,
+    "endpoint" : null,
+    "http_method" : null
+  }, {
+    "toService" : "common-lib",
+    "type" : "maven-dependency",
+    "from_service" : "user-service",
+    "target_service" : "common-lib",
+    "dependency_type" : "maven-dependency",
+    "description" : "Maven dependency on common-lib",
+    "source_file" : "pom.xml",
+    "line_number" : null,
     "endpoint" : null,
     "http_method" : null
   }, {
@@ -575,6 +632,17 @@
     "type" : "gateway",
     "from_service" : "gateway-service",
     "target_service" : "user-service",
+    "dependency_type" : "gateway",
+    "description" : null,
+    "source_file" : null,
+    "line_number" : null,
+    "endpoint" : null,
+    "http_method" : null
+  }, {
+    "toService" : "common-lib",
+    "type" : "gateway",
+    "from_service" : "gateway-service",
+    "target_service" : "common-lib",
     "dependency_type" : "gateway",
     "description" : null,
     "source_file" : null,

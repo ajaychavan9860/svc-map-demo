@@ -23,11 +23,11 @@
 </div>
 <div class='summary'>
     <h2>📊 Executive Summary</h2>
-    <p><strong>Analysis Date:</strong> 2026-01-26T09:59:49.867586</p>
-    <p><strong>Total Services:</strong> 13</p>
-    <p><strong>Total Dependencies:</strong> 20</p>
-    <p><strong>Average Dependencies per Service:</strong> 1.5</p>
-    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~23%</p>
+    <p><strong>Analysis Date:</strong> 2026-01-26T10:08:28.246466</p>
+    <p><strong>Total Services:</strong> 14</p>
+    <p><strong>Total Dependencies:</strong> 23</p>
+    <p><strong>Average Dependencies per Service:</strong> 1.6</p>
+    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~25%</p>
 </div>
 <h2>🏢 Services Overview</h2>
 <table>
@@ -37,13 +37,14 @@
 <tr><td>notification-service</td><td>8086</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>dependency-analyzer-enhanced</td><td>null</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>payment-service</td><td>8084</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
-<tr><td>gateway-service</td><td>8080</td><td>null</td><td>11</td><td class='low-confidence'>High</td></tr>
+<tr><td>gateway-service</td><td>8080</td><td>null</td><td>12</td><td class='low-confidence'>High</td></tr>
 <tr><td>logging-service</td><td>8088</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
-<tr><td>order-service</td><td>8083</td><td>null</td><td>3</td><td class='medium-confidence'>Medium</td></tr>
+<tr><td>order-service</td><td>8083</td><td>null</td><td>4</td><td class='medium-confidence'>Medium</td></tr>
 <tr><td>analytics-service</td><td>8090</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>email-service</td><td>8087</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>reporting-service</td><td>8089</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
-<tr><td>user-service</td><td>8081</td><td>null</td><td>2</td><td class='high-confidence'>Low</td></tr>
+<tr><td>user-service</td><td>8081</td><td>null</td><td>3</td><td class='medium-confidence'>Medium</td></tr>
+<tr><td>common-lib</td><td>null</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 <tr><td>inventory-service</td><td>8085</td><td>null</td><td>0</td><td class='high-confidence'>Low</td></tr>
 </table>
 <h2>🔗 Dependency Relationships</h2>
@@ -62,6 +63,7 @@
 <div class='dependency'>→ <strong>email-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>reporting-service</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>user-service</strong> (<em>gateway</em>)</div>
+<div class='dependency'>→ <strong>common-lib</strong> (<em>gateway</em>)</div>
 <div class='dependency'>→ <strong>inventory-service</strong> (<em>gateway</em>)</div>
 </div>
 <div class='service'><h3>📦 reporting-service</h3>
@@ -69,10 +71,12 @@
 <div class='dependency'>→ <strong>order-service</strong> (<em>feign-client</em>)</div>
 </div>
 <div class='service'><h3>📦 user-service</h3>
+<div class='dependency'>→ <strong>common-lib</strong> (<em>maven-dependency</em>)</div>
 <div class='dependency'>→ <strong>logging-service</strong> (<em>rest-template</em> endpoint: http://logging-service:8088/api/logs/user-activity)</div>
 <div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
 </div>
 <div class='service'><h3>📦 order-service</h3>
+<div class='dependency'>→ <strong>common-lib</strong> (<em>maven-dependency</em>)</div>
 <div class='dependency'>→ <strong>product-service</strong> (<em>feign-client</em>)</div>
 <div class='dependency'>→ <strong>user-service</strong> (<em>feign-client</em>)</div>
 <div class='dependency'>→ <strong>email-service</strong> (<em>rest-template</em> endpoint: http://email-service:8087/api/email/send)</div>
