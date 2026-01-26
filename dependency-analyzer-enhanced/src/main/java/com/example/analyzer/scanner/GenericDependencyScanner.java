@@ -59,11 +59,11 @@ public class GenericDependencyScanner {
             if (!endpoints.isEmpty()) {
                 logger.info("   [OK] {}: {} endpoints", service.getName(), endpoints.size());
                 for (String endpoint : endpoints) {
-                    logger.debug("      - {}", endpoint);
+                    logger.info("      - {}", endpoint);
                 }
                 totalEndpoints += endpoints.size();
             } else {
-                logger.debug("   ○ {}: no endpoints found (might not expose REST APIs)", service.getName());
+                logger.info("   [WARN] {}: NO ENDPOINTS FOUND - this service won't be checked for dependencies", service.getName());
             }
         }
         
@@ -76,7 +76,9 @@ public class GenericDependencyScanner {
     private List<String> extractServiceEndpoints(Path servicePath) {
         List<String> endpoints = new ArrayList<>();
         
-        logger.debug("Extracting endpoints from service path: {}", servicePath);
+        logger.info("========================================");
+        logger.info("EXTRACTING ENDPOINTS FROM: {}", servicePath.getFileName());
+        logger.info("Full path: {}", servicePath.toAbsolutePath());
         
         try {
             // Use case-insensitive pattern to handle both .java and .Java on Windows
@@ -88,21 +90,33 @@ public class GenericDependencyScanner {
                     .filter(path -> !path.toString().toLowerCase().contains("test"))  // Case-insensitive test filter
                     .collect(Collectors.toList());
                 
-                logger.info("Found {} Java files to scan for endpoints in {}", javaFiles.size(), servicePath.getFileName());
+                logger.info("Found {} Java files to scan", javaFiles.size());
+                
+                if (javaFiles.size() > 0 && javaFiles.size() <= 5) {
+                    logger.info("Files found:");
+                    javaFiles.forEach(f -> logger.info("  - {}", f.getFileName()));
+                }
                 
                 for (Path javaFile : javaFiles) {
                     List<String> fileEndpoints = extractEndpointsFromController(javaFile);
                     if (!fileEndpoints.isEmpty()) {
-                        logger.info("Extracted {} endpoints from {}", fileEndpoints.size(), javaFile.getFileName());
+                        logger.info("  [FOUND] {} endpoints in {}: {}", 
+                            fileEndpoints.size(), javaFile.getFileName(), fileEndpoints);
                     }
                     endpoints.addAll(fileEndpoints);
                 }
             }
         } catch (Exception e) {
-            logger.error("Error extracting endpoints from {}: {}", servicePath, e.getMessage(), e);
+            logger.error("[ERROR] Failed to extract endpoints from {}: {}", servicePath, e.getMessage(), e);
         }
         
-        logger.info("Total endpoints extracted from {}: {}", servicePath.getFileName(), endpoints.size());
+        if (endpoints.isEmpty()) {
+            logger.error("***** NO ENDPOINTS FOUND IN {} *****", servicePath.getFileName());
+        } else {
+            logger.info("[SUCCESS] Total {} endpoints from {}: {}", 
+                endpoints.size(), servicePath.getFileName(), endpoints);
+        }
+        
         return endpoints;
     }
     
