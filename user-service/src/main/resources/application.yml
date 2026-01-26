@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+
+# Feign client configuration
+feign:
+  order:
+    name: order-service
+    url: http://localhost:8083/api/orders
