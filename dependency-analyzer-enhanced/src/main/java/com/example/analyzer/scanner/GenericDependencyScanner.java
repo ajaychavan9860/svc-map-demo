@@ -461,6 +461,12 @@ public class GenericDependencyScanner {
             
             String targetServiceName = targetService.getName();
             
+            // Skip gateway services as targets
+            if (targetServiceName.toLowerCase().contains("gateway")) {
+                logger.info("  [SKIP] Ignoring gateway service as target: {}", targetServiceName);
+                continue;
+            }
+            
             // Get all endpoints exposed by the target service
             List<String> targetEndpoints = serviceEndpointsMap.getOrDefault(targetServiceName, new ArrayList<>());
             
@@ -803,6 +809,11 @@ public class GenericDependencyScanner {
         
         // Direct match first
         for (ServiceInfo service : allServices) {
+            // Skip gateway services
+            if (service.getName().toLowerCase().contains("gateway")) {
+                continue;
+            }
+            
             if (service.getName().equals(feignClientName)) {
                 logger.info("   [OK] Direct match: '{}' == '{}'", feignClientName, service.getName());
                 return service.getName();
@@ -815,6 +826,11 @@ public class GenericDependencyScanner {
         
         // Try normalized matching
         for (ServiceInfo service : allServices) {
+            // Skip gateway services
+            if (service.getName().toLowerCase().contains("gateway")) {
+                continue;
+            }
+            
             String normalizedServiceName = normalizeServiceName(service.getName());
             if (normalizedServiceName.equals(normalizedFeignName)) {
                 logger.info("   [OK] Normalized match: '{}' ('{}') == '{}' ('{}')", 
@@ -825,6 +841,11 @@ public class GenericDependencyScanner {
         
         // Try partial matching (contains) - handles ccg-service -> ccg-core-service
         for (ServiceInfo service : allServices) {
+            // Skip gateway services
+            if (service.getName().toLowerCase().contains("gateway")) {
+                continue;
+            }
+            
             String normalizedServiceName = normalizeServiceName(service.getName());
             
             // Check if service name contains feign name (ccg core contains ccg)
