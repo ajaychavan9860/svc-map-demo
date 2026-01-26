@@ -49,7 +49,7 @@ public class GenericDependencyScanner {
         serviceEndpointsMap.clear();
         
         int totalEndpoints = 0;
-        logger.info("📋 Building endpoint map for {} services...", allServices.size());
+        logger.info("[LIST] Building endpoint map for {} services...", allServices.size());
         
         for (ServiceInfo service : allServices) {
             Path servicePath = projectRoot.resolve(service.getPath());
@@ -67,7 +67,7 @@ public class GenericDependencyScanner {
             }
         }
         
-        logger.info("📊 Total endpoints mapped: {} across {} services", totalEndpoints, allServices.size());
+        logger.info("[STATS] Total endpoints mapped: {} across {} services", totalEndpoints, allServices.size());
     }
     
     /**
@@ -248,7 +248,7 @@ public class GenericDependencyScanner {
             String sourceGroupId = model.getGroupId() != null ? model.getGroupId() : 
                                   (model.getParent() != null ? model.getParent().getGroupId() : null);
             
-            logger.debug("📦 Scanning Maven dependencies for {} (groupId: {})", sourceServiceName, sourceGroupId);
+            logger.debug("[MAVEN] Scanning Maven dependencies for {} (groupId: {})", sourceServiceName, sourceGroupId);
             
             int dependencyCount = model.getDependencies().size();
             logger.debug("   Found {} dependencies in pom.xml", dependencyCount);
@@ -263,7 +263,7 @@ public class GenericDependencyScanner {
                 
                 // Skip test and provided scope dependencies
                 if ("test".equals(scope) || "provided".equals(scope)) {
-                    logger.debug("   ⏭️  Skipping {} scope dependency: {}", scope, artifactId);
+                    logger.debug("   [SKIP]  Skipping {} scope dependency: {}", scope, artifactId);
                     continue;
                 }
                 
@@ -279,7 +279,7 @@ public class GenericDependencyScanner {
                         dependency.setDescription("Maven dependency on " + targetService.getName());
                         dependency.setSourceFile("pom.xml");
                         
-                        logger.info("✅ Found Maven dependency: {} -> {} ({}:{})", 
+                        logger.info("[OK] Found Maven dependency: {} -> {} ({}:{})", 
                             sourceServiceName, targetService.getName(), groupId, artifactId);
                         
                         dependencies.add(dependency);
@@ -289,7 +289,7 @@ public class GenericDependencyScanner {
                 }
                 
                 if (!matched && groupId != null && groupId.equals(sourceGroupId)) {
-                    logger.debug("   ⚠️  Potential internal dependency not matched: {}:{}", groupId, artifactId);
+                    logger.debug("   [WARN]  Potential internal dependency not matched: {}:{}", groupId, artifactId);
                     logger.debug("      Available services: {}", allServices.stream()
                         .map(ServiceInfo::getName).collect(java.util.stream.Collectors.joining(", ")));
                 }
@@ -371,20 +371,20 @@ public class GenericDependencyScanner {
                 // Prefer feign-client type over others, then maven-dependency
                 if ("feign-client".equals(dep.getDependencyType()) && 
                     !"feign-client".equals(existing.getDependencyType())) {
-                    logger.info("🔄 Replacing {} with {} for {}", existing.getDependencyType(), dep.getDependencyType(), key);
+                    logger.info("[UPDATE] Replacing {} with {} for {}", existing.getDependencyType(), dep.getDependencyType(), key);
                     uniqueDeps.put(key, dep);
                 } else if ("maven-dependency".equals(dep.getDependencyType()) && 
                           !"feign-client".equals(existing.getDependencyType()) &&
                           !"maven-dependency".equals(existing.getDependencyType())) {
-                    logger.info("🔄 Replacing {} with {} for {}", existing.getDependencyType(), dep.getDependencyType(), key);
+                    logger.info("[UPDATE] Replacing {} with {} for {}", existing.getDependencyType(), dep.getDependencyType(), key);
                     uniqueDeps.put(key, dep);
                 } else {
-                    logger.info("⏭️  Skipping duplicate {}: {} (keeping {})", key, dep.getDependencyType(), existing.getDependencyType());
+                    logger.info("[SKIP]  Skipping duplicate {}: {} (keeping {})", key, dep.getDependencyType(), existing.getDependencyType());
                 }
             }
         }
         
-        logger.info("📊 Deduplicated dependencies: {} -> {} unique", dependencies.size(), uniqueDeps.size());
+        logger.info("[STATS] Deduplicated dependencies: {} -> {} unique", dependencies.size(), uniqueDeps.size());
         
         return new ArrayList<>(uniqueDeps.values());
     }
@@ -405,7 +405,7 @@ public class GenericDependencyScanner {
         String sourceServiceName = sourceService.getName();
         Path sourceServicePath = projectRoot.resolve(sourceService.getPath());
         
-        logger.debug("🔍 Checking if {} calls endpoints from other services", sourceServiceName);
+        logger.debug("[SCAN] Checking if {} calls endpoints from other services", sourceServiceName);
         
         // For each OTHER service, check if THIS service calls their endpoints
         for (ServiceInfo targetService : allServices) {
@@ -434,7 +434,7 @@ public class GenericDependencyScanner {
                     dependency.setDescription("Calls endpoint " + endpoint + " on " + targetServiceName);
                     dependencies.add(dependency);
                     
-                    logger.info("✅ Found endpoint usage: {} calls {} on {}", 
+                    logger.info("[OK] Found endpoint usage: {} calls {} on {}", 
                         sourceServiceName, endpoint, targetServiceName);
                     
                     // Don't need to check other endpoints for this service pair
@@ -451,7 +451,7 @@ public class GenericDependencyScanner {
      * Returns true if found in files containing Feign/RestTemplate/WebClient indicators.
      */
     private boolean searchForEndpointInService(String endpoint, Path servicePath, String targetServiceName) {
-        logger.debug("   🔎 Searching for endpoint '{}' in {}", endpoint, servicePath.getFileName());
+        logger.debug("   [SEARCH] Searching for endpoint '{}' in {}", endpoint, servicePath.getFileName());
         
         try {
             PathMatcher javaMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.java");
@@ -477,7 +477,7 @@ public class GenericDependencyScanner {
                                              content.contains("@DeleteMapping");
                     
                     if (isRestClientFile && content.contains("\"" + endpoint + "\"")) {
-                        logger.info("   🎯 Found endpoint '{}' in {}", endpoint, javaFile.getFileName());
+                        logger.info("   [MATCH] Found endpoint '{}' in {}", endpoint, javaFile.getFileName());
                         return true;
                     }
                 }
@@ -577,7 +577,7 @@ public class GenericDependencyScanner {
             String annotationStr = annotation.toString();
             String sourceServiceName = servicePath.getFileName().toString();
             
-            logger.info("🔍 Analyzing Feign client in {}: {}", sourceServiceName, annotationStr);
+            logger.info("[SCAN] Analyzing Feign client in {}: {}", sourceServiceName, annotationStr);
             
             // Extract BOTH name and url from @FeignClient annotation
             // Supports patterns like:
@@ -595,12 +595,12 @@ public class GenericDependencyScanner {
                 if (part.contains("name") || part.contains("value") || part.contains("FeignClient(")) {
                     if (targetServiceName == null) {
                         targetServiceName = parts[i + 1];
-                        logger.debug("   📝 Extracted raw name: '{}'", targetServiceName);
+                        logger.debug("   [NOTE] Extracted raw name: '{}'", targetServiceName);
                     }
                 }
                 if (part.contains("url")) {
                     targetServiceUrl = parts[i + 1];
-                    logger.debug("   🌐 Extracted raw url: '{}'", targetServiceUrl);
+                    logger.debug("   [URL] Extracted raw url: '{}'", targetServiceUrl);
                 }
             }
             
@@ -620,7 +620,7 @@ public class GenericDependencyScanner {
                                 String endpoint = methodParts[1];
                                 if (endpoint.startsWith("/")) {
                                     endpointPaths.add(endpoint);
-                                    logger.debug("   📍 Found method endpoint: {}", endpoint);
+                                    logger.debug("   [INFO] Found method endpoint: {}", endpoint);
                                 }
                             }
                         }
@@ -637,14 +637,14 @@ public class GenericDependencyScanner {
                 // Resolve property placeholders in URL like ${feign.ccg.url}
                 if (targetServiceUrl.startsWith("${") && targetServiceUrl.endsWith("}")) {
                     String propertyKey = targetServiceUrl.substring(2, targetServiceUrl.length() - 1);
-                    logger.debug("   🔑 Resolving URL property: {}", propertyKey);
+                    logger.debug("   [PROP] Resolving URL property: {}", propertyKey);
                     
                     String resolvedValue = resolveProperty(propertyKey);
                     if (resolvedValue != null) {
-                        logger.info("   ✅ Resolved {} = '{}' -> '{}'", propertyKey, targetServiceUrl, resolvedValue);
+                        logger.info("   [OK] Resolved {} = '{}' -> '{}'", propertyKey, targetServiceUrl, resolvedValue);
                         targetServiceUrl = resolvedValue;
                     } else {
-                        logger.warn("   ⚠️  URL Property '{}' not found in config files!", propertyKey);
+                        logger.warn("   [WARN]  URL Property '{}' not found in config files!", propertyKey);
                         targetServiceUrl = null;
                     }
                 }
@@ -652,16 +652,16 @@ public class GenericDependencyScanner {
                 // Build full endpoint paths by combining URL base path with method paths
                 if (targetServiceUrl != null && !endpointPaths.isEmpty()) {
                     String basePath = extractPathFromUrl(targetServiceUrl);
-                    logger.debug("   🔗 Base path from URL: '{}'", basePath);
+                    logger.debug("   [LINK] Base path from URL: '{}'", basePath);
                     
                     for (String methodPath : endpointPaths) {
                         String fullPath = basePath.isEmpty() ? methodPath : basePath + methodPath;
-                        logger.info("   🎯 Combined endpoint: {} + {} = {}", basePath, methodPath, fullPath);
+                        logger.info("   [MATCH] Combined endpoint: {} + {} = {}", basePath, methodPath, fullPath);
                         
                         // Try to match this combined endpoint to a service
                         matchedServiceName = extractServiceNameFromUrl(targetServiceUrl, fullPath, allServices);
                         if (matchedServiceName != null) {
-                            logger.info("   ✅ Matched via endpoint lookup: {} -> {}", fullPath, matchedServiceName);
+                            logger.info("   [OK] Matched via endpoint lookup: {} -> {}", fullPath, matchedServiceName);
                             break;
                         }
                     }
@@ -669,10 +669,10 @@ public class GenericDependencyScanner {
                 
                 // If no method paths or no match yet, try just the URL
                 if (matchedServiceName == null && targetServiceUrl != null) {
-                    logger.debug("   🎯 Using URL for endpoint-first matching: '{}'", targetServiceUrl);
+                    logger.debug("   [MATCH] Using URL for endpoint-first matching: '{}'", targetServiceUrl);
                     matchedServiceName = extractServiceNameFromUrl(targetServiceUrl, null, allServices);
                     if (matchedServiceName != null) {
-                        logger.info("   ✅ Matched via URL endpoint lookup: {} -> {}", targetServiceUrl, matchedServiceName);
+                        logger.info("   [OK] Matched via URL endpoint lookup: {} -> {}", targetServiceUrl, matchedServiceName);
                     }
                 }
             }
@@ -684,31 +684,31 @@ public class GenericDependencyScanner {
                 // Resolve property placeholders like ${feign.taskservice.name}
                 if (targetServiceName.startsWith("${") && targetServiceName.endsWith("}")) {
                     String propertyKey = targetServiceName.substring(2, targetServiceName.length() - 1);
-                    logger.debug("   🔑 Resolving name property: {}", propertyKey);
-                    logger.debug("   📦 Available properties: {}", serviceProperties.keySet());
+                    logger.debug("   [PROP] Resolving name property: {}", propertyKey);
+                    logger.debug("   [MAVEN] Available properties: {}", serviceProperties.keySet());
                     
                     String resolvedValue = resolveProperty(propertyKey);
                     if (resolvedValue != null) {
-                        logger.info("   ✅ Resolved {} = '{}' -> '{}'", propertyKey, targetServiceName, resolvedValue);
+                        logger.info("   [OK] Resolved {} = '{}' -> '{}'", propertyKey, targetServiceName, resolvedValue);
                         targetServiceName = resolvedValue;
                     } else {
-                        logger.warn("   ⚠️  Name Property '{}' not found in config files!", propertyKey);
-                        logger.warn("   💡 Available properties: {}", 
+                        logger.warn("   [WARN]  Name Property '{}' not found in config files!", propertyKey);
+                        logger.warn("   [TIP] Available properties: {}", 
                             serviceProperties.isEmpty() ? "NONE - config files not loaded?" : 
                             String.join(", ", serviceProperties.keySet()));
                         return null; // Can't resolve, skip this dependency
                     }
                 }
                 
-                logger.debug("   🎯 Using name for fuzzy matching: '{}'", targetServiceName);
+                logger.debug("   [MATCH] Using name for fuzzy matching: '{}'", targetServiceName);
                 
                 // Try to match with actual service names using fuzzy matching
                 matchedServiceName = findMatchingServiceName(targetServiceName, allServices);
                 if (matchedServiceName == null) {
-                    logger.warn("   ❌ No matching service found for '{}'", targetServiceName);
+                    logger.warn("   [FAIL] No matching service found for '{}'", targetServiceName);
                     matchedServiceName = targetServiceName; // Keep original if no match found
                 } else {
-                    logger.info("   ✅ Matched via fuzzy name matching: {} -> {}", targetServiceName, matchedServiceName);
+                    logger.info("   [OK] Matched via fuzzy name matching: {} -> {}", targetServiceName, matchedServiceName);
                 }
             }
             
@@ -723,11 +723,11 @@ public class GenericDependencyScanner {
                 dependency.setSourceFile(relativeFile);
                 dependency.setLineNumber(annotation.getBegin().map(pos -> pos.line).orElse(null));
                 
-                logger.info("✅ Found Feign dependency: {} -> {}", sourceServiceName, matchedServiceName);
+                logger.info("[OK] Found Feign dependency: {} -> {}", sourceServiceName, matchedServiceName);
                 
                 return dependency;
             } else {
-                logger.warn("   ❌ Could not determine target service from Feign client annotation");
+                logger.warn("   [FAIL] Could not determine target service from Feign client annotation");
                 return null;
             }
             
@@ -747,7 +747,7 @@ public class GenericDependencyScanner {
      * - ccg-core-service -> task management service (word matching)
      */
     private String findMatchingServiceName(String feignClientName, List<ServiceInfo> allServices) {
-        logger.info("🔍 Fuzzy matching '{}' against {} services", feignClientName, allServices.size());
+        logger.info("[SCAN] Fuzzy matching '{}' against {} services", feignClientName, allServices.size());
         logger.debug("   Available services: {}", allServices.stream().map(ServiceInfo::getName).collect(java.util.stream.Collectors.joining(", ")));
         
         // Direct match first
@@ -842,7 +842,7 @@ public class GenericDependencyScanner {
         }
         
         // No match found
-        logger.warn("❌ Could not find matching service for Feign client: '{}' (normalized: '{}'). Available services: {}", 
+        logger.warn("[FAIL] Could not find matching service for Feign client: '{}' (normalized: '{}'). Available services: {}", 
             feignClientName, normalizedFeignName, 
             allServices.stream().map(s -> s.getName() + " (" + normalizeServiceName(s.getName()) + ")").collect(java.util.stream.Collectors.joining(", ")));
         return null;
@@ -898,16 +898,16 @@ public class GenericDependencyScanner {
                         loadPropertiesFile(configPath);
                     }
                     logger.info("   ✓ Loaded properties from: {}", configFile);
-                    logger.debug("   📋 Properties loaded: {}", serviceProperties.keySet());
+                    logger.debug("   [LIST] Properties loaded: {}", serviceProperties.keySet());
                     foundAny = true;
                 } catch (Exception e) {
-                    logger.debug("   ⚠️  Error loading properties from {}: {}", configFile, e.getMessage());
+                    logger.debug("   [WARN]  Error loading properties from {}: {}", configFile, e.getMessage());
                 }
             }
         }
         
         if (!foundAny) {
-            logger.warn("   ⚠️  No config files found in {}/src/main/resources/", serviceName);
+            logger.warn("   [WARN]  No config files found in {}/src/main/resources/", serviceName);
         }
         
         // Also scan for any HTTP URLs directly in the config files (not as properties)
@@ -1002,7 +1002,7 @@ public class GenericDependencyScanner {
                 String withoutPrefix = parts[1];
                 value = serviceProperties.get(withoutPrefix);
                 if (value != null) {
-                    logger.debug("   💡 Found property without prefix: {} -> {}", withoutPrefix, value);
+                    logger.debug("   [TIP] Found property without prefix: {} -> {}", withoutPrefix, value);
                     return value;
                 }
             }
@@ -1013,7 +1013,7 @@ public class GenericDependencyScanner {
         if (!propertyKey.startsWith("feign.")) {
             value = serviceProperties.get("feign." + propertyKey);
             if (value != null) {
-                logger.debug("   💡 Found property with feign prefix: feign.{} -> {}", propertyKey, value);
+                logger.debug("   [TIP] Found property with feign prefix: feign.{} -> {}", propertyKey, value);
                 return value;
             }
         }
@@ -1286,7 +1286,7 @@ public class GenericDependencyScanner {
         if (endpointPath != null && !serviceEndpointsMap.isEmpty()) {
             String matchedService = findServiceByEndpoint(endpointPath);
             if (matchedService != null) {
-                logger.debug("🎯 Matched URL {} to service {} via endpoint lookup: {}", url, matchedService, endpointPath);
+                logger.debug("[MATCH] Matched URL {} to service {} via endpoint lookup: {}", url, matchedService, endpointPath);
                 return matchedService;
             }
         }
@@ -1313,7 +1313,7 @@ public class GenericDependencyScanner {
                         logger.debug("✓ Matched URL {} to service {} via name + endpoint validation", url, serviceName);
                         return serviceName;
                     } else {
-                        logger.debug("⚠️  URL contains '{}' but endpoint {} not found in that service", serviceName, endpointPath);
+                        logger.debug("[WARN]  URL contains '{}' but endpoint {} not found in that service", serviceName, endpointPath);
                         continue; // Try other services
                     }
                 } else {
@@ -1342,7 +1342,7 @@ public class GenericDependencyScanner {
         }
         
         // If we got here, it might be an external service (not in our service list)
-        logger.debug("❌ URL {} does not match any internal service - likely external dependency", url);
+        logger.debug("[FAIL] URL {} does not match any internal service - likely external dependency", url);
         return null;
     }
     
