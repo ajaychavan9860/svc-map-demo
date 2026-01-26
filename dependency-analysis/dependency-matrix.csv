@@ -8,6 +8,7 @@ order-service,email-service,rest-template,src/main/java/com/example/orderservice
 reporting-service,payment-service,feign-client,src/main/java/com/example/reportingservice/client/PaymentServiceClient.java,n/a
 reporting-service,order-service,feign-client,src/main/java/com/example/reportingservice/client/OrderServiceClient.java,n/a
 user-service,common-lib,maven-dependency,pom.xml,n/a
+user-service,order-service,feign-client,src/main/java/com/example/user/client/OrderServiceClient.java,n/a
 user-service,logging-service,rest-template,src/main/java/com/example/userservice/service/UserActivityService.java,http://logging-service:8088/api/logs/user-activity
 user-service,email-service,rest-template,src/main/java/com/example/userservice/service/UserActivityService.java,http://email-service:8087/api/email/send
 gateway-service,product-service,gateway,unknown,n/a

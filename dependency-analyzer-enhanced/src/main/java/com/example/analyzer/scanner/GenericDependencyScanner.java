@@ -1275,6 +1275,10 @@ public class GenericDependencyScanner {
     
     /**
      * Check if a service has a specific endpoint (with partial matching)
+     * Handles base paths in Feign URLs like:
+     *   URL: http://localhost:9095/ccgcore  + Endpoint: /v1/rawMessage
+     *   Full path: /ccgcore/v1/rawMessage
+     *   Controller only has: /v1/rawMessage
      */
     private boolean serviceHasEndpoint(String serviceName, String endpoint) {
         List<String> endpoints = serviceEndpointsMap.get(serviceName);
@@ -1284,17 +1288,33 @@ public class GenericDependencyScanner {
         
         // Exact match
         if (endpoints.contains(endpoint)) {
+            logger.debug("   ✓ Exact endpoint match: {}", endpoint);
             return true;
         }
         
         // Partial match (endpoint starts with any registered endpoint)
         for (String registeredEndpoint : endpoints) {
             if (endpoint.startsWith(registeredEndpoint) || registeredEndpoint.startsWith(endpoint)) {
+                logger.debug("   ✓ Partial endpoint match: {} ~ {}", endpoint, registeredEndpoint);
                 return true;
             }
         }
         
-        logger.debug("Endpoint {} not found in service {}", endpoint, serviceName);
+        // Special case: endpoint might have a base path prefix that should be ignored
+        // Example: /ccgcore/v1/rawMessage should match /v1/rawMessage
+        for (String registeredEndpoint : endpoints) {
+            if (endpoint.endsWith(registeredEndpoint)) {
+                logger.debug("   ✓ Suffix endpoint match: {} ends with {}", endpoint, registeredEndpoint);
+                return true;
+            }
+            // Or the registered endpoint might be part of the URL path
+            if (endpoint.contains(registeredEndpoint)) {
+                logger.debug("   ✓ Contains endpoint match: {} contains {}", endpoint, registeredEndpoint);
+                return true;
+            }
+        }
+        
+        logger.debug("   ✗ Endpoint {} not found in service {} (has: {})", endpoint, serviceName, endpoints);
         return false;
     }
     

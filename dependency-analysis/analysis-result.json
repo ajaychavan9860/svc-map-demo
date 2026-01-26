@@ -1,9 +1,9 @@
 {
-  "analysisTimestamp" : [ 2026, 1, 26, 11, 29, 12, 180187000 ],
-  "analysis_date" : [ 2026, 1, 26, 11, 29, 12, 180187000 ],
-  "project_path" : "/Users/ajay/svc-map-demo",
+  "analysisTimestamp" : [ 2026, 1, 26, 12, 22, 40, 445863000 ],
+  "analysis_date" : [ 2026, 1, 26, 12, 22, 40, 445863000 ],
+  "project_path" : ".",
   "total_services" : 14,
-  "total_dependencies" : 23,
+  "total_dependencies" : 24,
   "services" : [ {
     "name" : "product-service",
     "type" : "business",
@@ -213,7 +213,7 @@
     "framework" : null,
     "build_tool" : "maven",
     "language" : "java",
-    "config_files" : [ "application.properties" ],
+    "config_files" : [ "application.yml", "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
       "toService" : "common-lib",
@@ -258,6 +258,17 @@
       "source_file" : "src/main/java/com/example/orderservice/service/OrderNotificationService.java",
       "line_number" : null,
       "endpoint" : "http://email-service:8087/api/email/send",
+      "http_method" : null
+    }, {
+      "toService" : "configuration",
+      "type" : "Configuration reference to user-service",
+      "from_service" : "user-service",
+      "target_service" : "configuration",
+      "dependency_type" : "Configuration reference to user-service",
+      "description" : null,
+      "source_file" : "src/main/resources/application.yml",
+      "line_number" : null,
+      "endpoint" : null,
       "http_method" : null
     } ],
     "exposes_endpoints" : [ ],
@@ -342,7 +353,7 @@
     "framework" : null,
     "build_tool" : "maven",
     "language" : "java",
-    "config_files" : [ "application.properties" ],
+    "config_files" : [ "application.yml", "application.properties" ],
     "main_class" : null,
     "dependencies" : [ {
       "toService" : "common-lib",
@@ -353,6 +364,17 @@
       "description" : "Maven dependency on common-lib",
       "source_file" : "pom.xml",
       "line_number" : null,
+      "endpoint" : null,
+      "http_method" : null
+    }, {
+      "toService" : "order-service",
+      "type" : "feign-client",
+      "from_service" : "user-service",
+      "target_service" : "order-service",
+      "dependency_type" : "feign-client",
+      "description" : "Feign client call to order-service",
+      "source_file" : "src/main/java/com/example/user/client/OrderServiceClient.java",
+      "line_number" : 12,
       "endpoint" : null,
       "http_method" : null
     }, {
@@ -376,6 +398,17 @@
       "source_file" : "src/main/java/com/example/userservice/service/UserActivityService.java",
       "line_number" : null,
       "endpoint" : "http://email-service:8087/api/email/send",
+      "http_method" : null
+    }, {
+      "toService" : "configuration",
+      "type" : "Configuration reference to order-service",
+      "from_service" : "order-service",
+      "target_service" : "configuration",
+      "dependency_type" : "Configuration reference to order-service",
+      "description" : null,
+      "source_file" : "src/main/resources/application.yml",
+      "line_number" : null,
+      "endpoint" : null,
       "http_method" : null
     } ],
     "exposes_endpoints" : [ ],
@@ -504,6 +537,17 @@
     "description" : "Maven dependency on common-lib",
     "source_file" : "pom.xml",
     "line_number" : null,
+    "endpoint" : null,
+    "http_method" : null
+  }, {
+    "toService" : "order-service",
+    "type" : "feign-client",
+    "from_service" : "user-service",
+    "target_service" : "order-service",
+    "dependency_type" : "feign-client",
+    "description" : "Feign client call to order-service",
+    "source_file" : "src/main/java/com/example/user/client/OrderServiceClient.java",
+    "line_number" : 12,
     "endpoint" : null,
     "http_method" : null
   }, {

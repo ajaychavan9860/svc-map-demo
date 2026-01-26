@@ -2,8 +2,8 @@
 
 ## Executive Summary
 - **Total Services**: 14
-- **Total Dependencies**: 23
-- **Analysis Date**: 2026-01-26T11:29:12.180187
+- **Total Dependencies**: 24
+- **Analysis Date**: 2026-01-26T12:22:40.445863
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -19,7 +19,7 @@
 | analytics-service | 8090 | null | 0 |
 | email-service | 8087 | null | 0 |
 | reporting-service | 8089 | null | 2 |
-| user-service | 8081 | null | 3 |
+| user-service | 8081 | null | 4 |
 | common-lib | null | null | 0 |
 | inventory-service | 8085 | null | 0 |
 
@@ -61,6 +61,10 @@
 ### user-service → common-lib
 - **Type**: maven-dependency
 - **Source**: pom.xml
+
+### user-service → order-service
+- **Type**: feign-client
+- **Source**: src/main/java/com/example/user/client/OrderServiceClient.java
 
 ### user-service → logging-service
 - **Type**: rest-template
