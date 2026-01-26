@@ -142,27 +142,44 @@ public class GenericDependencyScanner {
             String annotationStr = annotation.toString();
             
             // Extract service name from @FeignClient annotation
-            String serviceName = null;
-            if (annotationStr.contains("name") || annotationStr.contains("value")) {
-                // Parse @FeignClient(name = "service-name")
+            // Supports patterns like:
+            // @FeignClient(name = "service-name")
+            // @FeignClient(value = "service-name")
+            // @FeignClient("service-name")
+            // @FeignClient(name = "service-name", url = "${service.url}")
+            String targetServiceName = null;
+            
+            if (annotationStr.contains("name") || annotationStr.contains("value") || annotationStr.contains("FeignClient(\"")) {
+                // Parse @FeignClient(name = "service-name") or @FeignClient("service-name")
                 String[] parts = annotationStr.split("[\"\']");
                 for (int i = 0; i < parts.length - 1; i++) {
-                    if (parts[i].contains("name") || parts[i].contains("value")) {
-                        serviceName = parts[i + 1];
+                    if (parts[i].contains("name") || parts[i].contains("value") || parts[i].contains("FeignClient(")) {
+                        // Get the next quoted string
+                        targetServiceName = parts[i + 1];
                         break;
                     }
                 }
             }
             
-            if (serviceName != null) {
+            if (targetServiceName != null && !targetServiceName.trim().isEmpty()) {
+                // Clean up service name (remove any trailing spaces or special chars)
+                targetServiceName = targetServiceName.trim();
+                
+                // Extract source service name from the service path
+                String sourceServiceName = servicePath.getFileName().toString();
+                
                 String relativeFile = servicePath.relativize(javaFile).toString();
                 ServiceDependency dependency = new ServiceDependency(
-                    serviceName, 
-                    "feign-client", 
-                    "Feign client call to " + serviceName
+                    sourceServiceName,        // fromService
+                    targetServiceName,        // targetService 
+                    "feign-client"           // dependencyType
                 );
+                dependency.setDescription("Feign client call to " + targetServiceName);
                 dependency.setSourceFile(relativeFile);
                 dependency.setLineNumber(annotation.getBegin().map(pos -> pos.line).orElse(null));
+                
+                logger.debug("Found Feign dependency: {} -> {}", sourceServiceName, targetServiceName);
+                
                 return dependency;
             }
             

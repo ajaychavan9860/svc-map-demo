@@ -1,0 +1,124 @@
+# Custom Analyzer Configuration for Your Project
+# Copy this file to your project root as 'analyzer-config.yml'
+# and modify the patterns to match your project's code style
+
+service_detection:
+  pomFiles:
+    - "**/pom.xml"
+  buildFiles:
+    - "**/build.gradle"
+    - "**/build.gradle.kts"
+    - "**/package.json"
+  configFiles:
+    - "**/application.yml"
+    - "**/application.yaml"
+    - "**/application.properties"
+    - "**/bootstrap.yml"
+    - "**/bootstrap.properties"
+  excludeDirectories:
+    - "target"
+    - "build"
+    - ".gradle"
+    - "node_modules"
+    - ".git"
+    - ".idea"
+    - ".vscode"
+    - "out"
+    - "bin"
+  includeDirectories:
+    - "src/main"
+    - "src"
+
+dependency_patterns:
+  # Feign Client patterns - add your custom annotations
+  feignClients:
+    - "@FeignClient"
+    - "@Service"
+    - "FeignClient"
+    - "@FeignClient("  # More specific pattern
+    - "@EnableFeignClients"
+    # Add your custom patterns here:
+    # - "@MyCustomFeignClient"
+    # - "@ExternalService"
+
+  # REST Template patterns - add your HTTP client usage
+  restTemplates:
+    - "RestTemplate"
+    - "WebClient"
+    - "HttpClient"
+    - "restTemplate"
+    - "webClient"
+    - "httpClient"
+    - "RestTemplate."
+    - "WebClient."
+    # Add your custom patterns:
+    # - "OkHttpClient"
+    # - "HttpURLConnection"
+    # - "axios"
+    # - "fetch("
+
+  # Gateway route patterns
+  gatewayRoutes:
+    - "spring.cloud.gateway.routes"
+    - "zuul.routes"
+    - "routes:"
+    - "route("
+    # Add your custom gateway patterns:
+    # - "nginx.conf"
+    # - "traefik"
+
+  # Messaging patterns
+  messagingQueues:
+    - "@RabbitListener"
+    - "@EventHandler"
+    - "@KafkaListener"
+    - "@JmsListener"
+    - "@SqsListener"
+    - "@PubSubListener"
+    # Add your custom messaging patterns:
+    # - "@MyMessageListener"
+    # - "kafkaTemplate"
+    # - "rabbitTemplate"
+
+  # Database patterns
+  databases:
+    - "@Repository"
+    - "JpaRepository"
+    - "MongoRepository"
+    - "CrudRepository"
+    - "@Entity"
+    - "@Table"
+    # Add your custom database patterns:
+    # - "@MyRepository"
+    # - "DataSource"
+    # - "JdbcTemplate"
+
+  # HTTP Controller patterns
+  httpAnnotations:
+    - "@RestController"
+    - "@Controller"
+    - "@GetMapping"
+    - "@PostMapping"
+    - "@PutMapping"
+    - "@DeleteMapping"
+    - "@RequestMapping"
+    - "@Path("
+    # Add your custom HTTP patterns:
+    # - "@MyController"
+    # - "@Endpoint"
+
+output_formats:
+  html: true
+  json: true
+  csv: true
+  markdown: true
+  dot: true
+  svg: true
+  png: false
+
+visualization:
+  showServiceTypes: true
+  showDependencyTypes: true
+  colorByServiceType: true
+  includeConfigServices: true
+  includeGatewayServices: true
