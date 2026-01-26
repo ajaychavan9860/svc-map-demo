@@ -203,6 +203,7 @@ public class GenericDependencyScanner {
      * - task-service -> TaskManagementService
      * - excel-generation-service -> excel-service
      * - user-service -> UserService
+     * - ccg-core-service -> task management service (word matching)
      */
     private String findMatchingServiceName(String feignClientName, List<ServiceInfo> allServices) {
         // Direct match first
@@ -233,20 +234,42 @@ public class GenericDependencyScanner {
             }
         }
         
+        // Try word-based matching (for cases like "task" matching "task management service")
+        String[] feignWords = normalizedFeignName.split("\\s+");
+        for (ServiceInfo service : allServices) {
+            String normalizedServiceName = normalizeServiceName(service.getName());
+            String[] serviceWords = normalizedServiceName.split("\\s+");
+            
+            // Check if any significant word matches
+            for (String feignWord : feignWords) {
+                if (feignWord.length() > 3) { // Only consider meaningful words
+                    for (String serviceWord : serviceWords) {
+                        if (serviceWord.contains(feignWord) || feignWord.contains(serviceWord)) {
+                            return service.getName();
+                        }
+                    }
+                }
+            }
+        }
+        
         // No match found
+        logger.warn("Could not find matching service for Feign client: '{}'. Available services: {}", 
+            feignClientName, allServices.stream().map(ServiceInfo::getName).toArray());
         return null;
     }
     
     /**
      * Normalize service name for matching
      * Converts: TaskManagementService, task-management-service, task_management_service
-     * To: taskmanagementservice
+     * To: task management
      */
     private String normalizeServiceName(String serviceName) {
         return serviceName
             .toLowerCase()
-            .replaceAll("[-_]", "")  // Remove hyphens and underscores
-            .replaceAll("service$", "");  // Remove trailing "service"
+            .replaceAll("[-_]", " ")  // Convert hyphens and underscores to spaces
+            .replaceAll("service$", "")  // Remove trailing "service"
+            .replaceAll("\\s+", " ")  // Normalize multiple spaces to single space
+            .trim();
     }
     
     private ServiceDependency extractRestTemplateDependency(MethodDeclaration method, Path javaFile, Path servicePath, List<ServiceInfo> allServices) {
