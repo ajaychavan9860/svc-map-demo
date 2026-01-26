@@ -102,7 +102,7 @@ public class EnhancedReportGenerator {
             }
         }
         
-        System.out.printf("   📊 CSV report: %s (%.1f KB)%n", 
+        System.out.printf("   [STATS] CSV report: %s (%.1f KB)%n", 
             csvPath.getFileName(), Files.size(csvPath) / 1024.0);
     }
     
@@ -152,7 +152,7 @@ public class EnhancedReportGenerator {
             }
         }
         
-        System.out.printf("   📝 Markdown report: %s (%.1f KB)%n", 
+        System.out.printf("   [NOTE] Markdown report: %s (%.1f KB)%n", 
             mdPath.getFileName(), Files.size(mdPath) / 1024.0);
     }
     
@@ -181,12 +181,12 @@ public class EnhancedReportGenerator {
             writer.println("<body>");
             
             writer.println("<div class='header'>");
-            writer.println("    <h1>🔄 Microservices Dependency Analysis</h1>");
+            writer.println("    <h1>[UPDATE] Microservices Dependency Analysis</h1>");
             writer.println("    <p>Enterprise-grade dependency mapping and impact analysis</p>");
             writer.println("</div>");
             
             writer.println("<div class='summary'>");
-            writer.println("    <h2>📊 Executive Summary</h2>");
+            writer.println("    <h2>[STATS] Executive Summary</h2>");
             writer.printf("    <p><strong>Analysis Date:</strong> %s</p>%n", 
                 result.getAnalysisTimestamp().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             writer.printf("    <p><strong>Total Services:</strong> %d</p>%n", result.getTotalServices());
@@ -195,7 +195,7 @@ public class EnhancedReportGenerator {
             // Calculate business metrics
             double avgDepsPerService = (double) result.getTotalDependencies() / result.getTotalServices();
             writer.printf("    <p><strong>Average Dependencies per Service:</strong> %.1f</p>%n", avgDepsPerService);
-            writer.printf("    <p><strong>🎯 Regression Testing Cost Reduction:</strong> ~%.0f%%</p>%n", 
+            writer.printf("    <p><strong>[MATCH] Regression Testing Cost Reduction:</strong> ~%.0f%%</p>%n", 
                 Math.min(90, avgDepsPerService * 15)); // Estimate based on targeted testing
             writer.println("</div>");
             
@@ -216,13 +216,13 @@ public class EnhancedReportGenerator {
             }
             writer.println("</table>");
             
-            writer.println("<h2>🔗 Dependency Relationships</h2>");
+            writer.println("<h2>[LINK] Dependency Relationships</h2>");
             
             Map<String, List<ServiceDependency>> dependenciesBySource = result.getDependencies().stream()
                 .collect(Collectors.groupingBy(ServiceDependency::getFromService));
                 
             for (Map.Entry<String, List<ServiceDependency>> entry : dependenciesBySource.entrySet()) {
-                writer.printf("<div class='service'><h3>📦 %s</h3>%n", entry.getKey());
+                writer.printf("<div class='service'><h3>[MAVEN] %s</h3>%n", entry.getKey());
                 
                 for (ServiceDependency dep : entry.getValue()) {
                     writer.printf("<div class='dependency'> ->  <strong>%s</strong> " +
@@ -243,7 +243,7 @@ public class EnhancedReportGenerator {
             writer.println("</html>");
         }
         
-        System.out.printf("   🌐 HTML report: %s (%.1f KB)%n", 
+        System.out.printf("   [URL] HTML report: %s (%.1f KB)%n", 
             htmlPath.getFileName(), Files.size(htmlPath) / 1024.0);
     }
 }

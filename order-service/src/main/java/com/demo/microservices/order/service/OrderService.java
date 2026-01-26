@@ -72,7 +72,7 @@ public class OrderService {
         try {
             // Test User Service Client
             UserServiceClient.UserDto user = userServiceClient.getUserById(userId);
-            result.append("✅ User Service Communication: ");
+            result.append("[OK] User Service Communication: ");
             if (user != null) {
                 result.append("SUCCESS - Found user: ").append(user.getName()).append(" (").append(user.getEmail()).append(")");
             } else {
@@ -82,7 +82,7 @@ public class OrderService {
             
             // Test Product Service Client  
             ProductServiceClient.ProductDto product = productServiceClient.getProductById(productId);
-            result.append("✅ Product Service Communication: ");
+            result.append("[OK] Product Service Communication: ");
             if (product != null) {
                 result.append("SUCCESS - Found product: ").append(product.getName()).append(" ($").append(product.getPrice()).append(")");
             } else {
@@ -91,7 +91,7 @@ public class OrderService {
             result.append("\n");
             
         } catch (Exception e) {
-            result.append("❌ ERROR: ").append(e.getMessage());
+            result.append("[FAIL] ERROR: ").append(e.getMessage());
         }
         
         return result.toString();

@@ -106,10 +106,10 @@ public class GraphVizJavaSvgGenerator {
                 
             System.out.println("[OK] GraphViz Java SVG diagram generated: " + outputPath);
             System.out.println("   🏆 Original GraphViz quality with ZERO system dependencies!");
-            System.out.println("   📦 Pure Maven solution - " + services.size() + " services, " + dependencies.size() + " dependencies");
+            System.out.println("   [MAVEN] Pure Maven solution - " + services.size() + " services, " + dependencies.size() + " dependencies");
         } catch (Exception e) {
             System.err.println("[WARN]  GraphViz Java generation failed: " + e.getMessage());
-            System.err.println("   💡 This is normal - some engines need additional setup");
+            System.err.println("   [TIP] This is normal - some engines need additional setup");
             
             // For now, throw the exception - we'll use PlantUML as backup
             throw new IOException("GraphViz Java generation failed: " + e.getMessage(), e);

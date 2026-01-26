@@ -27,23 +27,23 @@ public class MicroserviceAnalyzer {
         // Load configuration
         AnalyzerConfiguration config = loadConfiguration(configPath);
 
-        logger.info("🔍 Discovering services...");
+        logger.info("[SCAN] Discovering services...");
 
         // Discover services using generic patterns
         GenericServiceDiscovery serviceDiscovery = new GenericServiceDiscovery(config);
         List<ServiceInfo> services = serviceDiscovery.discoverServices(projectPath);
 
-        logger.info("📋 Found {} services:", services.size());
+        logger.info("[LIST] Found {} services:", services.size());
         services.forEach(service ->
             logger.info("   - {} ({}) at {}", service.getName(), service.getType(), service.getPath()));
 
-        logger.info("🔗 Analyzing dependencies...");
+        logger.info("[LINK] Analyzing dependencies...");
 
         // Analyze dependencies for each service
         GenericDependencyScanner dependencyScanner = new GenericDependencyScanner(config);
         
         // FIRST: Build endpoint map for all services (to validate dependencies and filter external services)
-        logger.info("📍 Building service endpoint map...");
+        logger.info("[INFO] Building service endpoint map...");
         dependencyScanner.buildServiceEndpointsMap(services, projectPath);
         
         List<ServiceDependency> allDependencies = new ArrayList<>();
@@ -72,7 +72,7 @@ public class MicroserviceAnalyzer {
         // Calculate total dependencies
         int totalDependencies = allDependencies.size();
 
-        logger.info("📊 Found {} dependency relationships", totalDependencies);
+        logger.info("[STATS] Found {} dependency relationships", totalDependencies);
 
         // Create analysis result
         AnalysisResult result = new AnalysisResult();
