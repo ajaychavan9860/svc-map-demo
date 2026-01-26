@@ -1,282 +1,275 @@
 <svg width="1200px" height="800px"
- viewBox="0.00 0.00 1064.00 673.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 953.00 673.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0.0) translate(4.0 669.0)">
 <title>microservices</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-669 1060.38,-669 1060.38,4 -4,4"/>
-<text xml:space="preserve" text-anchor="middle" x="528.19" y="-649.6" font-family="Arial" font-size="12.00">Microservices Dependency Graph</text>
-<text xml:space="preserve" text-anchor="middle" x="528.19" y="-635.35" font-family="Arial" font-size="12.00">(Generated with GraphViz Java &#45; Pure Maven)</text>
+<polygon fill="white" stroke="none" points="-4,4 -4,-669 949.38,-669 949.38,4 -4,4"/>
+<text xml:space="preserve" text-anchor="middle" x="472.69" y="-649.6" font-family="Arial" font-size="12.00">Microservices Dependency Graph</text>
+<text xml:space="preserve" text-anchor="middle" x="472.69" y="-635.35" font-family="Arial" font-size="12.00">(Generated with GraphViz Java &#45; Pure Maven)</text>
 <!-- product&#45;service -->
 <g id="node1" class="node">
 <title>product&#45;service</title>
-<path fill="lightblue" stroke="black" d="M795.38,-154.5C795.38,-154.5 736.62,-154.5 736.62,-154.5 730.62,-154.5 724.62,-148.5 724.62,-142.5 724.62,-142.5 724.62,-130.5 724.62,-130.5 724.62,-124.5 730.62,-118.5 736.62,-118.5 736.62,-118.5 795.38,-118.5 795.38,-118.5 801.38,-118.5 807.38,-124.5 807.38,-130.5 807.38,-130.5 807.38,-142.5 807.38,-142.5 807.38,-148.5 801.38,-154.5 795.38,-154.5"/>
-<text xml:space="preserve" text-anchor="middle" x="766" y="-139" font-family="Arial" font-size="10.00">product&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="766" y="-127" font-family="Arial" font-size="10.00">Port: 8082</text>
+<path fill="lightblue" stroke="black" d="M106.38,-154.5C106.38,-154.5 47.62,-154.5 47.62,-154.5 41.63,-154.5 35.62,-148.5 35.62,-142.5 35.62,-142.5 35.62,-130.5 35.62,-130.5 35.62,-124.5 41.62,-118.5 47.62,-118.5 47.62,-118.5 106.38,-118.5 106.38,-118.5 112.38,-118.5 118.38,-124.5 118.38,-130.5 118.38,-130.5 118.38,-142.5 118.38,-142.5 118.38,-148.5 112.38,-154.5 106.38,-154.5"/>
+<text xml:space="preserve" text-anchor="middle" x="77" y="-139" font-family="Arial" font-size="10.00">product&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="77" y="-127" font-family="Arial" font-size="10.00">Port: 8082</text>
 </g>
 <!-- config&#45;service -->
 <g id="node2" class="node">
 <title>config&#45;service</title>
-<path fill="lightyellow" stroke="black" d="M595.38,-628.5C595.38,-628.5 542.62,-628.5 542.62,-628.5 536.62,-628.5 530.62,-622.5 530.62,-616.5 530.62,-616.5 530.62,-604.5 530.62,-604.5 530.62,-598.5 536.62,-592.5 542.62,-592.5 542.62,-592.5 595.38,-592.5 595.38,-592.5 601.38,-592.5 607.38,-598.5 607.38,-604.5 607.38,-604.5 607.38,-616.5 607.38,-616.5 607.38,-622.5 601.38,-628.5 595.38,-628.5"/>
-<text xml:space="preserve" text-anchor="middle" x="569" y="-613" font-family="Arial" font-size="10.00">config&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="569" y="-601" font-family="Arial" font-size="10.00">Port: 8761</text>
+<path fill="lightyellow" stroke="black" d="M484.38,-628.5C484.38,-628.5 431.62,-628.5 431.62,-628.5 425.62,-628.5 419.62,-622.5 419.62,-616.5 419.62,-616.5 419.62,-604.5 419.62,-604.5 419.62,-598.5 425.62,-592.5 431.62,-592.5 431.62,-592.5 484.38,-592.5 484.38,-592.5 490.38,-592.5 496.38,-598.5 496.38,-604.5 496.38,-604.5 496.38,-616.5 496.38,-616.5 496.38,-622.5 490.38,-628.5 484.38,-628.5"/>
+<text xml:space="preserve" text-anchor="middle" x="458" y="-613" font-family="Arial" font-size="10.00">config&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="458" y="-601" font-family="Arial" font-size="10.00">Port: 8761</text>
 </g>
 <!-- notification&#45;service -->
 <g id="node3" class="node">
 <title>notification&#45;service</title>
-<path fill="lightcyan" stroke="black" d="M113.88,-510C113.88,-510 40.12,-510 40.12,-510 34.12,-510 28.12,-504 28.12,-498 28.12,-498 28.12,-486 28.12,-486 28.12,-480 34.12,-474 40.12,-474 40.12,-474 113.88,-474 113.88,-474 119.88,-474 125.88,-480 125.88,-486 125.88,-486 125.88,-498 125.88,-498 125.88,-504 119.88,-510 113.88,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="77" y="-494.5" font-family="Arial" font-size="10.00">notification&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="77" y="-482.5" font-family="Arial" font-size="10.00">Port: 8086</text>
+<path fill="lightcyan" stroke="black" d="M576.88,-510C576.88,-510 503.12,-510 503.12,-510 497.12,-510 491.12,-504 491.12,-498 491.12,-498 491.12,-486 491.12,-486 491.12,-480 497.12,-474 503.12,-474 503.12,-474 576.88,-474 576.88,-474 582.88,-474 588.88,-480 588.88,-486 588.88,-486 588.88,-498 588.88,-498 588.88,-504 582.88,-510 576.88,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="540" y="-494.5" font-family="Arial" font-size="10.00">notification&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="540" y="-482.5" font-family="Arial" font-size="10.00">Port: 8086</text>
 </g>
 <!-- dependency&#45;analyzer&#45;enhanced -->
 <g id="node4" class="node">
 <title>dependency&#45;analyzer&#45;enhanced</title>
-<path fill="lightgray" stroke="black" d="M285.62,-510C285.62,-510 156.38,-510 156.38,-510 150.38,-510 144.38,-504 144.38,-498 144.38,-498 144.38,-486 144.38,-486 144.38,-480 150.38,-474 156.38,-474 156.38,-474 285.62,-474 285.62,-474 291.62,-474 297.62,-480 297.62,-486 297.62,-486 297.62,-498 297.62,-498 297.62,-504 291.62,-510 285.62,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="221" y="-494.5" font-family="Arial" font-size="10.00">dependency&#45;analyzer&#45;enhanced</text>
-<text xml:space="preserve" text-anchor="middle" x="221" y="-482.5" font-family="Arial" font-size="10.00">Port: null</text>
+<path fill="lightgray" stroke="black" d="M748.62,-510C748.62,-510 619.38,-510 619.38,-510 613.38,-510 607.38,-504 607.38,-498 607.38,-498 607.38,-486 607.38,-486 607.38,-480 613.38,-474 619.38,-474 619.38,-474 748.62,-474 748.62,-474 754.62,-474 760.62,-480 760.62,-486 760.62,-486 760.62,-498 760.62,-498 760.62,-504 754.62,-510 748.62,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="684" y="-494.5" font-family="Arial" font-size="10.00">dependency&#45;analyzer&#45;enhanced</text>
+<text xml:space="preserve" text-anchor="middle" x="684" y="-482.5" font-family="Arial" font-size="10.00">Port: null</text>
 </g>
 <!-- payment&#45;service -->
 <g id="node5" class="node">
 <title>payment&#45;service</title>
-<path fill="lightcyan" stroke="black" d="M493,-391.5C493,-391.5 429,-391.5 429,-391.5 423,-391.5 417,-385.5 417,-379.5 417,-379.5 417,-367.5 417,-367.5 417,-361.5 423,-355.5 429,-355.5 429,-355.5 493,-355.5 493,-355.5 499,-355.5 505,-361.5 505,-367.5 505,-367.5 505,-379.5 505,-379.5 505,-385.5 499,-391.5 493,-391.5"/>
-<text xml:space="preserve" text-anchor="middle" x="461" y="-376" font-family="Arial" font-size="10.00">payment&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="461" y="-364" font-family="Arial" font-size="10.00">Port: 8084</text>
+<path fill="lightcyan" stroke="black" d="M298,-391.5C298,-391.5 234,-391.5 234,-391.5 228,-391.5 222,-385.5 222,-379.5 222,-379.5 222,-367.5 222,-367.5 222,-361.5 228,-355.5 234,-355.5 234,-355.5 298,-355.5 298,-355.5 304,-355.5 310,-361.5 310,-367.5 310,-367.5 310,-379.5 310,-379.5 310,-385.5 304,-391.5 298,-391.5"/>
+<text xml:space="preserve" text-anchor="middle" x="266" y="-376" font-family="Arial" font-size="10.00">payment&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="266" y="-364" font-family="Arial" font-size="10.00">Port: 8084</text>
 </g>
 <!-- order&#45;service -->
 <g id="node6" class="node">
 <title>order&#45;service</title>
-<path fill="lightblue" stroke="black" d="M654.12,-273C654.12,-273 605.88,-273 605.88,-273 599.88,-273 593.88,-267 593.88,-261 593.88,-261 593.88,-249 593.88,-249 593.88,-243 599.88,-237 605.88,-237 605.88,-237 654.12,-237 654.12,-237 660.12,-237 666.12,-243 666.12,-249 666.12,-249 666.12,-261 666.12,-261 666.12,-267 660.12,-273 654.12,-273"/>
-<text xml:space="preserve" text-anchor="middle" x="630" y="-257.5" font-family="Arial" font-size="10.00">order&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="630" y="-245.5" font-family="Arial" font-size="10.00">Port: 8083</text>
+<path fill="lightblue" stroke="black" d="M189.12,-273C189.12,-273 140.88,-273 140.88,-273 134.88,-273 128.88,-267 128.88,-261 128.88,-261 128.88,-249 128.88,-249 128.88,-243 134.88,-237 140.88,-237 140.88,-237 189.12,-237 189.12,-237 195.12,-237 201.12,-243 201.12,-249 201.12,-249 201.12,-261 201.12,-261 201.12,-267 195.12,-273 189.12,-273"/>
+<text xml:space="preserve" text-anchor="middle" x="165" y="-257.5" font-family="Arial" font-size="10.00">order&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="165" y="-245.5" font-family="Arial" font-size="10.00">Port: 8083</text>
 </g>
 <!-- payment&#45;service&#45;&gt;order&#45;service -->
 <g id="edge1" class="edge">
 <title>payment&#45;service&#45;&gt;order&#45;service</title>
-<path fill="none" stroke="blue" d="M491.32,-355.16C508.28,-345.18 529.65,-332.14 548,-319.5 565.85,-307.21 585.05,-292.44 600.37,-280.23"/>
-<polygon fill="blue" stroke="blue" points="607.96,-274.15 602.97,-283.91 605.01,-276.51 600.16,-280.4 600.16,-280.4 600.16,-280.4 605.01,-276.51 597.34,-276.89 607.96,-274.15"/>
-<text xml:space="preserve" text-anchor="middle" x="584.34" y="-310.95" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
+<path fill="none" stroke="blue" d="M244.01,-355.07C232.34,-345.27 218.15,-332.43 207,-319.5 197.22,-308.16 187.87,-294.42 180.49,-282.63"/>
+<polygon fill="blue" stroke="blue" points="175.42,-274.32 184.47,-280.51 177.39,-277.54 180.62,-282.85 180.62,-282.85 180.62,-282.85 177.39,-277.54 176.78,-285.2 175.42,-274.32"/>
+<text xml:space="preserve" text-anchor="middle" x="229.5" y="-310.95" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
 </g>
 <!-- email&#45;service -->
 <g id="node9" class="node">
 <title>email&#45;service</title>
-<path fill="lightgray" stroke="black" d="M566.88,-36C566.88,-36 517.12,-36 517.12,-36 511.12,-36 505.12,-30 505.12,-24 505.12,-24 505.12,-12 505.12,-12 505.12,-6 511.12,0 517.12,0 517.12,0 566.88,0 566.88,0 572.88,0 578.88,-6 578.88,-12 578.88,-12 578.88,-24 578.88,-24 578.88,-30 572.88,-36 566.88,-36"/>
-<text xml:space="preserve" text-anchor="middle" x="542" y="-20.5" font-family="Arial" font-size="10.00">email&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="542" y="-8.5" font-family="Arial" font-size="10.00">Port: 8087</text>
+<path fill="lightgray" stroke="black" d="M240.88,-36C240.88,-36 191.12,-36 191.12,-36 185.12,-36 179.12,-30 179.12,-24 179.12,-24 179.12,-12 179.12,-12 179.12,-6 185.12,0 191.12,0 191.12,0 240.88,0 240.88,0 246.88,0 252.88,-6 252.88,-12 252.88,-12 252.88,-24 252.88,-24 252.88,-30 246.88,-36 240.88,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="216" y="-20.5" font-family="Arial" font-size="10.00">email&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="216" y="-8.5" font-family="Arial" font-size="10.00">Port: 8087</text>
 </g>
 <!-- payment&#45;service&#45;&gt;email&#45;service -->
 <g id="edge2" class="edge">
 <title>payment&#45;service&#45;&gt;email&#45;service</title>
-<path fill="none" stroke="blue" d="M459.69,-355.17C457.67,-322.48 455.31,-249.72 468.75,-190.5 480.9,-136.94 509.11,-79.05 526.77,-46.1"/>
-<polygon fill="blue" stroke="blue" points="531.51,-37.38 530.68,-48.31 529.7,-40.7 526.73,-46.16 526.73,-46.16 526.73,-46.16 529.7,-40.7 522.78,-44.01 531.51,-37.38"/>
-<text xml:space="preserve" text-anchor="middle" x="495.38" y="-192.45" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M266.63,-355.04C267.77,-313.55 268.61,-205.98 251,-118.5 245.96,-93.47 236.03,-66.2 228.03,-46.54"/>
+<polygon fill="blue" stroke="blue" points="224.18,-37.32 232.19,-44.82 225.64,-40.81 228.03,-46.55 228.03,-46.55 228.03,-46.55 225.64,-40.81 223.88,-48.28 224.18,-37.32"/>
+<text xml:space="preserve" text-anchor="middle" x="289.03" y="-192.45" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- order&#45;service&#45;&gt;product&#45;service -->
 <g id="edge3" class="edge">
 <title>order&#45;service&#45;&gt;product&#45;service</title>
-<path fill="none" stroke="blue" d="M650.36,-236.56C673.53,-216.71 711.52,-184.17 737.6,-161.83"/>
-<polygon fill="blue" stroke="blue" points="745.02,-155.47 740.35,-165.4 742.15,-157.93 737.42,-161.98 737.42,-161.98 737.42,-161.98 742.15,-157.93 734.5,-158.56 745.02,-155.47"/>
-<text xml:space="preserve" text-anchor="middle" x="724.58" y="-192.45" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
+<path fill="none" stroke="blue" d="M141.31,-236.53C129.58,-227 115.86,-214.43 106,-201 98.03,-190.16 91.52,-176.78 86.7,-165.1"/>
+<polygon fill="blue" stroke="blue" points="83.2,-156.11 91.02,-163.79 84.57,-159.63 86.83,-165.43 86.83,-165.43 86.83,-165.43 84.57,-159.63 82.64,-167.06 83.2,-156.11"/>
+<text xml:space="preserve" text-anchor="middle" x="128.5" y="-192.45" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
 </g>
 <!-- user&#45;service -->
 <g id="node7" class="node">
 <title>user&#45;service</title>
-<path fill="lightblue" stroke="black" d="M415.62,-154.5C415.62,-154.5 370.38,-154.5 370.38,-154.5 364.38,-154.5 358.38,-148.5 358.38,-142.5 358.38,-142.5 358.38,-130.5 358.38,-130.5 358.38,-124.5 364.38,-118.5 370.38,-118.5 370.38,-118.5 415.62,-118.5 415.62,-118.5 421.62,-118.5 427.62,-124.5 427.62,-130.5 427.62,-130.5 427.62,-142.5 427.62,-142.5 427.62,-148.5 421.62,-154.5 415.62,-154.5"/>
-<text xml:space="preserve" text-anchor="middle" x="393" y="-139" font-family="Arial" font-size="10.00">user&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="393" y="-127" font-family="Arial" font-size="10.00">Port: 8081</text>
+<path fill="lightblue" stroke="black" d="M449.62,-154.5C449.62,-154.5 404.38,-154.5 404.38,-154.5 398.38,-154.5 392.38,-148.5 392.38,-142.5 392.38,-142.5 392.38,-130.5 392.38,-130.5 392.38,-124.5 398.38,-118.5 404.38,-118.5 404.38,-118.5 449.62,-118.5 449.62,-118.5 455.62,-118.5 461.62,-124.5 461.62,-130.5 461.62,-130.5 461.62,-142.5 461.62,-142.5 461.62,-148.5 455.62,-154.5 449.62,-154.5"/>
+<text xml:space="preserve" text-anchor="middle" x="427" y="-139" font-family="Arial" font-size="10.00">user&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="427" y="-127" font-family="Arial" font-size="10.00">Port: 8081</text>
 </g>
 <!-- order&#45;service&#45;&gt;user&#45;service -->
 <g id="edge4" class="edge">
 <title>order&#45;service&#45;&gt;user&#45;service</title>
-<path fill="none" stroke="blue" d="M604.2,-236.55C583.57,-223.03 553.63,-204.31 526,-190.5 497.57,-176.28 464.36,-163.05 438.23,-153.35"/>
-<polygon fill="blue" stroke="blue" points="429.01,-149.98 439.95,-149.19 432.56,-151.28 438.4,-153.42 438.4,-153.42 438.4,-153.42 432.56,-151.28 436.85,-157.64 429.01,-149.98"/>
-<text xml:space="preserve" text-anchor="middle" x="566.14" y="-192.45" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
+<path fill="none" stroke="blue" d="M169.9,-236.51C174.88,-222.01 184.01,-201.98 199,-190.5 252.12,-149.8 331.24,-139.53 380.93,-137.38"/>
+<polygon fill="blue" stroke="blue" points="390.77,-137.06 380.92,-141.89 386.99,-137.18 380.77,-137.39 380.77,-137.39 380.77,-137.39 386.99,-137.18 380.62,-132.89 390.77,-137.06"/>
+<text xml:space="preserve" text-anchor="middle" x="221.5" y="-192.45" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
 </g>
 <!-- order&#45;service&#45;&gt;email&#45;service -->
 <g id="edge5" class="edge">
 <title>order&#45;service&#45;&gt;email&#45;service</title>
-<path fill="none" stroke="blue" d="M623.53,-236.72C608.43,-196.4 570.77,-95.83 552.4,-46.78"/>
-<polygon fill="blue" stroke="blue" points="548.91,-37.45 556.63,-45.23 550.23,-40.99 552.41,-46.81 552.41,-46.81 552.41,-46.81 550.23,-40.99 548.2,-48.39 548.91,-37.45"/>
-<text xml:space="preserve" text-anchor="middle" x="618.48" y="-133.2" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M168.75,-236.72C177.48,-196.49 199.24,-96.25 209.9,-47.09"/>
+<polygon fill="blue" stroke="blue" points="211.99,-37.5 214.26,-48.22 211.18,-41.19 209.87,-47.27 209.87,-47.27 209.87,-47.27 211.18,-41.19 205.47,-46.31 211.99,-37.5"/>
+<text xml:space="preserve" text-anchor="middle" x="220.52" y="-133.2" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- logging&#45;service -->
 <g id="node8" class="node">
 <title>logging&#45;service</title>
-<path fill="lightgray" stroke="black" d="M118.62,-36C118.62,-36 61.38,-36 61.38,-36 55.38,-36 49.38,-30 49.38,-24 49.38,-24 49.38,-12 49.38,-12 49.38,-6 55.38,0 61.38,0 61.38,0 118.62,0 118.62,0 124.62,0 130.62,-6 130.62,-12 130.62,-12 130.62,-24 130.62,-24 130.62,-30 124.62,-36 118.62,-36"/>
-<text xml:space="preserve" text-anchor="middle" x="90" y="-20.5" font-family="Arial" font-size="10.00">logging&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="90" y="-8.5" font-family="Arial" font-size="10.00">Port: 8088</text>
+<path fill="lightgray" stroke="black" d="M693.62,-36C693.62,-36 636.38,-36 636.38,-36 630.38,-36 624.38,-30 624.38,-24 624.38,-24 624.38,-12 624.38,-12 624.38,-6 630.38,0 636.38,0 636.38,0 693.62,0 693.62,0 699.62,0 705.62,-6 705.62,-12 705.62,-12 705.62,-24 705.62,-24 705.62,-30 699.62,-36 693.62,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="665" y="-20.5" font-family="Arial" font-size="10.00">logging&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="665" y="-8.5" font-family="Arial" font-size="10.00">Port: 8088</text>
 </g>
 <!-- user&#45;service&#45;&gt;logging&#45;service -->
 <g id="edge6" class="edge">
 <title>user&#45;service&#45;&gt;logging&#45;service</title>
-<path fill="none" stroke="blue" d="M357.95,-122.02C304.64,-101.53 202.89,-62.41 141.27,-38.71"/>
-<polygon fill="blue" stroke="blue" points="132.14,-35.2 143.08,-34.59 135.67,-36.56 141.47,-38.79 141.47,-38.79 141.47,-38.79 135.67,-36.56 139.85,-42.99 132.14,-35.2"/>
-<text xml:space="preserve" text-anchor="middle" x="277.21" y="-73.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M462.12,-118.31C503.83,-97.89 573.52,-63.78 619.38,-41.33"/>
+<polygon fill="blue" stroke="blue" points="628.25,-36.99 621.25,-45.43 624.86,-38.65 619.27,-41.38 619.27,-41.38 619.27,-41.38 624.86,-38.65 617.29,-37.34 628.25,-36.99"/>
+<text xml:space="preserve" text-anchor="middle" x="579.76" y="-73.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- user&#45;service&#45;&gt;email&#45;service -->
 <g id="edge7" class="edge">
 <title>user&#45;service&#45;&gt;email&#45;service</title>
-<path fill="none" stroke="blue" d="M390.87,-118.01C390.16,-104.09 391.48,-84.88 401.75,-72 424.11,-43.97 463.02,-30.76 494.19,-24.53"/>
-<polygon fill="blue" stroke="blue" points="503.65,-22.83 494.61,-29.03 499.93,-23.5 493.81,-24.6 493.81,-24.6 493.81,-24.6 499.93,-23.5 493.01,-20.17 503.65,-22.83"/>
-<text xml:space="preserve" text-anchor="middle" x="428.38" y="-73.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M395.41,-118.06C358.56,-97.71 297.52,-64.01 257.03,-41.65"/>
+<polygon fill="blue" stroke="blue" points="248.53,-36.96 259.46,-37.85 251.84,-38.79 257.28,-41.79 257.28,-41.79 257.28,-41.79 251.84,-38.79 255.11,-45.73 248.53,-36.96"/>
+<text xml:space="preserve" text-anchor="middle" x="354.45" y="-73.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- gateway&#45;service -->
 <g id="node10" class="node">
 <title>gateway&#45;service</title>
-<path fill="lightgreen" stroke="black" d="M500.62,-628.5C500.62,-628.5 437.38,-628.5 437.38,-628.5 431.38,-628.5 425.38,-622.5 425.38,-616.5 425.38,-616.5 425.38,-604.5 425.38,-604.5 425.38,-598.5 431.38,-592.5 437.38,-592.5 437.38,-592.5 500.62,-592.5 500.62,-592.5 506.62,-592.5 512.62,-598.5 512.62,-604.5 512.62,-604.5 512.62,-616.5 512.62,-616.5 512.62,-622.5 506.62,-628.5 500.62,-628.5"/>
-<text xml:space="preserve" text-anchor="middle" x="469" y="-613" font-family="Arial" font-size="10.00">gateway&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="469" y="-601" font-family="Arial" font-size="10.00">Port: 8080</text>
+<path fill="lightgreen" stroke="black" d="M389.62,-628.5C389.62,-628.5 326.38,-628.5 326.38,-628.5 320.38,-628.5 314.38,-622.5 314.38,-616.5 314.38,-616.5 314.38,-604.5 314.38,-604.5 314.38,-598.5 320.38,-592.5 326.38,-592.5 326.38,-592.5 389.62,-592.5 389.62,-592.5 395.62,-592.5 401.62,-598.5 401.62,-604.5 401.62,-604.5 401.62,-616.5 401.62,-616.5 401.62,-622.5 395.62,-628.5 389.62,-628.5"/>
+<text xml:space="preserve" text-anchor="middle" x="358" y="-613" font-family="Arial" font-size="10.00">gateway&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="358" y="-601" font-family="Arial" font-size="10.00">Port: 8080</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;product&#45;service -->
 <g id="edge8" class="edge">
 <title>gateway&#45;service&#45;&gt;product&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M513.06,-594.58C516.06,-593.81 519.07,-593.1 522,-592.5 604.87,-575.48 841.24,-616.39 901,-556.5 979,-478.33 963,-411.93 923,-309 898.3,-245.43 837.82,-191.07 799.54,-161.45"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="791.77,-155.55 802.45,-158.01 794.78,-157.84 799.73,-161.59 799.73,-161.59 799.73,-161.59 794.78,-157.84 797.01,-165.18 791.77,-155.55"/>
-<text xml:space="preserve" text-anchor="middle" x="967.18" y="-370.2" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M314.2,-602.36C229.16,-587.26 50,-548.81 50,-493 50,-493 50,-493 50,-254 50,-223.13 59.11,-188.83 66.74,-165.49"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="69.93,-156.12 70.97,-167.04 68.71,-159.7 66.71,-165.59 66.71,-165.59 66.71,-165.59 68.71,-159.7 62.45,-164.14 69.93,-156.12"/>
+<text xml:space="preserve" text-anchor="middle" x="67.25" y="-370.2" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;notification&#45;service -->
 <g id="edge9" class="edge">
 <title>gateway&#45;service&#45;&gt;notification&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M424.99,-602.43C375.9,-593.96 294.46,-578.15 226.5,-556.5 190.81,-545.13 151.9,-528.46 122.73,-515.06"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="113.94,-510.98 124.91,-511.11 117.37,-512.57 123.01,-515.19 123.01,-515.19 123.01,-515.19 117.37,-512.57 121.12,-519.27 113.94,-510.98"/>
-<text xml:space="preserve" text-anchor="middle" x="243.75" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M391.55,-592.07C410.01,-582.17 433.12,-569.23 453,-556.5 472.13,-544.25 492.7,-529.32 509.03,-517.02"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="516.66,-511.22 511.42,-520.86 513.65,-513.51 508.7,-517.27 508.7,-517.27 508.7,-517.27 513.65,-513.51 505.98,-513.69 516.66,-511.22"/>
+<text xml:space="preserve" text-anchor="middle" x="484.95" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;dependency&#45;analyzer&#45;enhanced -->
 <g id="edge10" class="edge">
 <title>gateway&#45;service&#45;&gt;dependency&#45;analyzer&#45;enhanced</title>
-<path fill="none" stroke="darkgreen" d="M425.08,-604.58C384.3,-598.4 323.18,-584.94 277.5,-556.5 262.28,-547.02 248.78,-532.24 238.79,-519.32"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="232.89,-511.32 242.45,-516.7 235.14,-514.36 238.83,-519.37 238.83,-519.37 238.83,-519.37 235.14,-514.36 235.21,-522.04 232.89,-511.32"/>
-<text xml:space="preserve" text-anchor="middle" x="294.75" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M401.97,-593.79C459.5,-573.23 560.56,-537.11 624.79,-514.16"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="634.01,-510.86 626.11,-518.47 630.45,-512.14 624.6,-514.23 624.6,-514.23 624.6,-514.23 630.45,-512.14 623.08,-509.99 634.01,-510.86"/>
+<text xml:space="preserve" text-anchor="middle" x="548.02" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;payment&#45;service -->
 <g id="edge11" class="edge">
 <title>gateway&#45;service&#45;&gt;payment&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M446.39,-592.21C425.04,-574.32 394.41,-544.22 381.5,-510 365.91,-468.66 401.89,-425.37 430.41,-399.16"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="437.67,-392.73 433.18,-402.73 434.84,-395.24 430.19,-399.36 430.19,-399.36 430.19,-399.36 434.84,-395.24 427.2,-396 437.67,-392.73"/>
-<text xml:space="preserve" text-anchor="middle" x="398.75" y="-488.7" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M335.33,-592.19C313.88,-574.29 283.01,-544.19 269.5,-510 255.73,-475.15 257.73,-431.22 261.22,-403"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="262.59,-393.14 265.67,-403.67 262.07,-396.89 261.21,-403.05 261.21,-403.05 261.21,-403.05 262.07,-396.89 256.76,-402.43 262.59,-393.14"/>
+<text xml:space="preserve" text-anchor="middle" x="286.75" y="-488.7" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;order&#45;service -->
 <g id="edge13" class="edge">
 <title>gateway&#45;service&#45;&gt;order&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M512.91,-595.25C591.3,-569.7 748.12,-517.98 758,-510 805.94,-471.28 813.38,-450.84 830,-391.5 834.31,-376.09 838.43,-369.1 830,-355.5 796.75,-301.82 724.89,-276.17 676.99,-264.62"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="667.45,-262.44 678.2,-260.28 671.13,-263.28 677.2,-264.66 677.2,-264.66 677.2,-264.66 671.13,-263.28 676.19,-269.05 667.45,-262.44"/>
-<text xml:space="preserve" text-anchor="middle" x="836.25" y="-429.45" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M313.95,-605.94C257.98,-598.68 164.31,-576.67 128,-510 87.49,-435.62 127.52,-331.69 150.84,-283.07"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="155.12,-274.39 154.73,-285.35 153.45,-277.78 150.69,-283.36 150.69,-283.36 150.69,-283.36 153.45,-277.78 146.66,-281.37 155.12,-274.39"/>
+<text xml:space="preserve" text-anchor="middle" x="127.98" y="-429.45" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;user&#45;service -->
 <g id="edge17" class="edge">
 <title>gateway&#45;service&#45;&gt;user&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M424.93,-594.74C382.91,-577.55 326,-544.72 326,-493 326,-493 326,-493 326,-254 326,-218.98 349.03,-184.98 368.08,-162.84"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="374.58,-155.59 371.26,-166.04 372.06,-158.4 367.91,-163.04 367.91,-163.04 367.91,-163.04 372.06,-158.4 364.56,-160.03 374.58,-155.59"/>
-<text xml:space="preserve" text-anchor="middle" x="343.25" y="-370.2" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M401.87,-595.11C404.95,-594.19 408.02,-593.32 411,-592.5 578.56,-546.63 789,-666.72 789,-493 789,-493 789,-493 789,-254 789,-188.35 570.53,-154.39 473.03,-142.51"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="463.25,-141.34 473.71,-138.06 467,-141.79 473.18,-142.52 473.18,-142.52 473.18,-142.52 467,-141.79 472.65,-146.99 463.25,-141.34"/>
+<text xml:space="preserve" text-anchor="middle" x="806.25" y="-370.2" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;logging&#45;service -->
 <g id="edge12" class="edge">
 <title>gateway&#45;service&#45;&gt;logging&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M424.88,-607.91C308.13,-602.52 0,-580.04 0,-493 0,-493 0,-493 0,-135.5 0,-97.55 30.28,-64.43 55.71,-43.3"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="63.5,-37.1 58.48,-46.85 60.54,-39.46 55.68,-43.33 55.68,-43.33 55.68,-43.33 60.54,-39.46 52.87,-39.81 63.5,-37.1"/>
-<text xml:space="preserve" text-anchor="middle" x="17.25" y="-310.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M402.06,-594.58C405.06,-593.81 408.07,-593.1 411,-592.5 576.74,-558.46 637.35,-629.49 790,-556.5 825.58,-539.48 852,-532.44 852,-493 852,-493 852,-493 852,-135.5 852,-71.49 772.09,-41.38 716.75,-28.21"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="707.23,-26.06 717.97,-23.87 710.92,-26.89 716.98,-28.26 716.98,-28.26 716.98,-28.26 710.92,-26.89 715.99,-32.65 707.23,-26.06"/>
+<text xml:space="preserve" text-anchor="middle" x="869.25" y="-310.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;email&#45;service -->
 <g id="edge15" class="edge">
 <title>gateway&#45;service&#45;&gt;email&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M512.9,-595.21C515.98,-594.28 519.03,-593.36 522,-592.5 683.46,-545.58 887,-661.14 887,-493 887,-493 887,-493 887,-135.5 887,-73.61 685.2,-38.24 590.27,-25.03"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="580.46,-23.69 590.97,-20.58 584.2,-24.2 590.36,-25.04 590.36,-25.04 590.36,-25.04 584.2,-24.2 589.76,-29.5 580.46,-23.69"/>
-<text xml:space="preserve" text-anchor="middle" x="904.25" y="-310.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M314.1,-604.6C218.51,-592.7 0,-558.36 0,-493 0,-493 0,-493 0,-135.5 0,-59.74 104.22,-33.02 167.87,-23.76"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="177.66,-22.44 168.35,-28.24 173.91,-22.95 167.75,-23.78 167.75,-23.78 167.75,-23.78 173.91,-22.95 167.15,-19.32 177.66,-22.44"/>
+<text xml:space="preserve" text-anchor="middle" x="17.25" y="-310.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- analytics&#45;service -->
 <g id="node11" class="node">
 <title>analytics&#45;service</title>
-<path fill="lightgray" stroke="black" d="M636.75,-510C636.75,-510 571.25,-510 571.25,-510 565.25,-510 559.25,-504 559.25,-498 559.25,-498 559.25,-486 559.25,-486 559.25,-480 565.25,-474 571.25,-474 571.25,-474 636.75,-474 636.75,-474 642.75,-474 648.75,-480 648.75,-486 648.75,-486 648.75,-498 648.75,-498 648.75,-504 642.75,-510 636.75,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="604" y="-494.5" font-family="Arial" font-size="10.00">analytics&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="604" y="-482.5" font-family="Arial" font-size="10.00">Port: 8090</text>
+<path fill="lightgray" stroke="black" d="M390.75,-510C390.75,-510 325.25,-510 325.25,-510 319.25,-510 313.25,-504 313.25,-498 313.25,-498 313.25,-486 313.25,-486 313.25,-480 319.25,-474 325.25,-474 325.25,-474 390.75,-474 390.75,-474 396.75,-474 402.75,-480 402.75,-486 402.75,-486 402.75,-498 402.75,-498 402.75,-504 396.75,-510 390.75,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="358" y="-494.5" font-family="Arial" font-size="10.00">analytics&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="358" y="-482.5" font-family="Arial" font-size="10.00">Port: 8090</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;analytics&#45;service -->
 <g id="edge14" class="edge">
 <title>gateway&#45;service&#45;&gt;analytics&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M489.21,-592.06C512.21,-572.21 549.92,-539.67 575.81,-517.33"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="583.17,-510.98 578.54,-520.92 580.31,-513.45 575.6,-517.51 575.6,-517.51 575.6,-517.51 580.31,-513.45 572.66,-514.1 583.17,-510.98"/>
-<text xml:space="preserve" text-anchor="middle" x="557.8" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M358,-592.06C358,-573.33 358,-543.3 358,-521.21"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="358,-511.4 362.5,-521.4 358,-515.18 358,-521.4 358,-521.4 358,-521.4 358,-515.18 353.5,-521.4 358,-511.4"/>
+<text xml:space="preserve" text-anchor="middle" x="375.25" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- inventory&#45;service -->
 <g id="node12" class="node">
 <title>inventory&#45;service</title>
-<path fill="lightcyan" stroke="black" d="M809.12,-391.5C809.12,-391.5 742.88,-391.5 742.88,-391.5 736.88,-391.5 730.88,-385.5 730.88,-379.5 730.88,-379.5 730.88,-367.5 730.88,-367.5 730.88,-361.5 736.88,-355.5 742.88,-355.5 742.88,-355.5 809.12,-355.5 809.12,-355.5 815.12,-355.5 821.12,-361.5 821.12,-367.5 821.12,-367.5 821.12,-379.5 821.12,-379.5 821.12,-385.5 815.12,-391.5 809.12,-391.5"/>
-<text xml:space="preserve" text-anchor="middle" x="776" y="-376" font-family="Arial" font-size="10.00">inventory&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="776" y="-364" font-family="Arial" font-size="10.00">Port: 8085</text>
+<path fill="lightcyan" stroke="black" d="M533.12,-391.5C533.12,-391.5 466.88,-391.5 466.88,-391.5 460.88,-391.5 454.88,-385.5 454.88,-379.5 454.88,-379.5 454.88,-367.5 454.88,-367.5 454.88,-361.5 460.88,-355.5 466.88,-355.5 466.88,-355.5 533.12,-355.5 533.12,-355.5 539.12,-355.5 545.12,-361.5 545.12,-367.5 545.12,-367.5 545.12,-379.5 545.12,-379.5 545.12,-385.5 539.12,-391.5 533.12,-391.5"/>
+<text xml:space="preserve" text-anchor="middle" x="500" y="-376" font-family="Arial" font-size="10.00">inventory&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="500" y="-364" font-family="Arial" font-size="10.00">Port: 8085</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;inventory&#45;service -->
 <g id="edge18" class="edge">
 <title>gateway&#45;service&#45;&gt;inventory&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M512.97,-594.98C575.78,-571.92 690.39,-520.87 752,-438 759.78,-427.54 765.32,-414.26 769.1,-402.55"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="771.86,-393.12 773.37,-403.98 770.8,-396.75 769.05,-402.71 769.05,-402.71 769.05,-402.71 770.8,-396.75 764.73,-401.45 771.86,-393.12"/>
-<text xml:space="preserve" text-anchor="middle" x="736.44" y="-488.7" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M371.38,-592.1C379.09,-581.89 388.84,-568.64 397,-556.5 420.98,-520.82 422.31,-508.84 447.5,-474 459.79,-457.01 467.61,-456.22 478,-438 484.24,-427.05 489.13,-414.04 492.7,-402.66"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="495.49,-393.12 497,-403.98 494.43,-396.75 492.68,-402.72 492.68,-402.72 492.68,-402.72 494.43,-396.75 488.36,-401.45 495.49,-393.12"/>
+<text xml:space="preserve" text-anchor="middle" x="464.75" y="-488.7" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- reporting&#45;service -->
 <g id="node13" class="node">
 <title>reporting&#45;service</title>
-<path fill="lightgray" stroke="black" d="M501,-510C501,-510 437,-510 437,-510 431,-510 425,-504 425,-498 425,-498 425,-486 425,-486 425,-480 431,-474 437,-474 437,-474 501,-474 501,-474 507,-474 513,-480 513,-486 513,-486 513,-498 513,-498 513,-504 507,-510 501,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="469" y="-494.5" font-family="Arial" font-size="10.00">reporting&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="469" y="-482.5" font-family="Arial" font-size="10.00">Port: 8089</text>
+<path fill="lightgray" stroke="black" d="M213,-510C213,-510 149,-510 149,-510 143,-510 137,-504 137,-498 137,-498 137,-486 137,-486 137,-480 143,-474 149,-474 149,-474 213,-474 213,-474 219,-474 225,-480 225,-486 225,-486 225,-498 225,-498 225,-504 219,-510 213,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="181" y="-494.5" font-family="Arial" font-size="10.00">reporting&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="181" y="-482.5" font-family="Arial" font-size="10.00">Port: 8089</text>
 </g>
 <!-- gateway&#45;service&#45;&gt;reporting&#45;service -->
 <g id="edge16" class="edge">
 <title>gateway&#45;service&#45;&gt;reporting&#45;service</title>
-<path fill="none" stroke="darkgreen" d="M469,-592.06C469,-573.33 469,-543.3 469,-521.21"/>
-<polygon fill="darkgreen" stroke="darkgreen" points="469,-511.4 473.5,-521.4 469,-515.18 469,-521.4 469,-521.4 469,-521.4 469,-515.18 464.5,-521.4 469,-511.4"/>
-<text xml:space="preserve" text-anchor="middle" x="486.25" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
+<path fill="none" stroke="darkgreen" d="M314.06,-602.47C282.61,-595.48 240.95,-581.95 212.5,-556.5 201.86,-546.98 194.39,-533.05 189.41,-520.66"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="186.07,-511.46 193.71,-519.32 187.36,-515.01 189.48,-520.86 189.48,-520.86 189.48,-520.86 187.36,-515.01 185.25,-522.4 186.07,-511.46"/>
+<text xml:space="preserve" text-anchor="middle" x="229.75" y="-547.95" font-family="Arial" font-size="9.00" fill="darkgreen">gateway</text>
 </g>
 <!-- analytics&#45;service&#45;&gt;payment&#45;service -->
 <g id="edge21" class="edge">
 <title>analytics&#45;service&#45;&gt;payment&#45;service</title>
-<path fill="none" stroke="blue" d="M581.45,-473.5C568.33,-463.25 551.51,-450 536.75,-438 521.09,-425.27 503.83,-410.84 489.75,-398.95"/>
-<polygon fill="blue" stroke="blue" points="482.37,-392.7 492.91,-395.73 485.25,-395.15 490,-399.16 490,-399.16 490,-399.16 485.25,-395.15 487.1,-402.6 482.37,-392.7"/>
-<text xml:space="preserve" text-anchor="middle" x="563.38" y="-429.45" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M330.89,-473.65C318,-464.32 303.17,-451.89 292.75,-438 284.81,-427.41 278.73,-414.12 274.4,-402.43"/>
+<polygon fill="blue" stroke="blue" points="271.16,-393.01 278.67,-401.01 272.39,-396.59 274.41,-402.47 274.41,-402.47 274.41,-402.47 272.39,-396.59 270.15,-403.93 271.16,-393.01"/>
+<text xml:space="preserve" text-anchor="middle" x="319.38" y="-429.45" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- analytics&#45;service&#45;&gt;order&#45;service -->
 <g id="edge20" class="edge">
 <title>analytics&#45;service&#45;&gt;order&#45;service</title>
-<path fill="none" stroke="blue" d="M609.51,-473.71C618.94,-443.05 637.77,-376.95 644,-319.5 645.27,-307.75 643.17,-295 640.23,-284.03"/>
-<polygon fill="blue" stroke="blue" points="637.33,-274.51 644.55,-282.77 638.43,-278.13 640.25,-284.08 640.25,-284.08 640.25,-284.08 638.43,-278.13 635.94,-285.39 637.33,-274.51"/>
-<text xml:space="preserve" text-anchor="middle" x="665.22" y="-370.2" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M356.96,-473.85C354.51,-446.31 346.29,-391.64 319,-355.5 291.24,-318.74 245.65,-291.75 211.26,-275.22"/>
+<polygon fill="blue" stroke="blue" points="202.54,-271.15 213.51,-271.3 205.97,-272.75 211.6,-275.38 211.6,-275.38 211.6,-275.38 205.97,-272.75 209.7,-279.46 202.54,-271.15"/>
+<text xml:space="preserve" text-anchor="middle" x="364.99" y="-370.2" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- analytics&#45;service&#45;&gt;user&#45;service -->
 <g id="edge19" class="edge">
 <title>analytics&#45;service&#45;&gt;user&#45;service</title>
-<path fill="none" stroke="blue" d="M602.65,-473.73C601.05,-460.46 597.56,-442.02 590,-427.5 559.89,-369.68 528.52,-372.63 490.75,-319.5 454.24,-268.15 421.81,-201.58 405.05,-164.85"/>
-<polygon fill="blue" stroke="blue" points="401.06,-156 409.27,-163.27 402.62,-159.45 405.17,-165.12 405.17,-165.12 405.17,-165.12 402.62,-159.45 401.07,-166.97 401.06,-156"/>
-<text xml:space="preserve" text-anchor="middle" x="517.38" y="-310.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M366.05,-473.8C374.83,-454.28 388.61,-421.29 396,-391.5 415.92,-311.18 423.27,-213.26 425.79,-165.88"/>
+<polygon fill="blue" stroke="blue" points="426.28,-155.92 430.28,-166.13 426.09,-159.7 425.79,-165.91 425.79,-165.91 425.79,-165.91 426.09,-159.7 421.29,-165.68 426.28,-155.92"/>
+<text xml:space="preserve" text-anchor="middle" x="438.43" y="-310.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- analytics&#45;service&#45;&gt;inventory&#45;service -->
 <g id="edge22" class="edge">
 <title>analytics&#45;service&#45;&gt;inventory&#45;service</title>
-<path fill="none" stroke="blue" d="M629.75,-473.56C659.35,-453.51 708.08,-420.5 741.08,-398.15"/>
-<polygon fill="blue" stroke="blue" points="749.35,-392.55 743.59,-401.89 746.22,-394.67 741.07,-398.16 741.07,-398.16 741.07,-398.16 746.22,-394.67 738.54,-394.44 749.35,-392.55"/>
-<text xml:space="preserve" text-anchor="middle" x="721.78" y="-429.45" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M374.92,-473.56C388.05,-460.37 406.94,-442.11 424.75,-427.5 437.18,-417.31 451.46,-406.94 464.21,-398.11"/>
+<polygon fill="blue" stroke="blue" points="472.18,-392.67 466.46,-402.03 469.06,-394.8 463.92,-398.31 463.92,-398.31 463.92,-398.31 469.06,-394.8 461.38,-394.59 472.18,-392.67"/>
+<text xml:space="preserve" text-anchor="middle" x="451.38" y="-429.45" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
 <!-- reporting&#45;service&#45;&gt;payment&#45;service -->
-<g id="edge24" class="edge">
+<g id="edge23" class="edge">
 <title>reporting&#45;service&#45;&gt;payment&#45;service</title>
-<path fill="none" stroke="blue" d="M458.37,-473.56C452.9,-463.54 446.8,-450.51 444,-438 441.36,-426.22 443.8,-413.34 447.58,-402.27"/>
-<polygon fill="blue" stroke="blue" points="451.21,-393.06 451.73,-404.01 449.83,-396.58 447.55,-402.36 447.55,-402.36 447.55,-402.36 449.83,-396.58 443.36,-400.71 451.21,-393.06"/>
-<text xml:space="preserve" text-anchor="middle" x="466.5" y="-429.45" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
+<path fill="none" stroke="blue" d="M183.31,-473.62C185.76,-460.13 190.62,-441.44 200,-427.5 207.5,-416.36 218.06,-406.41 228.54,-398.24"/>
+<polygon fill="blue" stroke="blue" points="236.27,-392.52 230.9,-402.08 233.23,-394.77 228.23,-398.46 228.23,-398.46 228.23,-398.46 233.23,-394.77 225.55,-394.84 236.27,-392.52"/>
+<text xml:space="preserve" text-anchor="middle" x="222.5" y="-429.45" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
 </g>
 <!-- reporting&#45;service&#45;&gt;order&#45;service -->
-<g id="edge25" class="edge">
+<g id="edge24" class="edge">
 <title>reporting&#45;service&#45;&gt;order&#45;service</title>
-<path fill="none" stroke="blue" d="M513.36,-476.01C531.93,-467.6 552.14,-455.25 565,-438 587.43,-407.91 567.09,-389.49 583,-355.5 591.6,-337.14 601.71,-337.52 611,-319.5 616.69,-308.45 620.96,-295.43 624,-284.05"/>
-<polygon fill="blue" stroke="blue" points="626.34,-274.55 628.32,-285.34 625.44,-278.23 623.95,-284.26 623.95,-284.26 623.95,-284.26 625.44,-278.23 619.58,-283.19 626.34,-274.55"/>
-<text xml:space="preserve" text-anchor="middle" x="605.5" y="-370.2" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
-</g>
-<!-- reporting&#45;service&#45;&gt;user&#45;service -->
-<g id="edge23" class="edge">
-<title>reporting&#45;service&#45;&gt;user&#45;service</title>
-<path fill="none" stroke="blue" d="M455.72,-473.68C441.73,-454.58 420.1,-422.45 408,-391.5 377.9,-314.51 383.79,-214.35 389.14,-166.03"/>
-<polygon fill="blue" stroke="blue" points="390.32,-156.12 393.6,-166.59 389.87,-159.88 389.14,-166.05 389.14,-166.05 389.14,-166.05 389.87,-159.88 384.67,-165.52 390.32,-156.12"/>
-<text xml:space="preserve" text-anchor="middle" x="416.46" y="-310.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
+<path fill="none" stroke="blue" d="M178.18,-473.8C175.07,-454.01 170.21,-420.51 168,-391.5 165.18,-354.51 164.7,-311.68 164.74,-284.24"/>
+<polygon fill="blue" stroke="blue" points="164.78,-274.36 169.24,-284.38 164.77,-278.14 164.74,-284.36 164.74,-284.36 164.74,-284.36 164.77,-278.14 160.24,-284.34 164.78,-274.36"/>
+<text xml:space="preserve" text-anchor="middle" x="190.5" y="-370.2" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
 </g>
 <!-- legend_info -->
 <g id="node14" class="node">
 <title>legend_info</title>
-<path fill="lightgrey" stroke="none" d="M1044.38,-628.5C1044.38,-628.5 637.62,-628.5 637.62,-628.5 631.62,-628.5 625.62,-622.5 625.62,-616.5 625.62,-616.5 625.62,-604.5 625.62,-604.5 625.62,-598.5 631.62,-592.5 637.62,-592.5 637.62,-592.5 1044.38,-592.5 1044.38,-592.5 1050.38,-592.5 1056.38,-598.5 1056.38,-604.5 1056.38,-604.5 1056.38,-616.5 1056.38,-616.5 1056.38,-622.5 1050.38,-628.5 1044.38,-628.5"/>
-<text xml:space="preserve" text-anchor="middle" x="841" y="-613" font-family="Arial" font-size="10.00">Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray</text>
-<text xml:space="preserve" text-anchor="middle" x="841" y="-601" font-family="Arial" font-size="10.00">Connections: →Gateway(Green) →REST/Feign(Blue) →Messaging(Purple)</text>
+<path fill="lightgrey" stroke="none" d="M933.38,-628.5C933.38,-628.5 526.62,-628.5 526.62,-628.5 520.62,-628.5 514.62,-622.5 514.62,-616.5 514.62,-616.5 514.62,-604.5 514.62,-604.5 514.62,-598.5 520.62,-592.5 526.62,-592.5 526.62,-592.5 933.38,-592.5 933.38,-592.5 939.38,-592.5 945.38,-598.5 945.38,-604.5 945.38,-604.5 945.38,-616.5 945.38,-616.5 945.38,-622.5 939.38,-628.5 933.38,-628.5"/>
+<text xml:space="preserve" text-anchor="middle" x="730" y="-613" font-family="Arial" font-size="10.00">Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray</text>
+<text xml:space="preserve" text-anchor="middle" x="730" y="-601" font-family="Arial" font-size="10.00">Connections: →Gateway(Green) →REST/Feign(Blue) →Messaging(Purple)</text>
 </g>
 </g>
 </svg>

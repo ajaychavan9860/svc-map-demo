@@ -319,17 +319,25 @@ public class GenericDependencyScanner {
     }
     
     /**
-     * Load service properties from application.yml, application-prd.yml, application.properties
+     * Load service properties from application-prd.yml, application-dev.yml, application.yml, etc.
+     * Priority: prd > prod > dev > default
      */
     private void loadServiceProperties(Path servicePath) {
         serviceProperties.clear();
         
+        // Priority order: prd -> dev -> default
         String[] configFiles = {
             "application-prd.yml",
+            "application-prd.yaml",
             "application-prod.yml",
+            "application-prod.yaml",
+            "application-dev.yml",
+            "application-dev.yaml",
             "application.yml",
             "application.yaml",
             "application-prd.properties",
+            "application-prod.properties",
+            "application-dev.properties",
             "application.properties"
         };
         
@@ -345,6 +353,41 @@ public class GenericDependencyScanner {
                     logger.debug("Loaded properties from {}", configFile);
                 } catch (Exception e) {
                     logger.debug("Error loading properties from {}: {}", configFile, e.getMessage());
+                }
+            }
+        }
+        
+        // Also scan for any HTTP URLs directly in the config files (not as properties)
+        extractHttpUrlsFromConfig(servicePath);
+    }
+    
+    /**
+     * Extract all HTTP/HTTPS URLs directly from config files
+     * Handles cases where URLs are in any property, not just standard patterns
+     */
+    private void extractHttpUrlsFromConfig(Path servicePath) {
+        String[] configFiles = {
+            "application-prd.yml", "application-dev.yml", "application.yml",
+            "application-prd.properties", "application-dev.properties", "application.properties"
+        };
+        
+        for (String configFile : configFiles) {
+            Path configPath = servicePath.resolve("src/main/resources/" + configFile);
+            if (Files.exists(configPath)) {
+                try {
+                    String content = Files.readString(configPath);
+                    // Extract all http/https URLs from the content
+                    java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                        "(https?://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/[^\\s\"']*)?)"
+                    );
+                    java.util.regex.Matcher matcher = pattern.matcher(content);
+                    while (matcher.find()) {
+                        String url = matcher.group(1);
+                        // Store URL without property key (will be used for matching)
+                        serviceProperties.put("_url_" + url, url);
+                    }
+                } catch (Exception e) {
+                    logger.debug("Error extracting URLs from {}: {}", configFile, e.getMessage());
                 }
             }
         }
@@ -399,16 +442,17 @@ public class GenericDependencyScanner {
         try {
             String methodBody = method.toString();
             
-            // Look for URL patterns in RestTemplate calls - using direct text search
+            // Look for URL patterns - can be hardcoded or property placeholders
             AtomicReference<String> foundUrl = new AtomicReference<>();
+            AtomicReference<String> propertyPlaceholder = new AtomicReference<>();
             
-            // Simple approach: just search the method text directly for HTTP URLs
             String[] lines = methodBody.split("\n");
             
+            // Look for HTTP URLs (hardcoded) or property placeholders
             for (String line : lines) {
                 String trimmed = line.trim();
                 
-                // Look for any HTTP URLs in the line
+                // Pattern 1: Hardcoded HTTP URLs
                 if (trimmed.contains(AnalyzerConstants.HTTP_PREFIX) || trimmed.contains(AnalyzerConstants.HTTPS_PREFIX)) {
                     String url = extractUrlFromLine(trimmed);
                     if (url != null) {
@@ -416,33 +460,78 @@ public class GenericDependencyScanner {
                         break;
                     }
                 }
+                
+                // Pattern 2: Property placeholders like @Value("${task.service.url}")
+                if (trimmed.contains("@Value") && trimmed.contains("${")) {
+                    String placeholder = extractPropertyPlaceholder(trimmed);
+                    if (placeholder != null) {
+                        propertyPlaceholder.set(placeholder);
+                    }
+                }
+                
+                // Pattern 3: env.getProperty("task.service.url") or similar
+                if (trimmed.contains("getProperty") && trimmed.contains("\"")) {
+                    String propKey = extractQuotedString(trimmed);
+                    if (propKey != null) {
+                        String resolvedUrl = resolveProperty(propKey);
+                        if (resolvedUrl != null && (resolvedUrl.startsWith("http://") || resolvedUrl.startsWith("https://"))) {
+                            foundUrl.set(resolvedUrl);
+                            break;
+                        }
+                    }
+                }
             }
             
-            // If we found a URL, check if this method uses RestTemplate/WebClient
+            // Resolve property placeholder if found
+            if (propertyPlaceholder.get() != null && foundUrl.get() == null) {
+                String resolved = resolveProperty(propertyPlaceholder.get());
+                if (resolved != null) {
+                    foundUrl.set(resolved);
+                }
+            }
+            
+            // Also check if any property in config contains a URL and is referenced in this method
+            if (foundUrl.get() == null) {
+                foundUrl.set(findUrlFromProperties(methodBody));
+            }
+            
+            // Check if this method uses any HTTP client (RestTemplate, WebClient, HttpClient, Feign)
             if (foundUrl.get() != null) {
-                boolean hasRestTemplate = false;
+                boolean hasHttpClient = false;
+                String clientType = "http-client";
+                
                 for (String line : lines) {
-                    if (line.contains("restTemplate") || line.contains("webClient") || 
-                        line.contains("RestTemplate") || line.contains("WebClient")) {
-                        hasRestTemplate = true;
+                    if (line.contains("restTemplate") || line.contains("RestTemplate")) {
+                        hasHttpClient = true;
+                        clientType = "rest-template";
+                        break;
+                    } else if (line.contains("webClient") || line.contains("WebClient")) {
+                        hasHttpClient = true;
+                        clientType = "web-client";
+                        break;
+                    } else if (line.contains("httpClient") || line.contains("HttpClient")) {
+                        hasHttpClient = true;
+                        clientType = "http-client";
+                        break;
+                    } else if (line.contains(".get(") || line.contains(".post(") || 
+                               line.contains(".put(") || line.contains(".delete(")) {
+                        hasHttpClient = true;
                         break;
                     }
                 }
                 
-                if (hasRestTemplate) {
+                if (hasHttpClient) {
                     String targetServiceName = extractServiceNameFromUrl(foundUrl.get(), allServices);
                     if (targetServiceName != null) {
                         String relativeFile = servicePath.relativize(javaFile).toString();
-                        
-                        // Extract the source service name from the service path
                         String sourceServiceName = servicePath.getFileName().toString();
                         
                         ServiceDependency dependency = new ServiceDependency(
-                            sourceServiceName,        // fromService
-                            targetServiceName,        // targetService 
-                            AnalyzerConstants.REST_TEMPLATE_TYPE          // dependencyType
+                            sourceServiceName,
+                            targetServiceName,
+                            clientType
                         );
-                        dependency.setDescription("REST call to " + targetServiceName);
+                        dependency.setDescription("HTTP call to " + targetServiceName);
                         dependency.setSourceFile(relativeFile);
                         dependency.setEndpoint(foundUrl.get());
                         return dependency;
@@ -451,9 +540,47 @@ public class GenericDependencyScanner {
             }
             
         } catch (Exception e) {
-            logger.error("Error extracting RestTemplate dependency: {}", e.getMessage(), e);
+            logger.error("Error extracting HTTP client dependency: {}", e.getMessage(), e);
         }
         
+        return null;
+    }
+    
+    /**
+     * Extract property placeholder from @Value("${property.name}")
+     */
+    private String extractPropertyPlaceholder(String line) {
+        int start = line.indexOf("${");
+        int end = line.indexOf("}", start);
+        if (start >= 0 && end > start) {
+            return line.substring(start + 2, end);
+        }
+        return null;
+    }
+    
+    /**
+     * Extract quoted string from a line
+     */
+    private String extractQuotedString(String line) {
+        int start = line.indexOf("\"");
+        int end = line.indexOf("\"", start + 1);
+        if (start >= 0 && end > start) {
+            return line.substring(start + 1, end);
+        }
+        return null;
+    }
+    
+    /**
+     * Find URL from loaded properties that might be referenced in the method
+     */
+    private String findUrlFromProperties(String methodBody) {
+        for (Map.Entry<String, String> entry : serviceProperties.entrySet()) {
+            String value = entry.getValue();
+            if ((value.startsWith("http://") || value.startsWith("https://")) && 
+                methodBody.contains(entry.getKey())) {
+                return value;
+            }
+        }
         return null;
     }
     

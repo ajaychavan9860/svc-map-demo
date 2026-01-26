@@ -8,7 +8,6 @@ analytics-service,user-service,rest-template,src/main/java/com/example/analytics
 analytics-service,order-service,rest-template,src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://order-service:8083/api/orders/analytics
 analytics-service,payment-service,rest-template,src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://payment-service:8084/api/payments/analytics
 analytics-service,inventory-service,rest-template,src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java,http://inventory-service:8085/api/inventory/analytics
-reporting-service,user-service,rest-template,src/main/java/com/example/reportingservice/service/ReportService.java,http://user-service/api/users/count
 reporting-service,payment-service,feign-client,src/main/java/com/example/reportingservice/client/PaymentServiceClient.java,n/a
 reporting-service,order-service,feign-client,src/main/java/com/example/reportingservice/client/OrderServiceClient.java,n/a
 user-service,logging-service,rest-template,src/main/java/com/example/userservice/service/UserActivityService.java,http://logging-service:8088/api/logs/user-activity

@@ -2,8 +2,8 @@
 
 ## Executive Summary
 - **Total Services**: 13
-- **Total Dependencies**: 25
-- **Analysis Date**: 2026-01-26T08:46:05.391517
+- **Total Dependencies**: 24
+- **Analysis Date**: 2026-01-26T09:23:14.218647
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -18,7 +18,7 @@
 | order-service | 8083 | null | 3 |
 | analytics-service | 8090 | null | 4 |
 | email-service | 8087 | null | 0 |
-| reporting-service | 8089 | null | 3 |
+| reporting-service | 8089 | null | 2 |
 | user-service | 8081 | null | 2 |
 | inventory-service | 8085 | null | 0 |
 
@@ -64,11 +64,6 @@
 - **Type**: rest-template
 - **Endpoint**: http://inventory-service:8085/api/inventory/analytics
 - **Source**: src/main/java/com/example/analyticsservice/service/BusinessAnalyticsService.java
-
-### reporting-service → user-service
-- **Type**: rest-template
-- **Endpoint**: http://user-service/api/users/count
-- **Source**: src/main/java/com/example/reportingservice/service/ReportService.java
 
 ### reporting-service → payment-service
 - **Type**: feign-client
