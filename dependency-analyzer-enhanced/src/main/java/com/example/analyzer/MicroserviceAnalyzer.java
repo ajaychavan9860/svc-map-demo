@@ -23,7 +23,7 @@ public class MicroserviceAnalyzer {
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private final ObjectMapper jsonMapper = new ObjectMapper();
     
-    public void analyzeProject(Path projectPath, Path configPath) throws IOException {
+    public void analyzeProject(Path projectPath, Path configPath, boolean includeAll) throws IOException {
         // Load configuration
         AnalyzerConfiguration config = loadConfiguration(configPath);
 
@@ -33,19 +33,22 @@ public class MicroserviceAnalyzer {
         GenericServiceDiscovery serviceDiscovery = new GenericServiceDiscovery(config);
         List<ServiceInfo> services = serviceDiscovery.discoverServices(projectPath);
         
-        // Filter out gateway services completely
-        services = services.stream()
-            .filter(s -> !s.getName().toLowerCase().contains("gateway"))
-            .collect(Collectors.toList());
-
-        logger.info("[LIST] Found {} services (excluding gateways):", services.size());
+        // Filter out gateway services completely (unless --include-all is specified)
+        if (!includeAll) {
+            services = services.stream()
+                .filter(s -> !s.getName().toLowerCase().contains("gateway"))
+                .collect(Collectors.toList());
+            logger.info("[LIST] Found {} services (excluding gateways):", services.size());
+        } else {
+            logger.info("[LIST] Found {} services (including all):", services.size());
+        }
         services.forEach(service ->
             logger.info("   - {} ({}) at {}", service.getName(), service.getType(), service.getPath()));
 
         logger.info("[LINK] Analyzing dependencies...");
 
         // Analyze dependencies for each service
-        GenericDependencyScanner dependencyScanner = new GenericDependencyScanner(config);
+        GenericDependencyScanner dependencyScanner = new GenericDependencyScanner(config, includeAll);
         
         // FIRST: Build endpoint map for all services (to validate dependencies and filter external services)
         logger.info("[INFO] Building service endpoint map...");

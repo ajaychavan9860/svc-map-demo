@@ -22,14 +22,32 @@ public class GenericMicroservicesDependencyAnalyzer {
     public CommandLineRunner commandLineRunner(MicroserviceAnalyzer analyzer) {
         return args -> {
             if (args.length < 1) {
-                logger.error("Usage: java -jar generic-dependency-analyzer.jar <project-path> [config-file]");
+                logger.error("Usage: java -jar generic-dependency-analyzer.jar <project-path> [config-file] [--include-all]");
                 logger.error("       java -jar generic-dependency-analyzer.jar /path/to/microservices");
                 logger.error("       java -jar generic-dependency-analyzer.jar /path/to/microservices /path/to/config.yml");
+                logger.error("       java -jar generic-dependency-analyzer.jar /path/to/microservices . --include-all");
+                logger.error("");
+                logger.error("Options:");
+                logger.error("  --include-all    Include gateway services and libraries in analysis (default: excluded)");
                 System.exit(1);
             }
 
-            Path projectPath = Paths.get(args[0]);
-            Path configPath = args.length > 1 ? Paths.get(args[1]) : null;
+            // Parse arguments
+            boolean includeAll = false;
+            String projectPathArg = args[0];
+            String configPathArg = null;
+            
+            for (int i = 1; i < args.length; i++) {
+                if ("--include-all".equals(args[i])) {
+                    includeAll = true;
+                    logger.info("[CONFIG] --include-all flag detected: will include gateway services and libraries");
+                } else if (configPathArg == null && !args[i].startsWith("--")) {
+                    configPathArg = args[i];
+                }
+            }
+
+            Path projectPath = Paths.get(projectPathArg);
+            Path configPath = configPathArg != null ? Paths.get(configPathArg) : null;
 
             logger.info("[START] Starting Generic Microservices Dependency Analysis...");
             logger.info("Project Path: {}", projectPath.toAbsolutePath());
@@ -41,7 +59,7 @@ public class GenericMicroservicesDependencyAnalyzer {
             }
 
             try {
-                analyzer.analyzeProject(projectPath, configPath);
+                analyzer.analyzeProject(projectPath, configPath, includeAll);
                 logger.info("[OK] Analysis completed successfully!");
                 logger.info("[STATS] Reports generated in: {}", projectPath.resolve("dependency-analysis"));
             } catch (Exception e) {

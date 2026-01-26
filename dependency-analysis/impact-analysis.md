@@ -1,9 +1,9 @@
 # Microservices Dependency Impact Analysis
 
 ## Executive Summary
-- **Total Services**: 13
+- **Total Services**: 14
 - **Total Dependencies**: 10
-- **Analysis Date**: 2026-01-26T15:44:35.941503
+- **Analysis Date**: 2026-01-26T15:54:47.035218
 
 ## Services Overview
 | Service | Port | Framework | Dependencies |
@@ -13,6 +13,7 @@
 | notification-service | 8086 | null | 0 |
 | dependency-analyzer-enhanced | null | null | 0 |
 | payment-service | 8084 | null | 2 |
+| gateway-service | 8080 | null | 0 |
 | logging-service | 8088 | null | 0 |
 | order-service | 8083 | null | 3 |
 | analytics-service | 8090 | null | 0 |

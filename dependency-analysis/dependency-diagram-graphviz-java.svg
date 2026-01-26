@@ -1,10 +1,10 @@
 <svg width="1200px" height="800px"
- viewBox="0.00 0.00 1460.00 555.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 1565.00 555.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0.0) translate(4.0 550.5)">
 <title>microservices</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-550.5 1456,-550.5 1456,4 -4,4"/>
-<text xml:space="preserve" text-anchor="middle" x="726" y="-531.1" font-family="Arial" font-size="12.00">Microservices Dependency Graph</text>
-<text xml:space="preserve" text-anchor="middle" x="726" y="-516.85" font-family="Arial" font-size="12.00">(Generated with GraphViz Java &#45; Pure Maven)</text>
+<polygon fill="white" stroke="none" points="-4,4 -4,-550.5 1561,-550.5 1561,4 -4,4"/>
+<text xml:space="preserve" text-anchor="middle" x="778.5" y="-531.1" font-family="Arial" font-size="12.00">Microservices Dependency Graph</text>
+<text xml:space="preserve" text-anchor="middle" x="778.5" y="-516.85" font-family="Arial" font-size="12.00">(Generated with GraphViz Java &#45; Pure Maven)</text>
 <!-- product&#45;service -->
 <g id="node1" class="node">
 <title>product&#45;service</title>
@@ -124,15 +124,22 @@
 <polygon fill="blue" stroke="blue" points="185.12,-37.06 179.39,-46.41 182,-39.19 176.86,-42.69 176.86,-42.69 176.86,-42.69 182,-39.19 174.32,-38.97 185.12,-37.06"/>
 <text xml:space="preserve" text-anchor="middle" x="157.88" y="-73.95" font-family="Arial" font-size="9.00" fill="blue">rest&#45;template</text>
 </g>
-<!-- analytics&#45;service -->
+<!-- gateway&#45;service -->
 <g id="node10" class="node">
+<title>gateway&#45;service</title>
+<path fill="lightgreen" stroke="black" d="M796.25,-510C796.25,-510 733,-510 733,-510 727,-510 721,-504 721,-498 721,-498 721,-486 721,-486 721,-480 727,-474 733,-474 733,-474 796.25,-474 796.25,-474 802.25,-474 808.25,-480 808.25,-486 808.25,-486 808.25,-498 808.25,-498 808.25,-504 802.25,-510 796.25,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="764.62" y="-494.5" font-family="Arial" font-size="10.00">gateway&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="764.62" y="-482.5" font-family="Arial" font-size="10.00">Port: 8080</text>
+</g>
+<!-- analytics&#45;service -->
+<g id="node11" class="node">
 <title>analytics&#45;service</title>
-<path fill="lightgray" stroke="black" d="M798.38,-510C798.38,-510 732.88,-510 732.88,-510 726.88,-510 720.88,-504 720.88,-498 720.88,-498 720.88,-486 720.88,-486 720.88,-480 726.88,-474 732.88,-474 732.88,-474 798.38,-474 798.38,-474 804.38,-474 810.38,-480 810.38,-486 810.38,-486 810.38,-498 810.38,-498 810.38,-504 804.38,-510 798.38,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="765.62" y="-494.5" font-family="Arial" font-size="10.00">analytics&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="765.62" y="-482.5" font-family="Arial" font-size="10.00">Port: 8090</text>
+<path fill="lightgray" stroke="black" d="M903.38,-510C903.38,-510 837.88,-510 837.88,-510 831.88,-510 825.88,-504 825.88,-498 825.88,-498 825.88,-486 825.88,-486 825.88,-480 831.88,-474 837.88,-474 837.88,-474 903.38,-474 903.38,-474 909.38,-474 915.38,-480 915.38,-486 915.38,-486 915.38,-498 915.38,-498 915.38,-504 909.38,-510 903.38,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="870.62" y="-494.5" font-family="Arial" font-size="10.00">analytics&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="870.62" y="-482.5" font-family="Arial" font-size="10.00">Port: 8090</text>
 </g>
 <!-- reporting&#45;service -->
-<g id="node11" class="node">
+<g id="node12" class="node">
 <title>reporting&#45;service</title>
 <path fill="lightgray" stroke="black" d="M309.62,-510C309.62,-510 245.62,-510 245.62,-510 239.62,-510 233.62,-504 233.62,-498 233.62,-498 233.62,-486 233.62,-486 233.62,-480 239.62,-474 245.62,-474 245.62,-474 309.62,-474 309.62,-474 315.62,-474 321.62,-480 321.62,-486 321.62,-486 321.62,-498 321.62,-498 321.62,-504 315.62,-510 309.62,-510"/>
 <text xml:space="preserve" text-anchor="middle" x="277.62" y="-494.5" font-family="Arial" font-size="10.00">reporting&#45;service</text>
@@ -153,25 +160,25 @@
 <text xml:space="preserve" text-anchor="middle" x="326.06" y="-370.2" font-family="Arial" font-size="9.00" fill="blue">feign&#45;client</text>
 </g>
 <!-- common&#45;lib -->
-<g id="node12" class="node">
+<g id="node13" class="node">
 <title>common&#45;lib</title>
-<path fill="lightgray" stroke="black" d="M882.75,-510C882.75,-510 840.5,-510 840.5,-510 834.5,-510 828.5,-504 828.5,-498 828.5,-498 828.5,-486 828.5,-486 828.5,-480 834.5,-474 840.5,-474 840.5,-474 882.75,-474 882.75,-474 888.75,-474 894.75,-480 894.75,-486 894.75,-486 894.75,-498 894.75,-498 894.75,-504 888.75,-510 882.75,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="861.62" y="-494.5" font-family="Arial" font-size="10.00">common&#45;lib</text>
-<text xml:space="preserve" text-anchor="middle" x="861.62" y="-482.5" font-family="Arial" font-size="10.00">Port: null</text>
+<path fill="lightgray" stroke="black" d="M987.75,-510C987.75,-510 945.5,-510 945.5,-510 939.5,-510 933.5,-504 933.5,-498 933.5,-498 933.5,-486 933.5,-486 933.5,-480 939.5,-474 945.5,-474 945.5,-474 987.75,-474 987.75,-474 993.75,-474 999.75,-480 999.75,-486 999.75,-486 999.75,-498 999.75,-498 999.75,-504 993.75,-510 987.75,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="966.62" y="-494.5" font-family="Arial" font-size="10.00">common&#45;lib</text>
+<text xml:space="preserve" text-anchor="middle" x="966.62" y="-482.5" font-family="Arial" font-size="10.00">Port: null</text>
 </g>
 <!-- inventory&#45;service -->
-<g id="node13" class="node">
+<g id="node14" class="node">
 <title>inventory&#45;service</title>
-<path fill="lightcyan" stroke="black" d="M990.75,-510C990.75,-510 924.5,-510 924.5,-510 918.5,-510 912.5,-504 912.5,-498 912.5,-498 912.5,-486 912.5,-486 912.5,-480 918.5,-474 924.5,-474 924.5,-474 990.75,-474 990.75,-474 996.75,-474 1002.75,-480 1002.75,-486 1002.75,-486 1002.75,-498 1002.75,-498 1002.75,-504 996.75,-510 990.75,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="957.62" y="-494.5" font-family="Arial" font-size="10.00">inventory&#45;service</text>
-<text xml:space="preserve" text-anchor="middle" x="957.62" y="-482.5" font-family="Arial" font-size="10.00">Port: 8085</text>
+<path fill="lightcyan" stroke="black" d="M1095.75,-510C1095.75,-510 1029.5,-510 1029.5,-510 1023.5,-510 1017.5,-504 1017.5,-498 1017.5,-498 1017.5,-486 1017.5,-486 1017.5,-480 1023.5,-474 1029.5,-474 1029.5,-474 1095.75,-474 1095.75,-474 1101.75,-474 1107.75,-480 1107.75,-486 1107.75,-486 1107.75,-498 1107.75,-498 1107.75,-504 1101.75,-510 1095.75,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="1062.62" y="-494.5" font-family="Arial" font-size="10.00">inventory&#45;service</text>
+<text xml:space="preserve" text-anchor="middle" x="1062.62" y="-482.5" font-family="Arial" font-size="10.00">Port: 8085</text>
 </g>
 <!-- legend_info -->
-<g id="node14" class="node">
+<g id="node15" class="node">
 <title>legend_info</title>
-<path fill="lightgrey" stroke="none" d="M1440,-510C1440,-510 1033.25,-510 1033.25,-510 1027.25,-510 1021.25,-504 1021.25,-498 1021.25,-498 1021.25,-486 1021.25,-486 1021.25,-480 1027.25,-474 1033.25,-474 1033.25,-474 1440,-474 1440,-474 1446,-474 1452,-480 1452,-486 1452,-486 1452,-498 1452,-498 1452,-504 1446,-510 1440,-510"/>
-<text xml:space="preserve" text-anchor="middle" x="1236.62" y="-494.5" font-family="Arial" font-size="10.00">Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray</text>
-<text xml:space="preserve" text-anchor="middle" x="1236.62" y="-482.5" font-family="Arial" font-size="10.00">Connections: &#160;&#45;&gt; Gateway(Green) &#160;&#45;&gt; REST/Feign(Blue) &#160;&#45;&gt; Messaging(Purple)</text>
+<path fill="lightgrey" stroke="none" d="M1545,-510C1545,-510 1138.25,-510 1138.25,-510 1132.25,-510 1126.25,-504 1126.25,-498 1126.25,-498 1126.25,-486 1126.25,-486 1126.25,-480 1132.25,-474 1138.25,-474 1138.25,-474 1545,-474 1545,-474 1551,-474 1557,-480 1557,-486 1557,-486 1557,-498 1557,-498 1557,-504 1551,-510 1545,-510"/>
+<text xml:space="preserve" text-anchor="middle" x="1341.62" y="-494.5" font-family="Arial" font-size="10.00">Service Types: Gateway=Green | Config=Yellow | Business=Blue | Support=Cyan | Other=Gray</text>
+<text xml:space="preserve" text-anchor="middle" x="1341.62" y="-482.5" font-family="Arial" font-size="10.00">Connections: &#160;&#45;&gt; Gateway(Green) &#160;&#45;&gt; REST/Feign(Blue) &#160;&#45;&gt; Messaging(Purple)</text>
 </g>
 </g>
 </svg>
