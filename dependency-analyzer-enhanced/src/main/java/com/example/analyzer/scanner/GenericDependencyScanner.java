@@ -37,18 +37,37 @@ public class GenericDependencyScanner {
     }
     
     /**
-     * Build a map of all internal services and their endpoints FIRST
-     * This allows us to validate dependencies and ignore external services
+     * Build a map of all internal services and their endpoints FIRST (ENDPOINT-FIRST STRATEGY)
+     * This allows us to:
+     * 1. Match HTTP calls to services by endpoint (most accurate!)
+     * 2. Validate dependencies against actual endpoints
+     * 3. Filter out external API calls
+     * 
+     * Strategy: Scan all controller classes in each service, extract all API endpoints
      */
     public void buildServiceEndpointsMap(List<ServiceInfo> allServices, Path projectRoot) {
         serviceEndpointsMap.clear();
+        
+        int totalEndpoints = 0;
+        logger.info("📋 Building endpoint map for {} services...", allServices.size());
         
         for (ServiceInfo service : allServices) {
             Path servicePath = projectRoot.resolve(service.getPath());
             List<String> endpoints = extractServiceEndpoints(servicePath);
             serviceEndpointsMap.put(service.getName(), endpoints);
-            logger.debug("Service {} has {} endpoints", service.getName(), endpoints.size());
+            
+            if (!endpoints.isEmpty()) {
+                logger.info("   ✓ {}: {} endpoints", service.getName(), endpoints.size());
+                for (String endpoint : endpoints) {
+                    logger.debug("      - {}", endpoint);
+                }
+                totalEndpoints += endpoints.size();
+            } else {
+                logger.debug("   ○ {}: no endpoints found (might not expose REST APIs)", service.getName());
+            }
         }
+        
+        logger.info("📊 Total endpoints mapped: {} across {} services", totalEndpoints, allServices.size());
     }
     
     /**
@@ -1000,8 +1019,14 @@ public class GenericDependencyScanner {
     }
     
     /**
-     * Extract service name from URL and validate against internal services
-     * Also validates that the endpoint exists in the target service
+     * Extract service name from URL using ENDPOINT-FIRST MATCHING (more accurate!)
+     * 
+     * Strategy:
+     * 1. Extract endpoint path from URL
+     * 2. Look up which service owns that endpoint (PRIMARY method)
+     * 3. Fall back to service name/port matching if endpoint lookup fails
+     * 
+     * This is more reliable than fuzzy name matching because it validates against actual API endpoints.
      */
     private String extractServiceNameFromUrl(String url, List<ServiceInfo> allServices) {
         if (url == null || url.isEmpty()) {
@@ -1011,7 +1036,17 @@ public class GenericDependencyScanner {
         // Extract endpoint path from URL (e.g., http://excel-service:8080/api/excel -> /api/excel)
         String endpointPath = extractEndpointFromUrl(url);
         
-        // Extract service name from URL hostname
+        // STRATEGY 1: ENDPOINT-FIRST MATCHING (Most Accurate!)
+        // Look up which service owns this endpoint
+        if (endpointPath != null && !serviceEndpointsMap.isEmpty()) {
+            String matchedService = findServiceByEndpoint(endpointPath);
+            if (matchedService != null) {
+                logger.debug("🎯 Matched URL {} to service {} via endpoint lookup: {}", url, matchedService, endpointPath);
+                return matchedService;
+            }
+        }
+        
+        // Extract service name from URL hostname for fallback matching
         String urlServiceName = null;
         if (url.contains("://")) {
             String[] parts = url.split("://");
@@ -1021,7 +1056,7 @@ public class GenericDependencyScanner {
             }
         }
         
-        // Try to match against known internal services
+        // STRATEGY 2: Try name-based matching with endpoint validation
         for (ServiceInfo service : allServices) {
             String serviceName = service.getName();
             
@@ -1030,8 +1065,11 @@ public class GenericDependencyScanner {
                 // Validate endpoint if we have endpoint map
                 if (endpointPath != null && !serviceEndpointsMap.isEmpty()) {
                     if (serviceHasEndpoint(serviceName, endpointPath)) {
-                        logger.debug("Matched URL {} to service {} via endpoint {}", url, serviceName, endpointPath);
+                        logger.debug("✓ Matched URL {} to service {} via name + endpoint validation", url, serviceName);
                         return serviceName;
+                    } else {
+                        logger.debug("⚠️  URL contains '{}' but endpoint {} not found in that service", serviceName, endpointPath);
+                        continue; // Try other services
                     }
                 } else {
                     return serviceName;
@@ -1041,6 +1079,7 @@ public class GenericDependencyScanner {
             // Port match
             if (service.getPort() != null && url.contains(":" + service.getPort())) {
                 if (endpointPath == null || serviceHasEndpoint(serviceName, endpointPath)) {
+                    logger.debug("✓ Matched URL {} to service {} via port: {}", url, serviceName, service.getPort());
                     return serviceName;
                 }
             }
@@ -1050,6 +1089,7 @@ public class GenericDependencyScanner {
                 String matchedName = findMatchingServiceName(urlServiceName, allServices);
                 if (matchedName != null && matchedName.equals(serviceName)) {
                     if (endpointPath == null || serviceHasEndpoint(serviceName, endpointPath)) {
+                        logger.debug("✓ Matched URL {} to service {} via fuzzy name match", url, serviceName);
                         return serviceName;
                     }
                 }
@@ -1057,7 +1097,59 @@ public class GenericDependencyScanner {
         }
         
         // If we got here, it might be an external service (not in our service list)
-        logger.debug("URL {} does not match any internal service - likely external dependency", url);
+        logger.debug("❌ URL {} does not match any internal service - likely external dependency", url);
+        return null;
+    }
+    
+    /**
+     * Find which service owns a specific endpoint (ENDPOINT-FIRST MATCHING)
+     * This is the PRIMARY detection mechanism - more accurate than name matching!
+     * 
+     * @param endpointPath The endpoint path to lookup (e.g., "/api/excel/generate")
+     * @return The service name that owns this endpoint, or null if not found
+     */
+    private String findServiceByEndpoint(String endpointPath) {
+        if (endpointPath == null || endpointPath.isEmpty()) {
+            return null;
+        }
+        
+        // Direct lookup: exact match
+        for (Map.Entry<String, List<String>> entry : serviceEndpointsMap.entrySet()) {
+            String serviceName = entry.getKey();
+            List<String> endpoints = entry.getValue();
+            
+            if (endpoints.contains(endpointPath)) {
+                logger.debug("   → Endpoint {} found in service {} (exact match)", endpointPath, serviceName);
+                return serviceName;
+            }
+        }
+        
+        // Partial match: endpoint starts with registered endpoint or vice versa
+        // Handles cases like /api/users/123 matching /api/users
+        for (Map.Entry<String, List<String>> entry : serviceEndpointsMap.entrySet()) {
+            String serviceName = entry.getKey();
+            List<String> endpoints = entry.getValue();
+            
+            for (String registeredEndpoint : endpoints) {
+                // Check if the called endpoint starts with a registered endpoint
+                // E.g., /api/users/123 matches /api/users
+                if (endpointPath.startsWith(registeredEndpoint)) {
+                    logger.debug("   → Endpoint {} matched to service {} (starts with {})", 
+                        endpointPath, serviceName, registeredEndpoint);
+                    return serviceName;
+                }
+                
+                // Check if registered endpoint starts with called endpoint
+                // E.g., /api matches /api/users
+                if (registeredEndpoint.startsWith(endpointPath)) {
+                    logger.debug("   → Endpoint {} matched to service {} (prefix of {})", 
+                        endpointPath, serviceName, registeredEndpoint);
+                    return serviceName;
+                }
+            }
+        }
+        
+        logger.debug("   → Endpoint {} not found in any service's endpoint map", endpointPath);
         return null;
     }
     
