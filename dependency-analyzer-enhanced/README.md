@@ -57,6 +57,47 @@
 
 ---
 
+## ✨ Recent Improvements & Bug Fixes
+
+### 🔧 **v2.0.0 - Gateway Routes & Library Dependencies (Latest)**
+
+**Major Fixes:**
+
+- ✅ **Gateway Route Extraction** - Fixed URI parsing for Spring Cloud Gateway routes (lb://service-name format)
+- ✅ **Gateway Dependencies** - Now correctly creates dependencies for API Gateway routes
+- ✅ **Maven Library Scanning** - Enabled scanning of shared library dependencies when using --include-all
+- ✅ **ServiceDependency Constructor** - Fixed parameter order to (fromService, toService, dependencyType)
+
+**What This Means:**
+
+- Gateway routes now appear in dependency diagrams (with --include-all)
+- Shared library usage is now discoverable (e.g., common-lib dependencies)
+- Complete picture of both service-to-service AND gateway routing
+
+**Testing Impact:**
+
+- Default mode: Focuses on direct service communication (10 dependencies in typical setup)
+- --include-all mode: Includes gateway routes and library dependencies (18 dependencies in typical setup)
+- Enables gateway coverage analysis (can now see which services are NOT routable)
+
+**Technical Details:**
+
+- Fixed `extractUri()` method to use `indexOf()` instead of `split(":")`
+- Changed dependency type from "gateway-route" to "gateway" for consistency
+- Re-enabled Maven scanning with conditional flag checking
+
+---
+
+### ⚙️ **Highly Configurable**
+
+- **Custom Patterns**: Define your own dependency detection rules
+- **Multiple Architectures**: Spring Boot, Express.js, Flask, FastAPI
+- **Framework Support**: Kubernetes, Docker, Service Mesh
+- **Output Control**: Choose which formats to generate
+- **Analysis Modes**: Default (focused) or --include-all (comprehensive)
+
+---
+
 ## 📦 Installation & Usage
 
 ### 📋 **Prerequisites**
@@ -146,11 +187,14 @@ demo-enhanced-analyzer.bat
 #### **Command Line**
 
 ```bash
-# Analyze with default settings
+# Analyze with default settings (excludes gateway routes and maven dependencies)
 java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/your/microservices
 
 # Use custom configuration
 java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/your/microservices /path/to/analyzer-config.yml
+
+# Include all dependency types (gateway routes, maven dependencies, etc.)
+java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/your/microservices --include-all
 ```
 
 #### **Windows Command Prompt**
@@ -161,6 +205,9 @@ java -jar target\generic-microservices-dependency-analyzer-2.0.0.jar C:\path\to\
 
 # With custom config
 java -jar target\generic-microservices-dependency-analyzer-2.0.0.jar C:\path\to\your\microservices C:\path\to\analyzer-config.yml
+
+# Include all dependency types
+java -jar target\generic-microservices-dependency-analyzer-2.0.0.jar C:\path\to\your\microservices --include-all
 ```
 
 #### **Windows PowerShell**
@@ -171,7 +218,195 @@ java -jar "target\generic-microservices-dependency-analyzer-2.0.0.jar" "C:\path\
 
 # With custom config
 java -jar "target\generic-microservices-dependency-analyzer-2.0.0.jar" "C:\path\to\your\microservices" "C:\path\to\analyzer-config.yml"
+
+# Include all dependency types
+java -jar "target\generic-microservices-dependency-analyzer-2.0.0.jar" "C:\path\to\your\microservices" "--include-all"
 ```
+
+#### **Quick Reference: Command Options**
+
+| Flag                     | Purpose                                     | Usage                                                      |
+| ------------------------ | ------------------------------------------- | ---------------------------------------------------------- |
+| _(none)_                 | Default analysis mode                       | `java -jar analyzer.jar /project`                          |
+| `--include-all`          | Include gateway routes & maven dependencies | `java -jar analyzer.jar /project --include-all`            |
+| config.yml               | Custom configuration file                   | `java -jar analyzer.jar /project config.yml`               |
+| `--include-all` + config | Both custom config and all dependencies     | `java -jar analyzer.jar /project config.yml --include-all` |
+
+---
+
+### 📊 **Analysis Modes: Default vs --include-all**
+
+The analyzer supports two distinct analysis modes that provide different levels of detail:
+
+#### **🔵 Default Mode (Recommended for Most Use Cases)**
+
+When run without the `--include-all` flag, the analyzer focuses on direct service-to-service communication:
+
+```bash
+# Default mode - excludes gateway routes and maven library dependencies
+java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/your/microservices
+```
+
+**What's Included:**
+
+- ✅ Feign client calls (@FeignClient)
+- ✅ REST template calls (RestTemplate, WebClient, axios, requests)
+- ✅ Message queue connections (Kafka, RabbitMQ, etc.)
+- ✅ Database connections (JPA, MongoDB, Redis)
+- ❌ Gateway routes (excluded)
+- ❌ Maven library dependencies (excluded)
+
+**Best For:**
+
+- Standard microservices regression testing
+- Understanding direct service-to-service dependencies
+- Day-to-day testing decisions
+- Core business flow analysis
+
+**Example Output:**
+
+```
+Total Services: 14
+Total Dependencies: 10
+```
+
+---
+
+#### **🟢 Comprehensive Mode (--include-all Flag)**
+
+When run with the `--include-all` flag, the analyzer discovers the complete dependency graph:
+
+```bash
+# Comprehensive mode - includes gateway routes and all dependencies
+java -jar target/generic-microservices-dependency-analyzer-2.0.0.jar /path/to/your/microservices --include-all
+```
+
+**What's Included (Default Mode + All of):**
+
+- ✅ Gateway routes from Spring Cloud Gateway (application.yml, api.yml)
+- ✅ Maven library dependencies (pom.xml, build.gradle)
+- ✅ Shared library usage patterns
+- ✅ All framework-level dependencies
+
+**Best For:**
+
+- Comprehensive architecture visualization
+- Library adoption analysis (which services use common-lib?)
+- Complete architecture documentation
+- Gateway routing coverage assessment
+- Code reuse metrics
+- Architecture reviews and planning
+
+**Example Output:**
+
+```
+Total Services: 14
+Total Dependencies: 18 (vs 10 in default mode)
+
+Additional Dependencies Found:
+  - 6 Gateway routes
+  - 2 Maven library dependencies
+```
+
+---
+
+#### **Detailed Comparison: Default vs --include-all**
+
+| Feature                          | Default Mode | --include-all |
+| -------------------------------- | ------------ | ------------- |
+| **Feign Clients**                | ✅ Yes       | ✅ Yes        |
+| **REST Calls**                   | ✅ Yes       | ✅ Yes        |
+| **Database Connections**         | ✅ Yes       | ✅ Yes        |
+| **Messaging Queues**             | ✅ Yes       | ✅ Yes        |
+| **Gateway Routes**               | ❌ No        | ✅ Yes        |
+| **Maven Dependencies**           | ❌ No        | ✅ Yes        |
+| **Shared Libraries**             | ❌ No        | ✅ Yes        |
+| **Total Dependencies (Typical)** | 10           | 18            |
+| **SVG File Size**                | ~17 KB       | ~21 KB        |
+| **HTML Report**                  | ✅ Yes       | ✅ Yes        |
+| **CSV Matrix**                   | ✅ Yes       | ✅ Yes        |
+
+---
+
+#### **What Does --include-all Actually Discover?**
+
+**Gateway Routes (Spring Cloud Gateway)**
+
+These are extracted from `application.yml`:
+
+```yaml
+spring.cloud.gateway.routes:
+  - id: order-service
+    uri: lb://order-service
+    predicates:
+      - Path=/api/orders/**
+```
+
+Shows up in analysis as:
+
+- `gateway-service → order-service` (type: gateway)
+
+**Maven Library Dependencies**
+
+These are extracted from `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>com.example</groupId>
+  <artifactId>common-lib</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+Shows up in analysis as:
+
+- `order-service → common-lib` (type: maven-dependency)
+
+---
+
+#### **Decision Guide: Which Mode to Use?**
+
+```
+Question: What are you trying to understand?
+
+├─ "What tests do I need to run?" → Use DEFAULT MODE
+│  └─ Directly answers: "If service X changes, test services Y, Z"
+│
+├─ "Is every service routable through the gateway?" → Use --include-all
+│  └─ Shows gateway coverage and routing configuration
+│
+├─ "How much code reuse do we have?" → Use --include-all
+│  └─ Reveals library adoption patterns (common-lib usage)
+│
+├─ "What's the complete system architecture?" → Use --include-all
+│  └─ Full dependency graph for documentation and planning
+│
+└─ "Daily development and testing?" → Use DEFAULT MODE
+   └─ Focused on what actually impacts your service
+```
+
+---
+
+#### **Real-World Example: svc-map-demo Project**
+
+**Default Mode Output (Current Setup):**
+
+- Services: 14
+- Dependencies: 10
+- Shows: Feign calls, REST templates, database connections
+- Hidden: Gateway routing, library usage
+
+**--include-all Mode Output:**
+
+- Services: 14
+- Dependencies: 18 (+8 additional)
+- Added:
+  - 6 Gateway routes (gateway-service → 6 services)
+  - 2 Library dependencies (order-service, user-service → common-lib)
+- Benefits:
+  - Reveals that 4 services are not routable via gateway (email, logging, reporting, analytics)
+  - Shows that only 2/10 services use common-lib (20% adoption, opportunity for improvement)
+  - Provides complete architectural picture
 
 ### 🪟 **Windows-Specific Setup**
 
@@ -227,6 +462,192 @@ choco install maven
 # Windows 10+: reg add HKLM\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1 /f
 ```
 
+### 🔍 **Troubleshooting Gateway Routes & Dependencies**
+
+#### **Gateway Routes Not Appearing**
+
+**Problem:** When using `--include-all`, gateway routes are not showing in the diagram.
+
+**Solutions:**
+
+1. **Verify Spring Cloud Gateway Configuration:**
+
+   ```bash
+   # Check if application.yml or api.yml contains routes
+   grep -r "spring.cloud.gateway.routes" application.yml
+   grep -r "uri: lb://" application.yml
+   ```
+
+2. **Ensure Routes Use lb:// Format:**
+
+   ```yaml
+   # ✅ CORRECT - This will be detected
+   spring.cloud.gateway.routes:
+     - id: order-service
+       uri: lb://order-service
+       predicates:
+         - Path=/api/orders/**
+
+   # ❌ WRONG - This won't be detected
+   spring.cloud.gateway.routes:
+     - id: order-service
+       uri: http://localhost:8083
+       predicates:
+         - Path=/api/orders/**
+   ```
+
+3. **Check Analyzer Output:**
+
+   ```bash
+   # Run with --include-all and check for gateway extraction logs
+   java -jar analyzer.jar /project --include-all 2>&1 | grep -i gateway
+   ```
+
+4. **Verify Configuration File Location:**
+   - Routes must be in: `src/main/resources/application.yml`
+   - Or in: `src/main/resources/application-{env}.yml`
+   - Not in Java code (only static YAML files are scanned)
+
+---
+
+#### **Maven Dependencies Not Appearing**
+
+**Problem:** Library dependencies (like common-lib) not showing when using `--include-all`.
+
+**Solutions:**
+
+1. **Verify pom.xml Contains Dependencies:**
+
+   ```bash
+   # Check if your services have pom.xml with dependencies
+   grep -r "<dependency>" */pom.xml | grep common-lib
+   ```
+
+2. **Ensure Correct Dependency Format:**
+
+   ```xml
+   <!-- ✅ CORRECT - This will be detected -->
+   <dependency>
+       <groupId>com.example</groupId>
+       <artifactId>common-lib</artifactId>
+       <version>1.0.0</version>
+   </dependency>
+
+   <!-- ❌ WRONG - Version required -->
+   <dependency>
+       <groupId>com.example</groupId>
+       <artifactId>common-lib</artifactId>
+   </dependency>
+   ```
+
+3. **Check Project Language Detection:**
+
+   ```bash
+   # Analyzer only scans Java projects with pom.xml
+   # Ensure your service has pom.xml, not package.json or build.gradle
+   ls -la order-service/pom.xml
+   ```
+
+4. **Verify Maven Can Find Dependencies:**
+
+   ```bash
+   # Run Maven to ensure dependencies are resolved
+   cd order-service
+   mvn dependency:tree | grep common-lib
+   ```
+
+5. **Rebuild and Re-analyze:**
+   ```bash
+   # Sometimes caching issues occur
+   mvn clean
+   java -jar analyzer.jar /project --include-all
+   ```
+
+---
+
+#### **Inconsistent Results Between Runs**
+
+**Problem:** Different dependency counts when running multiple times.
+
+**Possible Causes:**
+
+- Stale compiled classes in target/ directories
+- Caching in Maven repository
+- Changes to application.yml not detected
+
+**Solution:**
+
+```bash
+# Clean all build artifacts and re-analyze
+find . -name "target" -type d -exec rm -rf {} +
+mvn clean
+java -jar analyzer.jar /project --include-all
+```
+
+---
+
+#### **Gateway Routes with Complex Patterns**
+
+**Problem:** Routes with complex predicates or filters not being detected.
+
+**Note:** The analyzer extracts routes using a simple pattern:
+
+```
+Extract any line with: uri: lb://service-name
+```
+
+**Supported:**
+
+```yaml
+spring.cloud.gateway.routes:
+  - id: order-service
+    uri: lb://order-service
+    predicates:
+      - Path=/api/orders/**
+    filters:
+      - StripPrefix=1
+```
+
+**Not Directly Supported (but route will still be found):**
+
+```yaml
+spring.cloud.gateway.routes:
+  - id: order-service
+    predicates:
+      - Path=/api/orders/**
+    filters:
+      - name: CircuitBreaker
+        args:
+          name: myCircuitBreaker
+```
+
+---
+
+#### **Library Dependency Filtering**
+
+**Problem:** Certain Maven dependencies are showing that you don't want to see.
+
+**Solution - Use Custom Configuration:**
+
+Create `analyzer-config.yml`:
+
+```yaml
+dependency_patterns:
+  exclude_dependencies:
+    - "org.springframework.*" # Exclude Spring Framework
+    - "org.apache.*" # Exclude Apache projects
+    - "junit*" # Exclude test dependencies
+```
+
+---
+
+**Long Path Names:**
+
+```batch
+# Use short paths or enable long paths in Windows
+# Windows 10+: reg add HKLM\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1 /f
+```
+
 #### **3. Windows Demo Script**
 
 The repository includes `demo-enhanced-analyzer.bat` for easy testing:
@@ -242,7 +663,7 @@ demo-enhanced-analyzer.bat
 # - Display results
 ```
 
-### 📊 **Example Output**
+### 📊 **Analysis Output Examples**
 
 #### **Linux/macOS Output:**
 
@@ -737,10 +1158,82 @@ java -jar analyzer.jar /event-driven event-config.yml
 
 ## 🎯 Next Steps
 
+### **Quick Start (5 minutes)**
+
 1. **Build the Tool**: `mvn clean package`
 2. **Analyze Your Project**: `java -jar analyzer.jar /your/project`
 3. **Open HTML Report**: View `dependency-analysis/dependency-report.html`
-4. **Present to Stakeholders**: Use visual evidence to justify targeted testing
-5. **Integrate into CI/CD**: Automate dependency-aware testing
+4. **Explore Dependencies**: Check which services depend on yours
+
+### **Comprehensive Analysis (10 minutes)**
+
+1. **Build with Full Features**: `mvn clean package`
+2. **Run Comprehensive Analysis**: `java -jar analyzer.jar /your/project --include-all`
+3. **View Complete Architecture**: Check `dependency-analysis/dependency-report.html`
+4. **Analyze Gateway Coverage**: See which services are routable through the API Gateway
+5. **Check Library Adoption**: Identify which services use shared libraries (e.g., common-lib)
+
+### **CI/CD Integration (30 minutes)**
+
+1. **Choose Your Mode**: Default (daily testing) or --include-all (architecture reviews)
+2. **Configure Your Pipeline**: Jenkins, GitHub Actions, or GitLab CI
+3. **Integrate Impact Analysis**: Automatically determine which services to test
+4. **Archive Reports**: Store dependency-analysis folder as build artifact
+5. **Track Metrics**: Monitor dependency drift over time
+
+### **Architecture Review (1 hour)**
+
+1. **Run --include-all Mode**: Get complete architecture picture
+2. **Export CSV**: Share `dependency-matrix.csv` with team
+3. **Document Gateway Routes**: Review which services are routable
+4. **Evaluate Library Usage**: Assess code reuse patterns
+5. **Plan Improvements**:
+   - Add missing gateway routes
+   - Increase shared library adoption
+   - Reduce unnecessary dependencies
+
+---
+
+## 📚 Documentation Structure
+
+### **For Daily Development**
+
+- Use **Default Mode** for regression testing decisions
+- Answers: "If I change X, what do I need to test?"
+- Output: 10-15 dependencies (direct service communication)
+
+### **For Architecture Analysis**
+
+- Use **--include-all Mode** for comprehensive view
+- Answers: "How is the entire system connected?"
+- Output: 18-25+ dependencies (includes all layers)
+
+### **For Platform Teams**
+
+- Monitor both modes over time
+- Track when new gateway routes are added
+- Measure library adoption growth
+- Plan infrastructure improvements
+
+---
+
+## ✨ Key Takeaways
+
+| Feature                   | Benefit                   | Mode          |
+| ------------------------- | ------------------------- | ------------- |
+| **Direct Dependencies**   | Know what to test daily   | Default       |
+| **Gateway Routes**        | Understand API routing    | --include-all |
+| **Library Usage**         | Measure code reuse        | --include-all |
+| **Complete Architecture** | Plan system changes       | --include-all |
+| **Fast Analysis**         | Quick feedback loops      | Default       |
+| **Visual Reports**        | Stakeholder communication | Both          |
+
+---
 
 **Transform from "test everything always" to "test what actually matters based on evidence"** 🚀
+
+**With the new features, you can also:**
+
+- **See your API Gateway structure** with --include-all
+- **Identify library adoption patterns** to improve code reuse
+- **Plan architectural improvements** with complete dependency visibility
