@@ -250,18 +250,21 @@ public class GenericDependencyScanner {
             // Load service properties first (for resolving ${...} placeholders)
             loadServiceProperties(servicePath);
             
-            // Maven dependency scanning disabled
-            // if ("java".equals(service.getLanguage())) {
-            //     dependencies.addAll(scanMavenDependencies(servicePath, allServices, projectRoot));
-            // }
+            // Enable Maven dependency scanning when --include-all is set (to find common-lib dependencies)
+            if (includeAll && "java".equals(service.getLanguage())) {
+                logger.info("[MAVEN] Scanning pom.xml for {} (--include-all enabled)", service.getName());
+                dependencies.addAll(scanMavenDependencies(servicePath, allServices, projectRoot));
+            }
             
             // Scan Java files for Feign clients, REST templates, etc.
             if ("java".equals(service.getLanguage())) {
                 dependencies.addAll(scanJavaFiles(servicePath, allServices));
             }
             
-            // Scan configuration files for gateway routes, etc.
-            dependencies.addAll(scanConfigurationFiles(servicePath, allServices));
+            // Scan configuration files for gateway routes, etc. (especially for gateway-service)
+            if (includeAll || service.getName().toLowerCase().contains("gateway")) {
+                dependencies.addAll(scanConfigurationFiles(servicePath, allServices));
+            }
             
             // Scan for messaging dependencies
             dependencies.addAll(scanMessagingDependencies(servicePath, allServices));
@@ -1636,6 +1639,8 @@ public class GenericDependencyScanner {
     private List<ServiceDependency> extractGatewayRoutes(String content, Path configFile, Path servicePath, List<ServiceInfo> allServices) {
         List<ServiceDependency> dependencies = new ArrayList<>();
         
+        logger.info("[GATEWAY] Extracting routes from {} for service {}", configFile.getFileName(), servicePath.getFileName());
+        
         try {
             String[] lines = content.split("\n");
             String currentRoute = null;
@@ -1646,24 +1651,30 @@ public class GenericDependencyScanner {
                 // Look for route definitions
                 if (line.contains("- id:") || line.contains("id:")) {
                     currentRoute = extractRouteId(line);
+                    logger.debug("[GATEWAY] Found route ID: {}", currentRoute);
                 }
                 
                 if (line.contains("uri:") && currentRoute != null) {
                     String uri = extractUri(line);
                     if (uri != null) {
                         String serviceName = extractServiceNameFromUri(uri, allServices);
+                        logger.info("[GATEWAY] Route {} -> URI {} -> Service {}", currentRoute, uri, serviceName);
                         if (serviceName != null) {
                             ServiceDependency dependency = new ServiceDependency(
-                                serviceName,
-                                "gateway-route",
-                                "Gateway route to " + serviceName + " (route: " + currentRoute + ")"
+                                servicePath.getFileName().toString(),  // fromService: gateway-service
+                                serviceName,                           // toService: user-service, etc.
+                                "gateway"                              // type - must match GATEWAY_DEPENDENCY_TYPE
                             );
+                            dependency.setDescription("Gateway route to " + serviceName + " (route: " + currentRoute + ")");
                             dependency.setSourceFile("src/main/resources/" + configFile.getFileName().toString());
                             dependencies.add(dependency);
+                            logger.info("[GATEWAY] Added dependency: {} -> {}", servicePath.getFileName(), serviceName);
                         }
                     }
                 }
             }
+            
+            logger.info("[GATEWAY] Extracted {} gateway route dependencies", dependencies.size());
             
         } catch (Exception e) {
             logger.error("Error extracting gateway routes: {}", e.getMessage(), e);
@@ -1681,9 +1692,12 @@ public class GenericDependencyScanner {
     }
     
     private String extractUri(String line) {
-        String[] parts = line.split(":");
-        if (parts.length > 1) {
-            return parts[1].trim().replaceAll("[\"\']", "");
+        // Extract everything after "uri:" - handles lb://service-name and http://service:port formats
+        int index = line.indexOf("uri:");
+        if (index != -1) {
+            String uri = line.substring(index + 4).trim().replaceAll("[\"\']", "");
+            logger.debug("[GATEWAY] Extracted URI: {}", uri);
+            return uri;
         }
         return null;
     }
